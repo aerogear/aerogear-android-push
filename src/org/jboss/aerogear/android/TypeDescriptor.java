@@ -17,5 +17,5 @@
 package org.jboss.aerogear.android;
 
 public interface TypeDescriptor {
-    public String getName();
+    String getName();
 }

@@ -24,7 +24,7 @@ import java.net.URL;
  */
 public interface HttpProvider {
 
-    public URL getUrl();
+    URL getUrl();
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -33,7 +33,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody get() throws HttpException;
+    HeaderAndBody get() throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -44,7 +44,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody post(String data) throws HttpException;
+    HeaderAndBody post(String data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -55,7 +55,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody post(byte[] data) throws HttpException;
+    HeaderAndBody post(byte[] data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -67,7 +67,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody put(String id, String data) throws HttpException;
+    HeaderAndBody put(String id, String data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -79,7 +79,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody put(String id, byte[] data) throws HttpException;
+    HeaderAndBody put(String id, byte[] data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -90,7 +90,7 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody delete(String id) throws HttpException;
+    HeaderAndBody delete(String id) throws HttpException;
 
     /**
      * Will set a default header value to be used on all calls
@@ -98,6 +98,6 @@ public interface HttpProvider {
      * @param headerName name
      * @param headerValue value
      */
-    public void setDefaultHeader(String headerName, String headerValue);
+    void setDefaultHeader(String headerName, String headerValue);
 
 }
