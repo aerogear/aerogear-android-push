@@ -25,6 +25,6 @@ public interface Provider<T> {
      * @param in a variable number of parameters to pass to the constructor
      * @return an instance of T 
      */
-    public T get(Object... in);
+    T get(Object... in);
 
 }

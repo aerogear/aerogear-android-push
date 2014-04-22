@@ -31,7 +31,7 @@ public interface MessageHandler {
      * @param context The Context in which the AeroGear message receiver is running.
      * @param message A map of extended data from the intent, delivered to the AeroGear message receiver.
      */
-    public void onDeleteMessage(Context context, Bundle message);
+    void onDeleteMessage(Context context, Bundle message);
 
     /**
      * Invoked when the Google Cloud Messaging Server delivered a message to the device.
@@ -39,10 +39,10 @@ public interface MessageHandler {
      * @param context The Context in which the AeroGear message receiver  is running.
      * @param message A map containing the submitted key/value pairs
      */
-    public void onMessage(Context context, Bundle message);
+    void onMessage(Context context, Bundle message);
 
     /**
      * Invoked when the Google Cloud Messaging Server indicates a send error.
      */
-    public void onError();
+    void onError();
 }
