@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright Red Hat, Inc., and individual contributors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jboss.aerogear</groupId>
+    <artifactId>aerogear-android-push</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>apklib</packaging>
+    <name>AeroGear Android Push Library</name>
+    <url>http://aerogear.org</url>
+
+    <parent>
+        <groupId>org.jboss.aerogear</groupId>
+        <artifactId>aerogear-parent</artifactId>
+        <version>0.1.0</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>aerogear</id>
+            <name>AeroGear Team</name>
+            <email>aerogear-dev@lists.jboss.org</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:aerogear/aerogear-android-push.git</connection>
+        <developerConnection>scm:git:git@github.com:aerogear/aerogear-android-push.git</developerConnection>
+        <url>git@github.com:aerogear/aerogear-android-push.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <!-- Project depencies verions -->
+        <android.version>4.1.1.4</android.version>
+        <android.support.version>[19.1,)</android.support.version>
+        <google.playservice.version>[10,)</google.playservice.version>
+        <guava.version>13.0.1</guava.version>
+        <gson.version>2.2.2</gson.version>
+
+        <!-- Test depencies verions -->
+        <junit.version>4.8.2</junit.version>
+        <mockito.version>1.9.5</mockito.version>
+
+        <!-- Plugins versions -->
+        <java.version>1.7</java.version>
+        <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+        <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
+        <maven.android.plugin.verson>3.8.0</maven.android.plugin.verson>
+        <builder.helper.plugin.version>1.7</builder.helper.plugin.version>
+
+        <!-- Android configs -->
+        <android.platform>19</android.platform>
+        <android.debug>true</android.debug>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <proguard.skip>true</proguard.skip>
+    </properties>
+
+
+    <dependencies>
+
+        <!-- Project dependencies -->
+
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>${android.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>${google.playservice.version}</version>
+            <type>apklib</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>${google.playservice.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <version>${maven.android.plugin.verson}</version>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourcepath>${basedir}/src</sourcepath>
+                    <sourceFileExcludes>
+                        <exclude>
+                            **com/google/**
+                        </exclude>
+                        <exclude>**/R.java</exclude>
+                    </sourceFileExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <configuration>
+                    <run>
+                        <debug>${android.debug}</debug>
+                    </run>
+                    <sdk>
+                        <platform>${android.platform}</platform>
+                    </sdk>
+                    <emulator>
+                        <avd>${android.platform}</avd>
+                    </emulator>
+                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <proguard>
+                        <skip>${proguard.skip}</skip>
+                    </proguard>
+                    <dex>
+                        <jvmArguments>
+                            <jvmArgument>-Xmx4096M</jvmArgument>
+                        </jvmArguments>
+                    </dex>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>aar</goal>
+                            <goal>apklib</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${builder.helper.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <type>aar</type>
+                                    <file>${project.build.directory}/${project.build.finalName}.aar</file>
+                                </artifact>
+                                <artifact>
+                                    <type>jar</type>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
