@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.android.impl.http;
 
+import android.util.Base64;
+import android.util.Log;
+import android.util.Pair;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
@@ -31,6 +34,9 @@ import java.net.URL;
  */
 public class HttpRestProviderForPush implements HttpProvider {
 
+    private final static String BASIC_HEADER = "Authorization";
+    private final static String AUTHORIZATION_METHOD = "Basic";
+    
     private final HttpRestProvider provider;
 
     public HttpRestProviderForPush(URL url, Integer timeout) {
@@ -78,11 +84,14 @@ public class HttpRestProviderForPush implements HttpProvider {
     }
 
     public void setPasswordAuthentication(final String username, final String password) {
-        Authenticator.setDefault(new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password.toCharArray());
-            }
-        });
+        this.setDefaultHeader(BASIC_HEADER, getHashedAuth(username, password.toCharArray()));
+    }
+
+    private String getHashedAuth(String username, char[] password) {
+        StringBuilder headerValueBuilder = new StringBuilder(AUTHORIZATION_METHOD).append(" ");
+        String unhashedCredentials = new StringBuilder(username).append(":").append(password).toString();
+        String hashedCrentials = Base64.encodeToString(unhashedCredentials.getBytes(), Base64.DEFAULT | Base64.NO_WRAP);
+        return headerValueBuilder.append(hashedCrentials).toString();
     }
 
     /**
@@ -101,5 +110,5 @@ public class HttpRestProviderForPush implements HttpProvider {
         }
 
     }
-
+    
 }
