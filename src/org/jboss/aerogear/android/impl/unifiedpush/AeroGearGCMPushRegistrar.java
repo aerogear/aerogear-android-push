@@ -28,6 +28,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpStatus;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HttpException;
@@ -36,7 +37,9 @@ import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Timestamp;
 
@@ -48,10 +51,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
-
     private static final String registryDeviceEndpoint = "/rest/registry/device";
-    private final URI pushServerURI;
+
     private final PushConfig config;
+    private URL deviceRegistryURL;
 
     /**
      * Default lifespan (7 days) of a reservation until it is considered
@@ -77,8 +80,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     };
 
     public AeroGearGCMPushRegistrar(PushConfig config) {
-        this.pushServerURI = config.getPushServerURI();
         this.config = config;
+        this.deviceRegistryURL = UrlUtils.appendToBaseURI(config.getPushServerURI(), registryDeviceEndpoint);
     }
 
     @Override
@@ -103,7 +106,6 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     config.setDeviceToken(regid);
 
-                    URL deviceRegistryURL = UrlUtils.appendToBaseURL(pushServerURI.toURL(), registryDeviceEndpoint);
                     HttpRestProviderForPush httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     httpProvider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
@@ -152,7 +154,28 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                 if (result == null) {
                     callback.onSuccess(null);
                 } else {
-                    callback.onFailure(result);
+                    if (result instanceof HttpException) {
+                        HttpException httpException = (HttpException) result;
+                        switch (httpException.getStatusCode()) {
+                            case HttpStatus.SC_MOVED_PERMANENTLY:
+                            case HttpStatus.SC_MOVED_TEMPORARILY:
+                            case HttpStatus.SC_TEMPORARY_REDIRECT:
+                                Log.w(TAG, httpException.getMessage());
+                                try {
+                                    URL redirectURL = new URL(httpException.getHeaders().get("Location"));
+                                    AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                    register(context, callback);
+                                } catch (MalformedURLException e) {
+                                    callback.onFailure(e);
+                                }
+                                break;
+                            default:
+                                callback.onFailure(result);
+                        }
+                    } else {
+                        callback.onFailure(result);
+                    }
+
                 }
             }
 
@@ -174,7 +197,6 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     gcm.unregister();
 
-                    URL deviceRegistryURL = UrlUtils.appendToBaseURL(pushServerURI.toURL(), registryDeviceEndpoint);
                     HttpRestProviderForPush provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
