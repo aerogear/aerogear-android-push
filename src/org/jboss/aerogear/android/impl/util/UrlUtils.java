@@ -20,6 +20,7 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -28,6 +29,33 @@ public final class UrlUtils {
     private static final String TAG = UrlUtils.class.getSimpleName();
 
     private UrlUtils() {
+    }
+
+    /**
+     *
+     * Append the base uri with endpoint
+     *
+     * @param baseURI the base uri
+     * @param endpoint the string to append to the base url
+     * @return a new uri baseUri + endpoint
+     * @throws IllegalArgumentException if baseUri+endpoint is not a real url.
+     */
+    public static URL appendToBaseURI(final URI baseURI, String endpoint) {
+        try {
+            String baseString = baseURI.toString();
+            if (endpoint.isEmpty()) {
+                return baseURI.toURL();
+            } else if (!baseString.endsWith("/") && !endpoint.startsWith("/")) {
+                baseString += "/";
+            } else if (baseString.endsWith("/") && endpoint.startsWith("/")) {
+                endpoint = endpoint.replaceFirst("/", "");
+            }
+            return new URL(baseString + endpoint);
+        } catch (MalformedURLException ex) {
+            String message = "Could not append " + endpoint + " to " + baseURI.toString();
+            Log.e(TAG, message, ex);
+            throw new IllegalArgumentException(message, ex);
+        }
     }
 
     /**
