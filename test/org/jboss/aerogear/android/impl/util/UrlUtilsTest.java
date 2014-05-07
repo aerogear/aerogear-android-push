@@ -18,10 +18,12 @@ package org.jboss.aerogear.android.impl.util;
 
 import org.junit.Test;
 
+import java.net.URI;
 import java.net.URL;
 
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendQueryToBaseURL;
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
+import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURI;
 import static org.junit.Assert.assertEquals;
 
 public class UrlUtilsTest {
@@ -71,6 +73,52 @@ public class UrlUtilsTest {
         assertEquals(expectURL, appendToBaseURL(baseURL, endpoint));
     }
 
+
+    @Test
+    public void testAppendToBaseURIWithBothHaveSlash() throws Exception {
+        URI baseURI = new URI("http://fakeurl.com/");
+        String endpoint = "/endpoint";
+        URL expectURL = new URL("http://fakeurl.com/endpoint");
+
+        assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
+    }
+
+    @Test
+    public void testAppendToBaseURIWithOnlyBaseURIHasSlash() throws Exception {
+        URI baseURI = new URI("http://fakeurl.com/");
+        String endpoint = "endpoint";
+        URL expectURL = new URL("http://fakeurl.com/endpoint");
+
+        assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
+    }
+
+    @Test
+    public void testEmptyEndpointDoesNotAlterBaseURI() throws Exception {
+        URI baseURI = new URI("http://fakeurl.com/path");
+        String endpoint = "";
+        URL expectURL = new URL("http://fakeurl.com/path");
+
+        assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
+    }
+
+    @Test
+    public void testAppendToBaseURIWithOnlyEndpointHasSlash() throws Exception {
+        URI baseURI = new URI("http://fakeurl.com");
+        String endpoint = "/endpoint";
+        URL expectURL = new URL("http://fakeurl.com/endpoint");
+
+        assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
+    }
+
+    @Test
+    public void testAppendToBaseURIWithBothWithoutSlash() throws Exception {
+        URI baseURI = new URI("http://fakeurl.com");
+        String endpoint = "endpoint";
+        URL expectURL = new URL("http://fakeurl.com/endpoint");
+
+        assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
+    }
+    
     @Test
     public void testAppendQueryWithEmptyQuery() throws Exception {
         URL baseURL = new URL("http://fakeurl.com/endpoint");
