@@ -157,20 +157,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                     if (result instanceof HttpException) {
                         HttpException httpException = (HttpException) result;
                         switch (httpException.getStatusCode()) {
-                            case HttpStatus.SC_MOVED_PERMANENTLY:
-                            case HttpStatus.SC_MOVED_TEMPORARILY:
-                            case HttpStatus.SC_TEMPORARY_REDIRECT:
-                                Log.w(TAG, httpException.getMessage());
-                                try {
-                                    URL redirectURL = new URL(httpException.getHeaders().get("Location"));
-                                    AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
-                                    register(context, callback);
-                                } catch (MalformedURLException e) {
-                                    callback.onFailure(e);
-                                }
-                                break;
-                            default:
-                                callback.onFailure(result);
+                        case HttpStatus.SC_MOVED_PERMANENTLY:
+                        case HttpStatus.SC_MOVED_TEMPORARILY:
+                        case HttpStatus.SC_TEMPORARY_REDIRECT:
+                            Log.w(TAG, httpException.getMessage());
+                            try {
+                                URL redirectURL = new URL(httpException.getHeaders().get("Location"));
+                                AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                register(context, callback);
+                            } catch (MalformedURLException e) {
+                                callback.onFailure(e);
+                            }
+                            break;
+                        default:
+                            callback.onFailure(result);
                         }
                     } else {
                         callback.onFailure(result);

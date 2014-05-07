@@ -73,7 +73,6 @@ public class UrlUtilsTest {
         assertEquals(expectURL, appendToBaseURL(baseURL, endpoint));
     }
 
-
     @Test
     public void testAppendToBaseURIWithBothHaveSlash() throws Exception {
         URI baseURI = new URI("http://fakeurl.com/");
@@ -118,7 +117,7 @@ public class UrlUtilsTest {
 
         assertEquals(expectURL, appendToBaseURI(baseURI, endpoint));
     }
-    
+
     @Test
     public void testAppendQueryWithEmptyQuery() throws Exception {
         URL baseURL = new URL("http://fakeurl.com/endpoint");

@@ -255,24 +255,24 @@ public final class HttpRestProvider implements HttpProvider {
         byte[] emptyResponseData = new byte[0];
 
         switch (statusCode) {
-            case HttpStatus.SC_OK:
-            case HttpStatus.SC_CREATED:
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                responseData = readBytes(in);
-                break;
-            case HttpStatus.SC_MOVED_PERMANENTLY:
-            case HttpStatus.SC_MOVED_TEMPORARILY:
-            case HttpStatus.SC_TEMPORARY_REDIRECT:
-                Map<String, String> redirectHeaders = extractHeader(urlConnection);
-                throw new HttpException(emptyResponseData, statusCode, redirectHeaders);
-            case HttpStatus.SC_NO_CONTENT:
-                responseData = emptyResponseData;
-                break;
-            default:
-                InputStream err = new BufferedInputStream(urlConnection.getErrorStream());
-                byte[] errData = readBytes(err);
-                Map<String, String> errorHeaders = extractHeader(urlConnection);
-                throw new HttpException(errData, statusCode, errorHeaders);
+        case HttpStatus.SC_OK:
+        case HttpStatus.SC_CREATED:
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            responseData = readBytes(in);
+            break;
+        case HttpStatus.SC_MOVED_PERMANENTLY:
+        case HttpStatus.SC_MOVED_TEMPORARILY:
+        case HttpStatus.SC_TEMPORARY_REDIRECT:
+            Map<String, String> redirectHeaders = extractHeader(urlConnection);
+            throw new HttpException(emptyResponseData, statusCode, redirectHeaders);
+        case HttpStatus.SC_NO_CONTENT:
+            responseData = emptyResponseData;
+            break;
+        default:
+            InputStream err = new BufferedInputStream(urlConnection.getErrorStream());
+            byte[] errData = readBytes(err);
+            Map<String, String> errorHeaders = extractHeader(urlConnection);
+            throw new HttpException(errData, statusCode, errorHeaders);
         }
 
         headers = urlConnection.getHeaderFields();
@@ -295,7 +295,7 @@ public final class HttpRestProvider implements HttpProvider {
                         return TextUtils.join(",", input);
                     }
                 }
-        );
+                );
     }
 
     private byte[] readBytes(InputStream inputStream) throws IOException {
