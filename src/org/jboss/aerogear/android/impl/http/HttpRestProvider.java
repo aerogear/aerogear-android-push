@@ -246,45 +246,33 @@ public final class HttpRestProvider implements HttpProvider {
         defaultHeaders.put(headerName, headerValue);
     }
 
-    private HeaderAndBody getHeaderAndBody(HttpURLConnection urlConnection)
-            throws IOException {
+    private HeaderAndBody getHeaderAndBody(HttpURLConnection urlConnection) throws IOException {
 
         int statusCode = urlConnection.getResponseCode();
         HeaderAndBody result;
         Map<String, List<String>> headers;
         byte[] responseData;
+        byte[] emptyResponseData = new byte[0];
 
         switch (statusCode) {
         case HttpStatus.SC_OK:
         case HttpStatus.SC_CREATED:
-            InputStream in = new BufferedInputStream(urlConnection
-                        .getInputStream());
-
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             responseData = readBytes(in);
-
             break;
-
+        case HttpStatus.SC_MOVED_PERMANENTLY:
+        case HttpStatus.SC_MOVED_TEMPORARILY:
+        case HttpStatus.SC_TEMPORARY_REDIRECT:
+            Map<String, String> redirectHeaders = extractHeader(urlConnection);
+            throw new HttpException(emptyResponseData, statusCode, redirectHeaders);
         case HttpStatus.SC_NO_CONTENT:
-            responseData = new byte[0];
-
+            responseData = emptyResponseData;
             break;
-
         default:
-            InputStream err = new BufferedInputStream(urlConnection
-                        .getErrorStream());
-
+            InputStream err = new BufferedInputStream(urlConnection.getErrorStream());
             byte[] errData = readBytes(err);
-
-            Map<String, String> errorHeaders = Maps.transformValues(urlConnection.getHeaderFields(),
-                    new Function<List<String>, String>() {
-                        @Override
-                        public String apply(List<String> input) {
-                            return TextUtils.join(",", input);
-                        }
-                    });
-
+            Map<String, String> errorHeaders = extractHeader(urlConnection);
             throw new HttpException(errData, statusCode, errorHeaders);
-
         }
 
         headers = urlConnection.getHeaderFields();
@@ -297,6 +285,17 @@ public final class HttpRestProvider implements HttpProvider {
 
         return result;
 
+    }
+
+    private Map<String, String> extractHeader(HttpURLConnection urlConnection) {
+        return Maps.transformValues(urlConnection.getHeaderFields(),
+                new Function<List<String>, String>() {
+                    @Override
+                    public String apply(List<String> input) {
+                        return TextUtils.join(",", input);
+                    }
+                }
+                );
     }
 
     private byte[] readBytes(InputStream inputStream) throws IOException {
