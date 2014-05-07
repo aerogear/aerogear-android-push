@@ -36,7 +36,7 @@ public class HttpRestProviderForPush implements HttpProvider {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
-    
+
     private final HttpRestProvider provider;
 
     public HttpRestProviderForPush(URL url, Integer timeout) {
@@ -110,5 +110,5 @@ public class HttpRestProviderForPush implements HttpProvider {
         }
 
     }
-    
+
 }
