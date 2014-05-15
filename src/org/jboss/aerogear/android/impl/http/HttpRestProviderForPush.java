@@ -17,15 +17,11 @@
 package org.jboss.aerogear.android.impl.http;
 
 import android.util.Base64;
-import android.util.Log;
-import android.util.Pair;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 
 /**
