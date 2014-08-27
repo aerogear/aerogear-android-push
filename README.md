@@ -1,51 +1,68 @@
-aerogear-android-push
-================
+# AeroGear Android Push [![Build Status](https://travis-ci.org/aerogear/aerogear-android-push.png)](https://travis-ci.org/aerogear/aerogear-android-push)
+
+AeroGear's Android libraries are built as jar, apklib and aar using [Maven](http://maven.apache.org/) and the [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Android project layout as opposed to the standard Maven layout so sources will be in /src instead of /src/main/java and can be imported directly into IDE as an Android project.
+
+## Push
 
 AeroGear for Android provides support for integrating with push. Currently only using Google’s Cloud Messaging (GCM) with the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server) is supported, but we are planning to add support for Mozilla’s Simple Push, MQTT, and standalone GCM soon.
 
-## Build
+## Building
 
 Please take a look of [step by step on our website](http://aerogear.org/docs/guides/aerogear-android/how-to-build-aerogear-android/)
 
 ## Usage
 
-### Referencing a library project
+There are two supported ways of developing apps using AeroGear for Android. Development may be done with Maven and Android Studio. Maven and Android Studio feature good dependency and library management and are far easier to get set up and developing.
 
-Download [apklib from Maven central](http://search.maven.org/#search%7Cga%7C1%7Caerogear-android) and follow the [Google Android document](http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject)
+### Android Studio
+
+Add to your application's `build.gradle` file
+
+```
+dependencies {
+  compile 'org.jboss.aerogear:aerogear-android-store:2.0.0-SNAPSHOT@aar'
+}
+```
 
 ### Maven
+
+Include the following dependencies in your project's `pom.xml`
+
 
 ```
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
-  <artifactId>aerogear-android-push</artifactId>
-  <version>0.2</version>
+  <artifactId>aerogear-android-store</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
   <scope>provided</scope>
   <type>jar</type>
 </dependency>
 
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
-  <artifactId>aerogear-android-push</artifactId>
-  <version>0.2</version>
+  <artifactId>aerogear-android-store</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
   <type>apklib</type>
 </dependency>
 ```
 
-### Gradle (as experimental)
-```
-dependencies {
-  compile 'org.jboss.aerogear:aerogear-android-push:0.2@aar'
-}
-```
+## Documentation
 
-## Demo and Documentation
+For more details about the current release, please consult [our documentation](http://aerogear.org/docs/guides/aerogear-android/).
 
-Take a look in our example apps and docs about our features
+## Demo apps
 
-| Feature / Doc  |  Example |
-|:--------------:|:--------:|
-| [Push](http://aerogear.org/docs/guides/aerogear-android/push/) | [Push HelloWorld](https://github.com/aerogear/aerogear-push-helloworld) |
+Take a look in our demo apps
 
+* [AeroGear Push HelloWorld](https://github.com/aerogear/aerogear-push-helloworld)
+* [AeroGear Push Quickstarts](https://github.com/aerogear/aerogear-push-quickstarts)
 
-If you are having troubles feel free to contact us via IRC #aerogear or our mailing list aerogear-dev@lists.jboss.org.
+## Development
+
+If you would like to help develop AeroGear you can join our [dev list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
+
+Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
+
+## Questions?
+
+Join our [user list](https://lists.jboss.org/mailman/listinfo/aerogear-user) for any questions and help! We really hope you enjoy app development with AeroGear!
