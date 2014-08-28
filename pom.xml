@@ -20,7 +20,7 @@
 
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android-push</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>apklib</packaging>
     <name>AeroGear Android Push Library</name>
     <url>http://aerogear.org</url>
@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.6</version>
     </parent>
 
     <licenses>
@@ -58,7 +58,7 @@
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aerogear.bom.version>0.2.0</aerogear.bom.version>
+        <aerogear.bom.version>0.2.6</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOM -->
         <junit.version>4.8.2</junit.version>
