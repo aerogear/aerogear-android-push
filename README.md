@@ -20,7 +20,7 @@ Add to your application's `build.gradle` file
 
 ```
 dependencies {
-  compile 'org.jboss.aerogear:aerogear-android-store:2.0.0-SNAPSHOT@aar'
+  compile 'org.jboss.aerogear:aerogear-android-push:2.0.0-SNAPSHOT@aar'
 }
 ```
 
@@ -32,7 +32,7 @@ Include the following dependencies in your project's `pom.xml`
 ```
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
-  <artifactId>aerogear-android-store</artifactId>
+  <artifactId>aerogear-android-push</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <scope>provided</scope>
   <type>jar</type>
@@ -40,7 +40,7 @@ Include the following dependencies in your project's `pom.xml`
 
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
-  <artifactId>aerogear-android-store</artifactId>
+  <artifactId>aerogear-android-push</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <type>apklib</type>
 </dependency>
