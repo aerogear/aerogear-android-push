@@ -65,4 +65,4 @@ Also takes some time and skim the [contributor guide](http://aerogear.org/docs/g
 
 ## Questions?
 
-Join our [user's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-user) for any questions and help! We really hope you enjoy app development with AeroGear!
+Join our [user's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-users) for any questions and help! We really hope you enjoy app development with AeroGear!
