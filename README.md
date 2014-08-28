@@ -1,6 +1,6 @@
 # AeroGear Android Push [![Build Status](https://travis-ci.org/aerogear/aerogear-android-push.png)](https://travis-ci.org/aerogear/aerogear-android-push)
 
-AeroGear's Android libraries are built as jar, apklib and aar using [Maven](http://maven.apache.org/) and the [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Android project layout as opposed to the standard Maven layout so sources will be in /src instead of /src/main/java and can be imported directly into IDE as an Android project.
+AeroGear's Android libraries were built as jar, apklib and aar using [Maven](http://maven.apache.org/) and [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Android project layout as opposed to the standard Maven layout so sources will be in /src instead of /src/main/java and can be imported directly into IDE as an Android project.
 
 ## Push
 
@@ -59,10 +59,10 @@ Take a look in our demo apps
 
 ## Development
 
-If you would like to help develop AeroGear you can join our [dev list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
+If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
 
 Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
 
 ## Questions?
 
-Join our [user list](https://lists.jboss.org/mailman/listinfo/aerogear-user) for any questions and help! We really hope you enjoy app development with AeroGear!
+Join our [user's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-user) for any questions and help! We really hope you enjoy app development with AeroGear!
