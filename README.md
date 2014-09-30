@@ -20,7 +20,10 @@ Add to your application's `build.gradle` file
 
 ```
 dependencies {
-  compile 'org.jboss.aerogear:aerogear-android-push:1.0.0@aar'
+    compile 'com.google.android.gms:play-services:+'
+    compile 'org.jboss.aerogear:aerogear-android-push:1.0.0@aar'
+    compile 'com.google.guava:guava:13.0.1'
+    compile 'com.google.code.gson:gson:2.2.2'
 }
 ```
 
