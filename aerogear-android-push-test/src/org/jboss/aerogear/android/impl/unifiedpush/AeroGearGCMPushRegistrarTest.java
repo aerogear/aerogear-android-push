@@ -49,56 +49,6 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         super(MainActivity.class);
     }
 
-    public void testIgnoreRegisterDoesNotHangOn401() throws Exception {
-
-        final String VARIANT_ID = "123";
-        final String SECRET = "123";
-        final String GCM_SENDER_ID = "AIzaSyAJWVz2kY1JeqdItGyEG4h3nW6uyXneQPY";
-        final String UNIFIED_PUSH_URL = "http://10.0.2.2:8080/ag-push";
-
-        PushConfig config = new PushConfig(GCM_SENDER_ID);
-        config.setPushServerURI(new URI(UNIFIED_PUSH_URL));
-        config.setSecret(SECRET);
-        config.setVariantID(VARIANT_ID);
-        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
-        CountDownLatch latch = new CountDownLatch(1);
-
-        VoidCallback callback = new VoidCallback(latch);
-
-        registrar = Mockito.spy(registrar);
-        Mockito.doReturn("tempId").when(registrar).getRegistrationId((Context) Mockito.any());
-
-        registrar.register(super.getActivity(), callback);
-        assertTrue(latch.await(10, TimeUnit.SECONDS));
-        assertNotNull(callback.exception);
-        assertEquals("The server returned the error code 401.", callback.exception.getMessage());
-    }
-
-    public void testIgnoreRegisterReal() throws Exception {
-
-        final String VARIANT_ID = "941a7dab-3bf2-41a8-9c6b-ebb5b80c3277";
-        final String SECRET = "0e75aaf5-3f7c-47bd-bca9-fbafcc0e842a";
-        final String GCM_SENDER_ID = "AIzaSyAJWVz2kY1JeqdItGyEG4h3nW6uyXneQPY";
-        final String UNIFIED_PUSH_URL = "http://10.0.2.2:8080/ag-push";
-
-        PushConfig config = new PushConfig(GCM_SENDER_ID);
-        config.setPushServerURI(new URI(UNIFIED_PUSH_URL));
-        config.setSecret(SECRET);
-        config.setVariantID(VARIANT_ID);
-        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
-        CountDownLatch latch = new CountDownLatch(1);
-
-        VoidCallback callback = new VoidCallback(latch);
-
-        registrar = Mockito.spy(registrar);
-        Mockito.doReturn("tempId").when(registrar).getRegistrationId((Context) Mockito.any());
-
-        registrar.register(super.getActivity(), callback);
-        assertTrue(latch.await(10, TimeUnit.SECONDS));
-        assertNull(callback.exception);
-
-    }
-
     public void testRegister() throws Exception {
         PushConfig config = new PushConfig(TEST_SENDER_ID);
         config.setPushServerURI(new URI("https://testuri"));
