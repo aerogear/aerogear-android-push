@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.unifiedpush;
 
@@ -102,7 +102,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     }
 
     public void testRegisterExceptionsAreCaught() throws Exception {
-        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(new PushConfig(""));
+        PushConfig config = new PushConfig(TEST_SENDER_ID);
+        config.setPushServerURI(new URI("https://testuri"));
+        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
@@ -116,7 +118,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     }
 
     public void testUnregisterExceptionsAreCaught() throws Exception {
-        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(new PushConfig(""));
+        PushConfig config = new PushConfig(TEST_SENDER_ID);
+        config.setPushServerURI(new URI("https://testuri"));
+        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
@@ -134,7 +138,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpRestProviderForPush mock = Mockito.mock(HttpRestProviderForPush.class);
 
         public StubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doReturn(new HeaderAndBody(bytes, new HashMap<String, Object>()))
                     .when(mock)
                     .post((String) Mockito.any());
@@ -155,7 +159,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpRestProviderForPush mock = Mockito.mock(HttpRestProviderForPush.class);
 
         public BrokenStubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doThrow(new HttpException(bytes, 401))
                     .when(mock)
                     .post((String) Mockito.any());
