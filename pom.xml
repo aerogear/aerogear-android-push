@@ -64,7 +64,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
-        <android.version>4.4.2_r3</android.version>
+        <android.version>4.4.2_r4</android.version>
         <aerogear.android.core.version>2.0.0-SNAPSHOT</aerogear.android.core.version>
 
         
