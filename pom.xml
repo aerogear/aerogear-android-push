@@ -19,12 +19,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jboss.aerogear</groupId>
-    <artifactId>aerogear-android-push</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
-    <packaging>apklib</packaging>
-    <name>AeroGear Android Push Library</name>
+    <artifactId>aerogear-android-push-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>AeroGear Android Push Parent</name>
     <url>http://aerogear.org</url>
 
+    <modules>
+        <module>aerogear-android-push</module>
+        <module>aerogear-android-push-test</module>
+    </modules>
+	
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
@@ -59,11 +64,10 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aerogear.bom.version>0.2.6</aerogear.bom.version>
+        <android.version>4.4.2_r3</android.version>
+        <aerogear.android.core.version>2.0.0-SNAPSHOT</aerogear.android.core.version>
 
-        <!-- Override versions of AeroGear BOM -->
-        <junit.version>4.8.2</junit.version>
-        <mockito.version>1.9.5</mockito.version>
-
+        
         <!-- Plugins versions -->
         <java.version>1.7</java.version>
         <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
@@ -72,25 +76,13 @@
 
         <!-- Android configs -->
         <android.platform>19</android.platform>
-        <android.debug>true</android.debug>
+        <android.debug>false</android.debug>
         <proguard.skip>true</proguard.skip>
     </properties>
 
     <dependencyManagement>
 
         <dependencies>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-            </dependency>
 
             <!-- AeroGear Test Dependencies BOM Imports -->
             <dependency>
@@ -117,10 +109,10 @@
     <dependencies>
 
         <!-- Project dependencies -->
-
         <dependency>
-            <groupId>com.google.android</groupId>
+            <groupId>android</groupId>
             <artifactId>android</artifactId>
+            <version>${android.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -129,6 +121,22 @@
             <artifactId>google-play-services</artifactId>
             <type>apklib</type>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-core</artifactId>
+            <version>${aerogear.android.core.version}</version>
+            <type>apklib</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-core</artifactId>
+            <version>${aerogear.android.core.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>com.google.android.gms</groupId>
@@ -146,24 +154,10 @@
             <artifactId>gson</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -172,106 +166,8 @@
                     <version>${maven.android.plugin.version}</version>
                     <extensions>true</extensions>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven.javadoc.plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${builder.helper.plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sourcepath>${basedir}/src</sourcepath>
-                    <sourceFileExcludes>
-                        <exclude>
-                            **com/google/**
-                        </exclude>
-                        <exclude>**/R.java</exclude>
-                    </sourceFileExcludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                <artifactId>android-maven-plugin</artifactId>
-                <configuration>
-                    <run>
-                        <debug>${android.debug}</debug>
-                    </run>
-                    <sdk>
-                        <platform>${android.platform}</platform>
-                    </sdk>
-                    <emulator>
-                        <avd>${android.platform}</avd>
-                    </emulator>
-                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
-                    <proguard>
-                        <skip>${proguard.skip}</skip>
-                    </proguard>
-                    <dex>
-                        <jvmArguments>
-                            <jvmArgument>-Xmx4096M</jvmArgument>
-                        </jvmArguments>
-                    </dex>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>aar</goal>
-                            <goal>apklib</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <type>aar</type>
-                                    <file>${project.build.directory}/${project.build.finalName}.aar</file>
-                                </artifact>
-                                <artifact>
-                                    <type>jar</type>
-                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
 </project>
