@@ -27,7 +27,7 @@ import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCa
 import org.jboss.aerogear.android.unifiedpush.AeroGearGCMMessageReceiver;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
-import org.jboss.aerogear.android.unifiedpush.Registrations;
+import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 
 public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
 
@@ -40,7 +40,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
         CountDownLatch latch = new CountDownLatch(1);
         TestMessageHandler handler = new TestMessageHandler(latch);
-        Registrations.registerMainThreadHandler(handler);
+        RegistrarManager.registerMainThreadHandler(handler);
         IntentFilter filter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         Intent myIntent = new Intent("com.google.android.c2dm.intent.RECEIVE");
 
@@ -57,7 +57,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
         CountDownLatch latch = new CountDownLatch(1);
         TestMessageHandler handler = new TestMessageHandler(latch);
-        Registrations.registerMainThreadHandler(handler);
+        RegistrarManager.registerMainThreadHandler(handler);
         IntentFilter filter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         Intent myIntent = new Intent("com.google.android.c2dm.intent.RECEIVE").putExtra("message_type", "deleted_messages");
 
@@ -74,7 +74,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
         CountDownLatch latch = new CountDownLatch(1);
         TestMessageHandler handler = new TestMessageHandler(latch);
-        Registrations.registerMainThreadHandler(handler);
+        RegistrarManager.registerMainThreadHandler(handler);
         IntentFilter filter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         Intent myIntent = new Intent("com.google.android.c2dm.intent.RECEIVE").putExtra("message_type", "send_error");
 

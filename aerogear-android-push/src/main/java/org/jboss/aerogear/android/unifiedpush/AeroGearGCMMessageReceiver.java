@@ -78,7 +78,7 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
         }
 
         // notity all attached MessageHandler implementations:
-        Registrations.notifyHandlers(context, intent, defaultHandler);
+        RegistrarManager.notifyHandlers(context, intent, defaultHandler);
     }
 
     private Bundle getMetadata(Context context) {

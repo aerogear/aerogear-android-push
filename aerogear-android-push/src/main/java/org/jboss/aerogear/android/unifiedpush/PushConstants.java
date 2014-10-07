@@ -28,7 +28,7 @@ public final class PushConstants {
      * Intents with this key indicate that some error occurred.  There may be 
      * extra information in the Intent.  
      * 
-     * {@link Registrations#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
+     * {@link RegistrarManager#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
      * will pass this message to {@link MessageHandler#onError() }
      */
     public static final String ERROR = "org.jboss.aerogear.android.unifiedpush.ERROR";
@@ -36,7 +36,7 @@ public final class PushConstants {
     /**
      * Intents with this key encapsulate a push message
      * 
-     * {@link Registrations#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
+     * {@link RegistrarManager#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
      * will pass this message to {@link MessageHandler#onMessage(android.content.Context, android.os.Bundle) }
      */
     public static final String MESSAGE = "org.jboss.aerogear.android.unifiedpush.MESSAGE";
@@ -45,7 +45,7 @@ public final class PushConstants {
      * An intent with this key means that the message it encapsulates refers to 
      * messages which have been deleted by the push provider.
      * 
-     * {@link Registrations#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
+     * {@link RegistrarManager#notifyHandlers(android.content.Context, android.content.Intent, org.jboss.aerogear.android.unifiedpush.MessageHandler) } 
      * will pass this message to {@link MessageHandler#onDeleteMessage(android.content.Context, android.os.Bundle)  }
      */
     public static final String DELETED = "org.jboss.aerogear.android.unifiedpush.DELETED";
