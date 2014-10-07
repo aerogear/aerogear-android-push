@@ -131,7 +131,7 @@
                     <dex>
                         <jvmArguments>
                             <jvmArgument>-Xms256m</jvmArgument>
-                            <jvmArgument>-Xmx4096m</jvmArgument>
+                            <jvmArgument>-Xmx2048m</jvmArgument>
                         </jvmArguments>
                     </dex>
                 </configuration>
