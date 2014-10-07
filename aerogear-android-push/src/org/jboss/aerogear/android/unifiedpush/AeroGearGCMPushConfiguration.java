@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.jboss.aerogear.android.impl.unifiedpush.AeroGearGCMPushRegistrar;
-import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 
 /**
  * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
@@ -40,7 +38,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     private String osVersion = android.os.Build.VERSION.RELEASE;
     private String alias;
     private List<String> categories = new ArrayList<String>();
-    private PushType type = PushTypes.AEROGEAR_GCM;
     private URI pushServerURI;
     private Set<String> senderIds = new HashSet<String>();
 
@@ -253,29 +250,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      */
     public AeroGearGCMPushConfiguration addCategory(String category) {
         categories.add(category);
-        return this;
-    }
-    
-    /**
-     * The type is a key which is used by Registrations to know which 
-     * implementation of PushRegister to use.
-     * 
-     * @return the current type
-     */
-    public PushType getType() {
-        return type;
-    }
-
-    /**
-     * The type is a key which is used by Registrations to know which 
-     * implementation of PushRegister to use.
-     * 
-     * @param type the new type
-     * @return the current configuration
-     * 
-     */
-    public AeroGearGCMPushConfiguration setType(PushType type) {
-        this.type = type;
         return this;
     }
 
