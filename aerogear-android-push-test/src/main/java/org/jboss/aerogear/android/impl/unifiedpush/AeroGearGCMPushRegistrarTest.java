@@ -90,7 +90,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         registrar.register(super.getActivity(), callback);
-        latch.await(1, TimeUnit.SECONDS);
+        if (!latch.await(30, TimeUnit.SECONDS)) {
+            fail("Latch wasn't called");
+        }
         assertNull(callback.exception);
         ArgumentCaptor<String> postCaptore = ArgumentCaptor.forClass(String.class);
         Mockito.verify(provider.mock).post(postCaptore.capture());

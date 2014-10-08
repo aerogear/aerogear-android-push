@@ -11,6 +11,7 @@ android:
     - android-21
     - extra-android-support
     - extra-google-google_play_services
+    - addon-google_apis-google-21
     - sys-img-armeabi-v7a-android-21
 
 notifications:
@@ -22,8 +23,8 @@ env:
 
 before_install:
 
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
+  - echo no | android create avd --force -n test -t 'Google Inc.:Google APIs:21' --abi $ANDROID_ABI 
+  - emulator -avd test -no-skin -no-audio -no-window -memory 256&
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
