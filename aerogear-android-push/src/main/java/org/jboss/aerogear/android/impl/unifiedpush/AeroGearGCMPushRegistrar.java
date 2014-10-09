@@ -21,14 +21,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.http.HttpStatus;
-import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
 import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
@@ -40,10 +39,18 @@ import java.util.List;
 import java.util.Set;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.Provider;
+import org.jboss.aerogear.android.http.HttpException;
+import org.jboss.aerogear.android.http.HttpProvider;
+import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 import org.jboss.aerogear.android.unifiedpush.AeroGearGCMPushConfiguration;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
+    private final static String BASIC_HEADER = "Authorization";
+    private final static String AUTHORIZATION_METHOD = "Basic";
+
+
+    
     private static final Integer TIMEOUT = 30000;//30 seconds
     /**
      * Default lifespan (7 days) of a registration until it is considered
@@ -70,11 +77,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private final String osVersion;
     private final List<String> categories;
     
-    private Provider<HttpRestProviderForPush> httpProviderProvider = new Provider<HttpRestProviderForPush>() {
+    private Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
 
         @Override
-        public HttpRestProviderForPush get(Object... in) {
-            return new HttpRestProviderForPush((URL) in[0], (Integer) in[1]);
+        public HttpProvider get(Object... in) {
+            return new HttpRestProvider((URL) in[0], (Integer) in[1]);
         }
     };
 
@@ -96,9 +103,12 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         this.operatingSystem = config.getOperatingSystem();
         this.osVersion = config.getOsVersion();
         this.categories = new ArrayList<String>(config.getCategories());
-        
-        
-        this.deviceRegistryURL = UrlUtils.appendToBaseURI(config.getPushServerURI(), registryDeviceEndpoint);
+        try {
+            this.deviceRegistryURL = UrlUtils.appendToBaseURL(config.getPushServerURI().toURL(), registryDeviceEndpoint);
+        } catch (MalformedURLException ex) {
+            Log.e(TAG, ex.getMessage());
+            throw new IllegalStateException("pushserverUrl was not a valid URL");
+        }
     }
 
     @Override
@@ -123,8 +133,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     deviceToken = regid;
 
-                    HttpRestProviderForPush httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
-                    httpProvider.setPasswordAuthentication(variantId, secret);
+                    HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
+                    setPasswordAuthentication(variantId, secret, httpProvider);
 
                     
                     try {
@@ -203,8 +213,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     gcm.unregister();
 
-                    HttpRestProviderForPush provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
-                    provider.setPasswordAuthentication(variantId, secret);
+                    HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
+                    setPasswordAuthentication(variantId, secret, provider);
 
                     try {
                         provider.delete(deviceToken);
@@ -321,4 +331,15 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         editor.commit();
     }
 
+    public void setPasswordAuthentication(final String username, final String password, final HttpProvider provider) {
+        provider.setDefaultHeader(BASIC_HEADER, getHashedAuth(username, password.toCharArray()));
+    }
+
+    private String getHashedAuth(String username, char[] password) {
+        StringBuilder headerValueBuilder = new StringBuilder(AUTHORIZATION_METHOD).append(" ");
+        String unhashedCredentials = new StringBuilder(username).append(":").append(password).toString();
+        String hashedCrentials = Base64.encodeToString(unhashedCredentials.getBytes(), Base64.DEFAULT | Base64.NO_WRAP);
+        return headerValueBuilder.append(hashedCrentials).toString();
+    }
+    
 }

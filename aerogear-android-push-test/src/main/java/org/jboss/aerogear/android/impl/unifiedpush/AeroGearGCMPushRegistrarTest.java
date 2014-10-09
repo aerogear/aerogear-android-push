@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.unifiedpush;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -32,8 +33,10 @@ import static junit.framework.Assert.assertNull;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
+import org.jboss.aerogear.android.http.HttpProvider;
+
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
-import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
+
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.impl.util.VoidCallback;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
@@ -45,6 +48,9 @@ import org.mockito.Mockito;
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
 
     private static final String TEST_SENDER_ID = "272275396485";
+    private static final String TEST_SENDER_PASSWORD = "Password";
+    private static final String TEST_SENDER_VARIANT = "Variant";
+    private static final String TAG = AeroGearGCMMessageReceiverTest.class.getSimpleName();
 
     public AeroGearGCMPushRegistrarTest() {
         super(MainActivity.class);
@@ -81,6 +87,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testRegister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -93,7 +101,12 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         if (!latch.await(30, TimeUnit.SECONDS)) {
             fail("Latch wasn't called");
         }
-        assertNull(callback.exception);
+        
+        if (callback.exception != null) {
+            Log.e(TAG, callback.exception.getMessage(), callback.exception);
+            fail(callback.exception.getMessage());
+        }
+        
         ArgumentCaptor<String> postCaptore = ArgumentCaptor.forClass(String.class);
         Mockito.verify(provider.mock).post(postCaptore.capture());
         JSONObject object = new JSONObject(postCaptore.getValue());
@@ -103,6 +116,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testUnregister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)                
+                .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -126,7 +141,11 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         spy.unregister(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
 
-        assertNull(callback.exception);
+        if (callback.exception != null) {
+            Log.e(TAG, callback.exception.getMessage(), callback.exception);
+            fail(callback.exception.getMessage());
+        }
+        
         Mockito.verify(gcmProvider.mock).unregister();
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
         assertNull(callback.exception);
@@ -136,6 +155,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testRegisterExceptionsAreCaught() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)                
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -154,6 +175,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testUnregisterExceptionsAreCaught() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)                
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
@@ -169,9 +192,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         assertFalse(callback.exception instanceof IOException);
     }
 
-    private class StubHttpProvider implements Provider<HttpRestProviderForPush> {
+    private class StubHttpProvider implements Provider<HttpProvider> {
 
-        protected final HttpRestProviderForPush mock = Mockito.mock(HttpRestProviderForPush.class);
+        protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public StubHttpProvider() {
             byte[] bytes = {1};
@@ -185,14 +208,14 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         }
 
         @Override
-        public HttpRestProviderForPush get(Object... in) {
+        public HttpProvider get(Object... in) {
             return mock;
         }
     }
 
-    private class BrokenStubHttpProvider implements Provider<HttpRestProviderForPush> {
+    private class BrokenStubHttpProvider implements Provider<HttpProvider> {
 
-        protected final HttpRestProviderForPush mock = Mockito.mock(HttpRestProviderForPush.class);
+        protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public BrokenStubHttpProvider() {
             byte[] bytes = {1};
@@ -206,7 +229,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         }
 
         @Override
-        public HttpRestProviderForPush get(Object... in) {
+        public HttpProvider get(Object... in) {
             return mock;
         }
     }
