@@ -33,7 +33,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.6</version>
+        <version>0.2.8</version>
     </parent>
 
     <licenses>
@@ -59,17 +59,11 @@
         <tag>HEAD</tag>
     </scm>
 
-
     <properties>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aerogear.bom.version>0.2.6</aerogear.bom.version>
-        <android.version>4.4.2_r4</android.version>
+        <aerogear.bom.version>0.2.8</aerogear.bom.version>
         <aerogear.android.core.version>2.0.0-SNAPSHOT</aerogear.android.core.version>
 
-        
         <!-- Plugins versions -->
-        <java.version>1.7</java.version>
         <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
         <maven.android.plugin.version>3.8.0</maven.android.plugin.version>
         <builder.helper.plugin.version>1.7</builder.helper.plugin.version>
@@ -81,7 +75,6 @@
     </properties>
 
     <dependencyManagement>
-
         <dependencies>
 
             <!-- AeroGear Test Dependencies BOM Imports -->
@@ -105,14 +98,12 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
 
         <!-- Project dependencies -->
         <dependency>
             <groupId>android</groupId>
             <artifactId>android</artifactId>
-            <version>${android.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -120,6 +111,12 @@
             <groupId>com.google.android.gms</groupId>
             <artifactId>google-play-services</artifactId>
             <type>apklib</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <type>jar</type>
         </dependency>
 
         <dependency>
@@ -135,13 +132,6 @@
             <version>${aerogear.android.core.version}</version>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <type>jar</type>
         </dependency>
 
         <dependency>
