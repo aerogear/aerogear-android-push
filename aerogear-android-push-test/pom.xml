@@ -43,13 +43,13 @@
             <version>${project.version}</version>
             <type>aar</type>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-push</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
