@@ -41,7 +41,7 @@
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-push</artifactId>
             <version>${project.version}</version>
-            <type>apklib</type>
+            <type>aar</type>
         </dependency>
         <dependency>
             <groupId>org.jboss.aerogear</groupId>

@@ -123,7 +123,7 @@
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-core</artifactId>
             <version>${aerogear.android.core.version}</version>
-            <type>apklib</type>
+            <type>aar</type>
         </dependency>
 
         <dependency>
