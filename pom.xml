@@ -107,43 +107,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <type>apklib</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>${aerogear.android.core.version}</version>
-            <type>aar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>${aerogear.android.core.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
