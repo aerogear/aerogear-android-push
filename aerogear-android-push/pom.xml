@@ -41,18 +41,6 @@
     <dependencies>
         
         <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <type>apklib</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-core</artifactId>
             <version>${aerogear.android.core.version}</version>
@@ -66,6 +54,20 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>-->
+
+        <!-- Seems like both projects need the APKLIB but don't if it is aar -->
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>play-services</artifactId>
+            <version>6.1.11</version>
+            <type>aar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.android.support</groupId>
+                    <artifactId>support-v4</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
