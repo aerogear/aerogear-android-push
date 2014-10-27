@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.jboss.aerogear.android.unifiedpush"
+    package="org.jboss.aerogear.android.unifiedpush.test"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -35,7 +35,7 @@
     
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="org.jboss.aerogear.android.unifiedpush" />
+        android:targetPackage="org.jboss.aerogear.android.unifiedpush.test" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -43,7 +43,7 @@
         <uses-library android:name="android.test.runner" />
 
         <activity
-            android:name="org.jboss.aerogear.android.unifiedpush.MainActivity"
+            android:name="org.jboss.aerogear.android.unifiedpush.test.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
