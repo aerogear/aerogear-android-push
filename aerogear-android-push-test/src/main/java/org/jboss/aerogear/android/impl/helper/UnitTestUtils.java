@@ -42,6 +42,14 @@ public class UnitTestUtils {
 
     }
 
+    public static Object getPrivateField(Object target, String fieldName)
+            throws NoSuchFieldException, IllegalArgumentException,
+            IllegalAccessException {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(target);
+    }
+
     public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
         Collections.addAll(fields, type.getDeclaredFields());
 

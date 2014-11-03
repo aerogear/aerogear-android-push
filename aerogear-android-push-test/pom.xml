@@ -39,6 +39,13 @@
 
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-pipe</artifactId>
+            <version>${aerogear.android.pipe.version}</version>
+            <type>aar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-push</artifactId>
             <version>${project.version}</version>
             <type>aar</type>

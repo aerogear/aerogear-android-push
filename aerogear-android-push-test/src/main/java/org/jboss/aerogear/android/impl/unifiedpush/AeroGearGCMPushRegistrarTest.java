@@ -34,8 +34,9 @@ import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
-
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
+
+
 
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.impl.util.VoidCallback;
