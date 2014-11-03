@@ -14,11 +14,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import org.jboss.aerogear.android.ConfigurationProvider;
 
-class AeroGearGCMPushConfigurationProvider  implements ConfigurationProvider<AeroGearGCMPushConfiguration> {
+public class AeroGearGCMPushConfigurationProvider  implements ConfigurationProvider<AeroGearGCMPushConfiguration> {
 
     @Override
     public AeroGearGCMPushConfiguration newConfiguration() {

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 
 /**
  * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.

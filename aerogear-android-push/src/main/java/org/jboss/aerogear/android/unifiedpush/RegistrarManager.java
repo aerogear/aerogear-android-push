@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfigurationProvider;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;

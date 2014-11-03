@@ -14,14 +14,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.impl.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.jboss.aerogear.android.ConfigurationProvider;
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
-import org.jboss.aerogear.android.unifiedpush.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;

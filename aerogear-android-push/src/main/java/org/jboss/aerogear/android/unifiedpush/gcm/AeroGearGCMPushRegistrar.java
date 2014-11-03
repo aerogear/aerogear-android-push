@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.impl.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,7 +42,8 @@ import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.http.HttpRestProvider;
-import org.jboss.aerogear.android.unifiedpush.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
