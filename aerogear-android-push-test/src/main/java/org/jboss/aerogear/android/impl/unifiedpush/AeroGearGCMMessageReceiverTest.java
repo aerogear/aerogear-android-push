@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import static junit.framework.Assert.assertEquals;
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.unifiedpush.AeroGearGCMMessageReceiver;
-import org.jboss.aerogear.android.unifiedpush.MainActivity;
+import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
 import org.jboss.aerogear.android.unifiedpush.Registrations;
 

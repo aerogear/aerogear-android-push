@@ -1,17 +1,24 @@
 language: android
 
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk6
+
 android:
   components:
-    - build-tools-19.1.0
-    - android-19
+    - build-tools-21.0.2
+    - android-21
+    - extra-android-support
     - extra-google-google_play_services
+    - sys-img-armeabi-v7a-android-21
 
 notifications:
   irc: "irc.freenode.org#aerogear"
 
 env:
     matrix:
-      - ANDROID_SDKS=android-19 ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a MAVEN_OPTS=-Xmx1024m
+      - ANDROID_SDKS=android-21 ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
 
 before_install:
 
@@ -32,8 +39,29 @@ before_install:
   - mvn  install -N --quiet
   - cd -
 
+  # Install locally compatibility-v4
+  - cd $PWD/maven-android-sdk-deployer/extras/compatibility-v4
+  - mvn install -N --quiet
+  - cd -
+
   # Install locally google-play-services
   - cd $PWD/maven-android-sdk-deployer/extras/google-play-services
   - mvn install -N --quiet
+  - cd -
+
+  #################################################
+  ############ Snapshot dependencies ##############
+  #################################################
+
+  # AeroGear Android Core
+  - git clone git://github.com/aerogear/aerogear-android-core.git
+  - cd $PWD/aerogear-android-core
+  - mvn install -N --quiet
+  - cd -
+
+  # AeroGear Android Pipe
+  - git clone git://github.com/aerogear/aerogear-android-pipe.git
+  - cd $PWD/aerogear-android-pipe
+  - mvn install -fn --quiet
   - cd -
 

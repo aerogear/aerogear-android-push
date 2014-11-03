@@ -35,7 +35,7 @@ import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.impl.util.VoidCallback;
-import org.jboss.aerogear.android.unifiedpush.MainActivity;
+import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.json.JSONObject;
 import org.mockito.ArgumentCaptor;

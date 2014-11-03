@@ -19,7 +19,7 @@ package org.jboss.aerogear.android.impl.unifiedpush;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
-import org.jboss.aerogear.android.unifiedpush.MainActivity;
+import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrarFactory;
