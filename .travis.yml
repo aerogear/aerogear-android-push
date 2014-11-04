@@ -19,11 +19,11 @@ notifications:
 
 env:
     matrix:
-      - ANDROID_SDKS=android-21 ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+      - ANDROID_SDKS=android-21 ANDROID_TARGET=android-21 ANDROID_ABI=google_apis/armeabi-v7a
 
 before_install:
 
-  - echo no | android create avd --force -n test -t 'Google Inc.:Google APIs:21' --abi $ANDROID_ABI 
+  - echo no | android create avd --force -n test -t 'Google Inc.:Google APIs:21' --abi google_apis/armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -memory 256&
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
