@@ -33,8 +33,8 @@
         <mockito.version>1.9.5</mockito.version>
         <dexmaker.version>1.0</dexmaker.version>
         <dexmaker.mockito.version>1.0</dexmaker.mockito.version>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
-
     <dependencies>
 
         <dependency>
