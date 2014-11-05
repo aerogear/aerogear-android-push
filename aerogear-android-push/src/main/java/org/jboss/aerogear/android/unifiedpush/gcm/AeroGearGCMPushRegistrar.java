@@ -50,9 +50,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
 
-
-    
-    private static final Integer TIMEOUT = 30000;//30 seconds
+    private static final Integer TIMEOUT = 30000;// 30 seconds
     /**
      * Default lifespan (7 days) of a registration until it is considered
      * expired.
@@ -77,7 +75,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private final String operatingSystem;
     private final String osVersion;
     private final List<String> categories;
-    
+
     private Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
 
         @Override
@@ -93,7 +91,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
             return GoogleCloudMessaging.getInstance((Context) context[0]);
         }
     };
-    
+
     public AeroGearGCMPushRegistrar(AeroGearGCMPushConfiguration config) {
         this.senderIds = config.getSenderIds();
         this.deviceToken = config.getDeviceToken();
@@ -128,7 +126,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     if (regid.length() == 0) {
                         regid = gcm.register(senderIds
-                                .toArray(new String[]{}));
+                                .toArray(new String[] {}));
                         AeroGearGCMPushRegistrar.this.setRegistrationId(context, regid);
                     }
 
@@ -137,7 +135,6 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, httpProvider);
 
-                    
                     try {
                         JsonObject postData = new JsonObject();
                         postData.addProperty("deviceType", deviceType);
@@ -152,7 +149,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                             }
                             postData.add("categories", jsonCategories);
                         }
-                        
+
                         httpProvider.post(postData.toString());
                         return null;
                     } catch (HttpException ex) {
@@ -174,20 +171,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                     if (result instanceof HttpException) {
                         HttpException httpException = (HttpException) result;
                         switch (httpException.getStatusCode()) {
-                            case HttpStatus.SC_MOVED_PERMANENTLY:
-                            case HttpStatus.SC_MOVED_TEMPORARILY:
-                            case HttpStatus.SC_TEMPORARY_REDIRECT:
-                                Log.w(TAG, httpException.getMessage());
-                                try {
-                                    URL redirectURL = new URL(httpException.getHeaders().get("Location"));
-                                    AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
-                                    register(context, callback);
-                                } catch (MalformedURLException e) {
-                                    callback.onFailure(e);
-                                }
-                                break;
-                            default:
-                                callback.onFailure(result);
+                        case HttpStatus.SC_MOVED_PERMANENTLY:
+                        case HttpStatus.SC_MOVED_TEMPORARILY:
+                        case HttpStatus.SC_TEMPORARY_REDIRECT:
+                            Log.w(TAG, httpException.getMessage());
+                            try {
+                                URL redirectURL = new URL(httpException.getHeaders().get("Location"));
+                                AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                register(context, callback);
+                            } catch (MalformedURLException e) {
+                                callback.onFailure(e);
+                            }
+                            break;
+                        default:
+                            callback.onFailure(result);
                         }
                     } else {
                         callback.onFailure(result);
@@ -248,11 +245,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
      * Gets the current registration id for application on GCM service.
      * <p>
      * If result is empty, the registration has failed.
-     *
+     * 
      * @param context the application context
-     *
+     * 
      * @return registration id, or empty string if the registration is not
-     * complete.
+     *         complete.
      */
     protected String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -295,11 +292,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     /**
      * Checks if the registration has expired.
-     *
+     * 
      * To avoid the scenario where the device sends the registration to the
      * server but the server loses it, the app developer may choose to
      * re-register after REGISTRATION_EXPIRY_TIME_MS.
-     *
+     * 
      * @return true if the registration has expired.
      */
     private boolean isRegistrationExpired(Context context) {
@@ -312,7 +309,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     /**
      * Stores the registration id, app versionCode, and expiration time in the
      * application's {@code SharedPreferences}.
-     *
+     * 
      * @param context application's context.
      * @param regId registration id
      */
@@ -342,5 +339,5 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         String hashedCrentials = Base64.encodeToString(unhashedCredentials.getBytes(), Base64.DEFAULT | Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
     }
-    
+
 }

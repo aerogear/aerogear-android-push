@@ -31,9 +31,11 @@ import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 import static org.jboss.aerogear.android.unifiedpush.PushConstants.*;
 
 /**
- * <p> AeroGear specific <code>BroadcastReceiver</code> implementation for Google Cloud Messaging.
- *
- * <p> Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
+ * <p>
+ * AeroGear specific <code>BroadcastReceiver</code> implementation for Google Cloud Messaging.
+ * 
+ * <p>
+ * Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
  */
 public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
 
@@ -45,7 +47,7 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     /**
-     * When a GCM message is received, the attached implementations of our <code>MessageHandler</code> interface 
+     * When a GCM message is received, the attached implementations of our <code>MessageHandler</code> interface
      * are being notified.
      */
     @Override

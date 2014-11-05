@@ -27,7 +27,7 @@ public interface MessageHandler {
     /**
      * Invoked when the Google Cloud Messaging Server deleted some
      * pending messages because they were collapsible.
-     *
+     * 
      * @param context The Context in which the AeroGear message receiver is running.
      * @param message A map of extended data from the intent, delivered to the AeroGear message receiver.
      */
@@ -35,8 +35,8 @@ public interface MessageHandler {
 
     /**
      * Invoked when the Google Cloud Messaging Server delivered a message to the device.
-     *
-     * @param context The Context in which the AeroGear message receiver  is running.
+     * 
+     * @param context The Context in which the AeroGear message receiver is running.
      * @param message A map containing the submitted key/value pairs
      */
     public void onMessage(Context context, Bundle message);

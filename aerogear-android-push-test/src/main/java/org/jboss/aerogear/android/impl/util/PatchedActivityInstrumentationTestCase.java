@@ -22,8 +22,8 @@ import android.test.ActivityInstrumentationTestCase2;
 /**
  * All tests which use Mockito should extend this class.
  * 
- * In Android 4.3 the dexcache is not set as it was previously and Mockito will 
- * throw an Exception.  This class sets the dexcache directory correctly during
+ * In Android 4.3 the dexcache is not set as it was previously and Mockito will
+ * throw an Exception. This class sets the dexcache directory correctly during
  * test setup.
  * 
  */

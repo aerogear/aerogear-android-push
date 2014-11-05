@@ -22,13 +22,13 @@ import org.jboss.aerogear.android.Config;
 
 /**
  * The configuration builder for push registrars.
- *
+ * 
  * @param <CONFIGURATION> The concrete implementation of the PushConfiguration
  */
-public abstract class PushConfiguration<CONFIGURATION extends PushConfiguration> implements Config<CONFIGURATION>{
+public abstract class PushConfiguration<CONFIGURATION extends PushConfiguration> implements Config<CONFIGURATION> {
 
     private String name;
-    
+
     private Collection<OnPushRegistrarCreatedListener> listeners = new HashSet<OnPushRegistrarCreatedListener>();
 
     @Override
@@ -41,7 +41,7 @@ public abstract class PushConfiguration<CONFIGURATION extends PushConfiguration>
         this.name = name;
         return (CONFIGURATION) this;
     }
-    
+
     /**
      * OnAuthenticationCreatedListeners are a collection of classes to be
      * notified when the configuration of the Pipe is complete.
@@ -88,7 +88,7 @@ public abstract class PushConfiguration<CONFIGURATION extends PushConfiguration>
      * 
      */
     public final PushRegistrar asRegistrar() {
-        
+
         PushRegistrar registrar = buildRegistrar();
         for (OnPushRegistrarCreatedListener listener : getOnAuthenticationCreatedListeners()) {
             listener.onPushRegistrarCreated(this, registrar);
@@ -105,5 +105,5 @@ public abstract class PushConfiguration<CONFIGURATION extends PushConfiguration>
      * 
      */
     protected abstract PushRegistrar buildRegistrar();
-    
+
 }

@@ -53,7 +53,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase<Ma
             PushConfiguration config = RegistrarManager.config(PUSH, BrokenConfig.class);
             fail(); // expect IllegalArgumentException
         } catch (IllegalArgumentException ignore) {
-            return;//pass()
+            return;// pass()
         }
     }
 
@@ -82,7 +82,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase<Ma
         }
 
     }
-    
+
     private static final class StubConfig extends PushConfiguration<StubConfig> {
 
         @Override

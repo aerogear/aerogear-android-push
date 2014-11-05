@@ -29,7 +29,7 @@ import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
  * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
  */
 public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMPushConfiguration> {
-    
+
     private static final long serialVersionUID = 1L;
     private String deviceToken = "";
     private String variantID;
@@ -42,8 +42,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     private URI pushServerURI;
     private Set<String> senderIds = new HashSet<String>();
 
-    
-    
     /**
      * The device token Identifies the device within its Push Network. It is the
      * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
@@ -89,7 +87,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     }
 
     /**
-     * Secret of the Variant from the AeroGear UnifiedPush Server.     
+     * Secret of the Variant from the AeroGear UnifiedPush Server.
      * 
      * @return the current Secret
      * 
@@ -112,7 +110,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     /**
      * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server
-     *
+     * 
      * Defaults to ANDROID
      * 
      * @return the device type
@@ -124,7 +122,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     /**
      * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server.
-     *
+     * 
      * Defaults to ANDROID
      * 
      * @param deviceType a new device type
@@ -158,7 +156,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The version of the operating system running.
-     *
+     * 
      * Defaults to the value provided by android.os.Build.VERSION.RELEASE
      * 
      * @return the current OSversion
@@ -170,7 +168,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The version of the operating system running.
-     *
+     * 
      * Defaults to the value provided by android.os.Build.VERSION.RELEASE
      * 
      * @param osVersion the new osVersion
@@ -184,9 +182,9 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The Alias is an identifier of the user of the system.
-     *
+     * 
      * Examples are an email address or a username
-     *
+     * 
      * @return alias
      * 
      */
@@ -196,9 +194,9 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The Alias is an identifier of the user of the system.
-     *
+     * 
      * Examples are an email address or a username
-     *
+     * 
      * @param alias the new alias
      * @return the current configuration
      * 
@@ -241,7 +239,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
         this.categories = Arrays.asList(categories);
         return this;
     }
-    
+
     /**
      * The categories specifies a channel which may be used to send messages
      * 
@@ -256,7 +254,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * RegistryURL is the URL of the 3rd party application server
-     *
+     * 
      * @return the current pushServerURI
      */
     public URI getPushServerURI() {
@@ -268,7 +266,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      * @param pushServerURI a new URI
      * @return the current configuration
-     *
+     * 
      */
     public AeroGearGCMPushConfiguration setPushServerURI(URI pushServerURI) {
         this.pushServerURI = pushServerURI;
@@ -276,18 +274,18 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for 
+     * SenderIds is a collection of all GCM sender Id elements registered for
      * this application.
      * 
      * @return a copy of the current set of senderIds.
      * 
-     */ 
+     */
     public Set<String> getSenderIds() {
         return new HashSet<String>(senderIds);
     }
-    
+
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for 
+     * SenderIds is a collection of all GCM sender Id elements registered for
      * this application.
      * 
      * @param senderIds the new sender Ids to set.
@@ -299,9 +297,9 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
         this.senderIds = newSenderIds;
         return this;
     }
-    
+
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for 
+     * SenderIds is a collection of all GCM sender Id elements registered for
      * this application.
      * 
      * @param senderId a new sender Id to add to the current set of senderIds.
@@ -312,7 +310,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
         return this;
     }
 
-    
     /**
      * 
      * Protected builder method.
@@ -323,16 +320,16 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      */
     @Override
     protected final AeroGearGCMPushRegistrar buildRegistrar() {
-        
+
         if (senderIds == null || senderIds.isEmpty()) {
             throw new IllegalStateException("SenderIds can't be null or empty");
         }
-        
+
         if (pushServerURI == null) {
             throw new IllegalStateException("PushServerURI can't be null");
         }
-        
+
         return new AeroGearGCMPushRegistrar(this);
     }
-    
+
 }

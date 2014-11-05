@@ -36,8 +36,6 @@ import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 
-
-
 import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.impl.util.VoidCallback;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
@@ -64,10 +62,10 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                     .setPushServerURI(new URI("https://testuri"));
 
             config.asRegistrar();
-            
+
         } catch (IllegalStateException ex) {
             assertEquals("SenderIds can't be null or empty", ex.getMessage());
-            return; //pass
+            return; // pass
         }
         fail();
     }
@@ -78,10 +76,10 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                     .addSenderId(TEST_SENDER_ID);
 
             config.asRegistrar();
-            
+
         } catch (IllegalStateException ex) {
             assertEquals("PushServerURI can't be null", ex.getMessage());
-            return; //pass
+            return; // pass
         }
         fail();
     }
@@ -103,12 +101,12 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         if (!latch.await(30, TimeUnit.SECONDS)) {
             fail("Latch wasn't called");
         }
-        
+
         if (callback.exception != null) {
             Log.e(TAG, callback.exception.getMessage(), callback.exception);
             fail(callback.exception.getMessage());
         }
-        
+
         ArgumentCaptor<String> postCaptore = ArgumentCaptor.forClass(String.class);
         Mockito.verify(provider.mock).post(postCaptore.capture());
         JSONObject object = new JSONObject(postCaptore.getValue());
@@ -118,7 +116,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testUnregister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
-                .setVariantID(TEST_SENDER_VARIANT)                
+                .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
@@ -147,7 +145,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
             Log.e(TAG, callback.exception.getMessage(), callback.exception);
             fail(callback.exception.getMessage());
         }
-        
+
         Mockito.verify(gcmProvider.mock).unregister();
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
         assertNull(callback.exception);
@@ -158,7 +156,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
-                .setSecret(TEST_SENDER_PASSWORD)                
+                .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -178,7 +176,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
-                .setSecret(TEST_SENDER_PASSWORD)                
+                .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
@@ -199,7 +197,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public StubHttpProvider() {
-            byte[] bytes = {1};
+            byte[] bytes = { 1 };
             Mockito.doReturn(new HeaderAndBody(bytes, new HashMap<String, Object>()))
                     .when(mock)
                     .post((String) Mockito.any());
@@ -220,7 +218,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public BrokenStubHttpProvider() {
-            byte[] bytes = {1};
+            byte[] bytes = { 1 };
             Mockito.doThrow(new HttpException(bytes, 401))
                     .when(mock)
                     .post((String) Mockito.any());

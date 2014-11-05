@@ -22,18 +22,18 @@ import org.jboss.aerogear.android.Callback;
 public interface PushRegistrar {
 
     /**
-     *
+     * 
      * Registers a device to a push network and any 3rd party application servers.
-     *
+     * 
      * @param context Android application context
      * @param callback a callback.
      */
     void register(final Context context, final Callback<Void> callback);
 
     /**
-     *
+     * 
      * Unregisters a device a push network and any party application servers.
-     *
+     * 
      * @param context Android application context
      * @param callback a callback.
      */

@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.unifiedpush;
 
 public interface OnPushRegistrarCreatedListener {
-    
+
     /**
      * 
      * A method called when {@link PushRegistrar} instances are created. Typically this will
@@ -27,5 +27,5 @@ public interface OnPushRegistrarCreatedListener {
      * @param registrar the new PushRegistrar
      */
     void onPushRegistrarCreated(PushConfiguration<?> configuration, PushRegistrar registrar);
-    
+
 }

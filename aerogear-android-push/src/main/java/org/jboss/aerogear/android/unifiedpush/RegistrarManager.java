@@ -55,10 +55,10 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * This will add a new Configuration that this Manager can build
      * Configurations for.
-     *
+     * 
      * @param <CFG> the actual Configuration type
      * @param configurationClass the class of configuration to be registered
      * @param provider the instance which will provide the configuration.
@@ -69,21 +69,21 @@ public class RegistrarManager {
 
     /**
      * Begins a new fluent configuration stanza.
-     *
+     * 
      * @param <CFG> the Configuration type.
      * @param name an identifier which will be used to fetch the
-     * PushRegistrar after configuration is finished.
+     *            PushRegistrar after configuration is finished.
      * @param pushConfigurationClass the class of the configuration
-     * type.
-     *
+     *            type.
+     * 
      * @return a {@link PushConfiguration} which can be used to build a
-     * AuthenticationModule object.
+     *         AuthenticationModule object.
      */
     public static <CFG extends PushConfiguration<CFG>> CFG config(String name, Class<CFG> pushConfigurationClass) {
 
         @SuppressWarnings("unchecked")
-        ConfigurationProvider<? extends PushConfiguration<CFG>> provider
-                = (ConfigurationProvider<? extends PushConfiguration<CFG>>) configurationProviderMap.get(pushConfigurationClass);
+        ConfigurationProvider<? extends PushConfiguration<CFG>> provider = (ConfigurationProvider<? extends PushConfiguration<CFG>>) configurationProviderMap
+                .get(pushConfigurationClass);
 
         if (provider == null) {
             throw new IllegalArgumentException("Configuration not registered!");
@@ -97,10 +97,10 @@ public class RegistrarManager {
 
     /**
      * Fetches a named registrar
-     *
+     * 
      * @param name the name of the {@link PushRegistrar} given in {@link RegistrarManager#config(java.lang.String, java.lang.Class)
      * }
-     *
+     * 
      * @return the named {@link PushRegistrar} or null
      */
     public static PushRegistrar getRegistrar(String name) {
@@ -108,11 +108,11 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * When a push message is received, all main thread handlers will be
      * notified on the main(UI) thread. This is very convenient for Activities
      * and Fragments.
-     *
+     * 
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerMainThreadHandler(MessageHandler handler) {
@@ -120,11 +120,11 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * When a push message is received, all background thread handlers will be
      * notified on a non UI thread. This should be used by classes which need to
      * update internal state or preform some action which doesn't change the UI.
-     *
+     * 
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerBackgroundThreadHandler(MessageHandler handler) {
@@ -132,11 +132,11 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * This will remove the given handler from the collection of main thread
      * handlers. This MUST be called when a Fragment or activity is backgrounded
      * via onPause.
-     *
+     * 
      * @param handler a new handler
      */
     public static void unregisterMainThreadHandler(MessageHandler handler) {
@@ -144,10 +144,10 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * This will remove the given handler from the collection of background
      * thread handlers.
-     *
+     * 
      * @param handler a new handler
      */
     public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
@@ -155,14 +155,13 @@ public class RegistrarManager {
     }
 
     /**
-     *
-     * This will deliver an intent to all registered handlers. See
-     * {@link PushConstants} for information on how messages will be routed.
-     *
+     * 
+     * This will deliver an intent to all registered handlers. See {@link PushConstants} for information on how messages will be routed.
+     * 
      * @param context the application's context
      * @param message the message to pass
      * @param defaultHandler a default handler is a handler which will be called
-     * if there are no other handlers registered. May be null
+     *            if there are no other handlers registered. May be null
      */
     public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
 
@@ -218,12 +217,12 @@ public class RegistrarManager {
     }
 
     /**
-     *
+     * 
      * This will deliver an intent to all registered handlers. Currently it is
      * GCM centric, but this will be changed in the future.
-     *
+     * 
      * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
-     *
+     * 
      * @param context the application's context
      * @param message the message to pass
      */

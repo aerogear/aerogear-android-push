@@ -18,11 +18,11 @@ package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import org.jboss.aerogear.android.ConfigurationProvider;
 
-public class AeroGearGCMPushConfigurationProvider  implements ConfigurationProvider<AeroGearGCMPushConfiguration> {
+public class AeroGearGCMPushConfigurationProvider implements ConfigurationProvider<AeroGearGCMPushConfiguration> {
 
     @Override
     public AeroGearGCMPushConfiguration newConfiguration() {
         return new AeroGearGCMPushConfiguration();
     }
-    
+
 }
