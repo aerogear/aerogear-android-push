@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-android-push-parent</artifactId>
-        <version>2.0.0-alpha.1</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-pipe</artifactId>
-            <version>2.0.0-alpha.1</version>
+            <version>2.0.0-SNAPSHOT</version>
             <type>aar</type>
         </dependency>
         
