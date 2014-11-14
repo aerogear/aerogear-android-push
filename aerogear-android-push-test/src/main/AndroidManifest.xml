@@ -31,6 +31,8 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="org.jboss.aerogear.android.unifiedpush.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
