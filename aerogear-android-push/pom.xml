@@ -79,7 +79,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <groupId>com.simpligility.maven.plugins</groupId>
                     <artifactId>android-maven-plugin</artifactId>
                     <version>${maven.android.plugin.version}</version>
                     <extensions>true</extensions>
@@ -109,6 +109,7 @@
                     </sourceFileExcludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -118,7 +119,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <groupId>com.simpligility.maven.plugins</groupId>
                 <artifactId>android-maven-plugin</artifactId>
                 <configuration>
                     <run>
@@ -136,6 +137,7 @@
                     </proguard>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
