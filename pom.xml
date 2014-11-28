@@ -27,7 +27,6 @@
 
     <modules>
         <module>aerogear-android-push</module>
-        <module>aerogear-android-push-test</module>
     </modules>
 	
     <parent>
@@ -122,6 +121,20 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>android-tests</id>
+            <activation>
+                <property>
+                    <name>!release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>aerogear-android-push-test</module>
+            </modules>
+        </profile>
+    </profiles>
+
 
 </project>
 
