@@ -7,26 +7,26 @@ jdk:
 
 android:
   components:
-    - build-tools-21.0.2
+    - platform-tools
+    - tools
+    - build-tools-21.1.1
     - android-21
-    - extra-android-support
     - extra-google-google_play_services
-    - addon-google_apis-google-21
-    - sys-img-armeabi-v7a-android-21
+    - android-19
+    - sys-img-armeabi-v7a-android-19
 
 notifications:
   irc: "irc.freenode.org#aerogear"
 
 env:
     matrix:
-      - ANDROID_SDKS=android-21 ANDROID_TARGET=android-21 ANDROID_ABI=google_apis/armeabi-v7a
+      - ANDROID_SDK=android-21 ANDROID_EMULATOR=android-19 ANDROID_ABI=armeabi-v7a
 
 before_install:
 
-  - echo no | android create avd --force -n test -t 'Google Inc.:Google APIs:21' --abi google_apis/armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window -memory 256&
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+  # Kill unnecessary services
+  - sudo service mysql stop
+  - sudo service postgresql stop
 
   #################################################
   ########## maven-android-sdk-deployer ###########
@@ -36,17 +36,12 @@ before_install:
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
 
   # Install android maven repository
-  - cd $PWD/maven-android-sdk-deployer/platforms/$ANDROID_TARGET
+  - cd $PWD/maven-android-sdk-deployer/platforms/$ANDROID_SDK
   - mvn  install -N --quiet
   - cd -
 
-  # Install locally compatibility-v4
-  - cd $PWD/maven-android-sdk-deployer/extras/compatibility-v4
-  - mvn install -N --quiet
-  - cd -
-
-  # Install locally google-play-services
-  - cd $PWD/maven-android-sdk-deployer/extras/google-play-services
+  # Install locally  google-m2repository (including play services aar)
+  - cd $PWD/maven-android-sdk-deployer/repositories/google-m2repository
   - mvn install -N --quiet
   - cd -
 
@@ -66,3 +61,21 @@ before_install:
   - mvn install -fn --quiet
   - cd -
 
+before_script:
+
+  # Create emulator
+  - echo no | android create avd --force -n test -t $ANDROID_EMULATOR --abi $ANDROID_ABI
+
+script:
+  - mvn install -Drelease
+  - cd aerogear-android-push-test
+  - mvn package -DskipTests=true;
+
+  - emulator -avd test -no-skin -no-audio -no-window&
+  - wget https://raw.githubusercontent.com/travis-ci/travis-cookbooks/master/ci_environment/android-sdk/files/default/android-wait-for-emulator
+  - chmod a+x ./android-wait-for-emulator
+  - ./android-wait-for-emulator
+  - adb shell input keyevent 82
+  - adb shell df
+  - adb install target/aerogear-android-push-test-2.0.0-SNAPSHOT.apk
+  - mvn android:instrument
