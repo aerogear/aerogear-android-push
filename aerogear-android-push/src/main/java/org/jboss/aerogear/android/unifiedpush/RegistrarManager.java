@@ -103,7 +103,7 @@ public class RegistrarManager {
      * 
      * @return the named {@link PushRegistrar} or null
      */
-    public static PushRegistrar getRegistrar(String name) {
+    public static PushRegistrar get(String name) {
         return registrars.get(name);
     }
 
