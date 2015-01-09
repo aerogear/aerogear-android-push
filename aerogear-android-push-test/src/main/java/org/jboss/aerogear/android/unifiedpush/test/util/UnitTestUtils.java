@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.impl.helper;
+package org.jboss.aerogear.android.unifiedpush.test.util;
 
-import org.jboss.aerogear.android.impl.reflection.FieldNotFoundException;
+import org.jboss.aerogear.android.core.reflection.FieldNotFoundException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

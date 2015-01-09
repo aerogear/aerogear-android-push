@@ -28,7 +28,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.http.HttpStatus;
-import org.jboss.aerogear.android.impl.util.UrlUtils;
+import org.jboss.aerogear.android.pipe.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
 import java.net.MalformedURLException;
@@ -37,13 +37,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.Provider;
-import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.http.HttpProvider;
-import org.jboss.aerogear.android.impl.http.HttpRestProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.core.Provider;
+import org.jboss.aerogear.android.pipe.http.HttpException;
+import org.jboss.aerogear.android.pipe.http.HttpProvider;
+import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
@@ -251,7 +249,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
      * @return registration id, or empty string if the registration is not
      *         complete.
      */
-    protected String getRegistrationId(Context context) {
+    public String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.length() == 0) {

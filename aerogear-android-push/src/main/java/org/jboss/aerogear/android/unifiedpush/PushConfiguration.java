@@ -18,7 +18,7 @@ package org.jboss.aerogear.android.unifiedpush;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.jboss.aerogear.android.Config;
+import org.jboss.aerogear.android.core.Config;
 
 /**
  * The configuration builder for push registrars.

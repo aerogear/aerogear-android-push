@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.unifiedpush;
 
 import android.content.Context;
-import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.core.Callback;
 
 public interface PushRegistrar {
 
