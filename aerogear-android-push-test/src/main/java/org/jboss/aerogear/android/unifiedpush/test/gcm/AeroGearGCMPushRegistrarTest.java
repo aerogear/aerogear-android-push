@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,14 +30,14 @@ import java.util.concurrent.TimeUnit;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
-import org.jboss.aerogear.android.Provider;
-import org.jboss.aerogear.android.http.HeaderAndBody;
-import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.http.HttpProvider;
-import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
+import org.jboss.aerogear.android.core.Provider;
+import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipe.http.HttpException;
+import org.jboss.aerogear.android.pipe.http.HttpProvider;
+import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
 
-import org.jboss.aerogear.android.impl.util.PatchedActivityInstrumentationTestCase;
-import org.jboss.aerogear.android.impl.util.VoidCallback;
+import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
+import org.jboss.aerogear.android.unifiedpush.test.util.VoidCallback;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
@@ -50,7 +50,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     private static final String TEST_SENDER_ID = "272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
     private static final String TEST_SENDER_VARIANT = "Variant";
-    private static final String TAG = AeroGearGCMMessageReceiverTest.class.getSimpleName();
+    private static final String TAG = AeroGearGCMPushRegistrarTest.class.getSimpleName();
 
     public AeroGearGCMPushRegistrarTest() {
         super(MainActivity.class);

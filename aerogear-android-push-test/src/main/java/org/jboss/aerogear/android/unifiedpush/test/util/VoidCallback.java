@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.impl.util;
+package org.jboss.aerogear.android.unifiedpush.test.util;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.core.Callback;
 
 public final class VoidCallback implements Callback {
 
