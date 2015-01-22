@@ -21,7 +21,7 @@ Add to your application's `build.gradle` file
 ```
 dependencies {
     compile 'com.google.android.gms:play-services:+'
-    compile 'org.jboss.aerogear:aerogear-android-push:.0.0@aar'
+    compile 'org.jboss.aerogear:aerogear-android-push:2.0.0'
 }
 ```
 
