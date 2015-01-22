@@ -1,6 +1,6 @@
 # AeroGear Android Push [![Build Status](https://travis-ci.org/aerogear/aerogear-android-push.png)](https://travis-ci.org/aerogear/aerogear-android-push)
 
-AeroGear's Android libraries were built as jar, apklib and aar using [Maven](http://maven.apache.org/) and [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Android project layout as opposed to the standard Maven layout so sources will be in /src instead of /src/main/java and can be imported directly into IDE as an Android project.
+AeroGear's Android libraries were built as jar and aar packages using [Maven](http://maven.apache.org/) and the [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Maven layout so can be imported directly into most IDEs as a Maven project.
 
 ## Push
 
@@ -8,7 +8,12 @@ AeroGear for Android provides support for integrating with push. Currently only 
 
 ## Building
 
-Please take a look of [step by step on our website](http://aerogear.org/docs/guides/aerogear-android/how-to-build-aerogear-android/)
+Please take a look of the [step by step guide](http://aerogear.org/docs/guides/aerogear-android/how-to-build-aerogear-android/) on our website.
+
+*The following dependencies are required to build this project:*
+
+* [aerogear-android-core](http://github.com/aerogear/aerogear-android-core) 
+* [aerogear-android-pipe](http://github.com/aerogear/aerogear-android-pipe) 
 
 ## Usage
 
@@ -21,6 +26,7 @@ Add to your application's `build.gradle` file
 ```
 dependencies {
     compile 'com.google.android.gms:play-services:+'
+    compile 'org.jboss.aerogear:aerogear-android-core:2.0.0'
     compile 'org.jboss.aerogear:aerogear-android-push:2.0.0'
 }
 ```
@@ -28,7 +34,6 @@ dependencies {
 ### Maven
 
 Include the following dependencies in your project's `pom.xml`
-
 
 ```
 <dependency>
@@ -43,7 +48,7 @@ Include the following dependencies in your project's `pom.xml`
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
   <version>2.0.0</version>
-  <type>apklib</type>
+  <type>aar</type>
 </dependency>
 ```
 
