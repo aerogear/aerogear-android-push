@@ -197,6 +197,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     }
 
+    /**
+     * Unregister device from Unified Push Server.
+     *
+     * if the device isn't registered onFailure will be called
+     *
+     * @param context Android application context
+     * @param callback a callback.
+     */
     @Override
     public void unregister(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
