@@ -18,8 +18,20 @@ package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import org.jboss.aerogear.android.core.Provider;
+import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipe.http.HttpException;
+import org.jboss.aerogear.android.pipe.http.HttpProvider;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
+import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
+import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
+import org.jboss.aerogear.android.unifiedpush.test.util.VoidCallback;
+import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,23 +39,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-
-import org.jboss.aerogear.android.core.Provider;
-import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
-import org.jboss.aerogear.android.pipe.http.HttpException;
-import org.jboss.aerogear.android.pipe.http.HttpProvider;
-import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
-
-import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
-import org.jboss.aerogear.android.unifiedpush.test.util.VoidCallback;
-import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
-import org.json.JSONObject;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
 
@@ -224,6 +219,47 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         assertNotNull(callback.exception);
         assertTrue(callback.exception instanceof IllegalStateException);
+
+    }
+
+    public void testAeroGearGCMPushConfigurationWithoutVariantID() throws Exception {
+
+        try {
+
+            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
+            config.addSenderId(TEST_SENDER_ID)
+                    .setPushServerURI(new URI("https://testuri"))
+                    .setSenderIds(TEST_SENDER_ID)
+                    .setSecret(TEST_SENDER_ID)
+                    .asRegistrar();
+
+        } catch (IllegalStateException ex) {
+            assertEquals("VariantID can't be null", ex.getMessage());
+            return; // pass
+        }
+
+        fail();
+
+    }
+
+    public void testAeroGearGCMPushConfigurationWithoutSecret() throws Exception {
+
+        try {
+
+            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
+            config.addSenderId(TEST_SENDER_ID)
+                    .setPushServerURI(new URI("https://testuri"))
+                    .setSenderIds(TEST_SENDER_ID)
+                    .setVariantID(TEST_SENDER_VARIANT)
+                    .asRegistrar();
+
+        } catch (IllegalStateException ex) {
+            assertEquals("Secret can't be null", ex.getMessage());
+            return; // pass
+        }
+
+        fail();
+
     }
 
     private class StubHttpProvider implements Provider<HttpProvider> {
@@ -231,7 +267,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public StubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doReturn(new HeaderAndBody(bytes, new HashMap<String, Object>()))
                     .when(mock)
                     .post((String) Mockito.any());
@@ -252,7 +288,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public BrokenStubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doThrow(new HttpException(bytes, 401))
                     .when(mock)
                     .post((String) Mockito.any());
