@@ -61,6 +61,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
     private static final String registryDeviceEndpoint = "/rest/registry/device";
 
+    private static final String DEVICE_ALREADY_UNREGISTERED = "Seems this device was already unregistered";
+
     private final Set<String> senderIds;
 
     private GoogleCloudMessaging gcm;
@@ -195,6 +197,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     }
 
+    /**
+     * Unregister device from Unified Push Server.
+     *
+     * if the device isn't registered onFailure will be called
+     *
+     * @param context Android application context
+     * @param callback a callback.
+     */
     @Override
     public void unregister(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
@@ -202,6 +212,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
             protected Exception doInBackground(Void... params) {
 
                 try {
+
+                    if ((deviceToken == null) || (deviceToken.trim().equals(""))) {
+                        throw new IllegalStateException(DEVICE_ALREADY_UNREGISTERED);
+                    }
 
                     if (gcm == null) {
                         gcm = gcmProvider.get(context);

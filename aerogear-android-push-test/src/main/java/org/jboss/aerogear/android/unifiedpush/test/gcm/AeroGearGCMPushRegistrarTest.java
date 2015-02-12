@@ -192,6 +192,40 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         assertFalse(callback.exception instanceof IOException);
     }
 
+    public void testUnregisterTwice() throws Exception {
+
+        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+                .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)
+                .setPushServerURI(new URI("https://testuri"));
+
+        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        CountDownLatch latch = new CountDownLatch(1);
+        StubHttpProvider provider = new StubHttpProvider();
+        UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
+
+        StubGCMProvider gcmProvider = new StubGCMProvider();
+        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+
+        VoidCallback callback = new VoidCallback(latch);
+
+        AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
+        Mockito.doReturn("tempId").when(spy).getRegistrationId((Context) Mockito.any());
+
+        spy.register(super.getActivity(), callback);
+        latch.await(1, TimeUnit.SECONDS);
+
+        latch = new CountDownLatch(1);
+        callback = new VoidCallback(latch);
+        spy.unregister(super.getActivity(), callback);
+        spy.unregister(super.getActivity(), callback);
+        latch.await(1, TimeUnit.SECONDS);
+
+        assertNotNull(callback.exception);
+        assertTrue(callback.exception instanceof IllegalStateException);
+    }
+
     private class StubHttpProvider implements Provider<HttpProvider> {
 
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
