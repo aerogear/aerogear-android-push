@@ -321,6 +321,12 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     @Override
     protected final AeroGearGCMPushRegistrar buildRegistrar() {
 
+        checkRequiredFields();
+        return new AeroGearGCMPushRegistrar(this);
+
+    }
+
+    private void checkRequiredFields() {
         if (senderIds == null || senderIds.isEmpty()) {
             throw new IllegalStateException("SenderIds can't be null or empty");
         }
@@ -329,7 +335,13 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
             throw new IllegalStateException("PushServerURI can't be null");
         }
 
-        return new AeroGearGCMPushRegistrar(this);
+        if (variantID == null) {
+            throw new IllegalStateException("VariantID can't be null");
+        }
+
+        if (secret == null) {
+            throw new IllegalStateException("Secret can't be null");
+        }
     }
 
 }

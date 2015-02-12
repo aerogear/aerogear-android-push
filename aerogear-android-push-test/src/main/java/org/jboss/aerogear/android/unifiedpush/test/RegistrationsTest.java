@@ -40,8 +40,11 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase<Ma
 
         PushConfiguration config = RegistrarManager
                 .config(PUSH, AeroGearGCMPushConfiguration.class)
+                .setPushServerURI(new URI("http://testreg.com"))
                 .setSenderIds("TestID")
-                .setPushServerURI(new URI("http://testreg.com"));
+                .setVariantID("VariantID")
+                .setSecret("secret");
+
         config.asRegistrar();
         PushRegistrar registrar = RegistrarManager.getRegistrar(PUSH);
         assertNotNull(registrar);
