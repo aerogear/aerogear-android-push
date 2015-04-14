@@ -19,7 +19,7 @@ Download [apklib from Maven central](http://search.maven.org/#search%7Cga%7C1%7C
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>0.2</version>
+  <version>1.0.1</version>
   <scope>provided</scope>
   <type>jar</type>
 </dependency>
@@ -27,7 +27,7 @@ Download [apklib from Maven central](http://search.maven.org/#search%7Cga%7C1%7C
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>0.2</version>
+  <version>1.0.1</version>
   <type>apklib</type>
 </dependency>
 ```
@@ -35,7 +35,7 @@ Download [apklib from Maven central](http://search.maven.org/#search%7Cga%7C1%7C
 ### Gradle (as experimental)
 ```
 dependencies {
-  compile 'org.jboss.aerogear:aerogear-android-push:0.2@aar'
+  compile 'org.jboss.aerogear:aerogear-android-push:1.0.1@aar'
 }
 ```
 
