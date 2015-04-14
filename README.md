@@ -45,7 +45,7 @@ Take a look in our example apps and docs about our features
 
 | Feature / Doc  |  Example |
 |:--------------:|:--------:|
-| [Push](http://aerogear.org/docs/guides/aerogear-android/push/) | [Push HelloWorld](https://github.com/aerogear/aerogear-push-helloworld) |
+| [Push](https://github.com/jboss-mobile/unified-push-helloworld/tree/master/android) | [Push HelloWorld](https://github.com/jboss-mobile/unified-push-helloworld/tree/master/android) |
 
 
 If you are having troubles feel free to contact us via IRC #aerogear or our mailing list aerogear-dev@lists.jboss.org.
