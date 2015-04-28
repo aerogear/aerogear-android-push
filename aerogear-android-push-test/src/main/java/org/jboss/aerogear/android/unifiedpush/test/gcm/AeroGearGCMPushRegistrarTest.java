@@ -211,11 +211,11 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
 
-        latch = new CountDownLatch(1);
+        latch = new CountDownLatch(2);
         callback = new VoidCallback(latch);
         spy.unregister(super.getActivity(), callback);
         spy.unregister(super.getActivity(), callback);
-        latch.await(1, TimeUnit.SECONDS);
+        latch.await(2, TimeUnit.SECONDS);
 
         assertNotNull(callback.exception);
         assertTrue(callback.exception instanceof IllegalStateException);
