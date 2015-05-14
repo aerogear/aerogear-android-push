@@ -60,6 +60,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
     private static final String registryDeviceEndpoint = "/rest/registry/device";
+    private static final String metricsEndpoint = "/rest/registry/device/pushMessage";
 
     private static final String DEVICE_ALREADY_UNREGISTERED = "Seems this device was already unregistered";
 
@@ -67,6 +68,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     private GoogleCloudMessaging gcm;
     private URL deviceRegistryURL;
+    private URL metricsURL;
     private String deviceToken = "";
     private final String secret;
     private final String variantId;
@@ -104,6 +106,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         this.categories = new ArrayList<String>(config.getCategories());
         try {
             this.deviceRegistryURL = UrlUtils.appendToBaseURL(config.getPushServerURI().toURL(), registryDeviceEndpoint);
+            this.metricsURL = UrlUtils.appendToBaseURL(config.getPushServerURI().toURL(), metricsEndpoint);
         } catch (MalformedURLException ex) {
             Log.e(TAG, ex.getMessage());
             throw new IllegalStateException("pushserverUrl was not a valid URL");
@@ -281,6 +284,53 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         }
         return registrationId;
     }
+
+    /**
+     * Send a confirmation the message was opened
+     *
+     * @param pushMessageId The id of the message received
+     * @param callback a callback.
+     */
+    public void sendMetric(final String pushMessageId, final Callback<Void> callback) {
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+
+                try {
+
+                    if ((pushMessageId == null) || (pushMessageId.trim().equals(""))) {
+                        throw new IllegalStateException("");
+                    }
+
+                    HttpProvider provider = httpProviderProvider.get(metricsURL, TIMEOUT);
+                    setPasswordAuthentication(variantId, secret, provider);
+
+                    try {
+                        provider.put(pushMessageId, "");
+                        return null;
+                    } catch (HttpException ex) {
+                        return ex;
+                    }
+
+                } catch (Exception ex) {
+                    return ex;
+                }
+
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result == null) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFailure(result);
+                }
+            }
+
+        }.execute((Void) null);
+    }
+
 
     /**
      * @return Application's {@code SharedPreferences}.
