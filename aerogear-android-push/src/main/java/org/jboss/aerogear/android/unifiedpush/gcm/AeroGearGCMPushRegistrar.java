@@ -28,8 +28,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.http.HttpStatus;
+import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.core.Provider;
+import org.jboss.aerogear.android.pipe.http.HttpException;
+import org.jboss.aerogear.android.pipe.http.HttpProvider;
+import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 import org.jboss.aerogear.android.pipe.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.metrics.MetricsSender;
+import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,13 +44,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.core.Provider;
-import org.jboss.aerogear.android.pipe.http.HttpException;
-import org.jboss.aerogear.android.pipe.http.HttpProvider;
-import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 
-public class AeroGearGCMPushRegistrar implements PushRegistrar {
+public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -288,17 +290,18 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     /**
      * Send a confirmation the message was opened
      *
-     * @param pushMessageId The id of the message received
+     * @param metricsMessage The id of the message received
      * @param callback a callback.
      */
-    public void sendMetric(final String pushMessageId, final Callback<Void> callback) {
+    public void sendMetrics(final UnifiedPushMetricsMessage metricsMessage,
+                            final Callback<UnifiedPushMetricsMessage> callback) {
         new AsyncTask<Void, Void, Exception>() {
             @Override
             protected Exception doInBackground(Void... params) {
 
                 try {
 
-                    if ((pushMessageId == null) || (pushMessageId.trim().equals(""))) {
+                    if ((metricsMessage.getMessageId() == null) || (metricsMessage.getMessageId().trim().equals(""))) {
                         throw new IllegalStateException("");
                     }
 
@@ -306,7 +309,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                     setPasswordAuthentication(variantId, secret, provider);
 
                     try {
-                        provider.put(pushMessageId, "");
+                        provider.put(metricsMessage.getMessageId(), "");
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -322,7 +325,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
             @Override
             protected void onPostExecute(Exception result) {
                 if (result == null) {
-                    callback.onSuccess(null);
+                    callback.onSuccess(metricsMessage);
                 } else {
                     callback.onFailure(result);
                 }
