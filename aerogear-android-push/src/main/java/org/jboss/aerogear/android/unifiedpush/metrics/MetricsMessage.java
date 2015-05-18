@@ -21,6 +21,6 @@ public interface MetricsMessage {
     /**
      * A messageId. Some id that the receiver of this message can relate to.
      */
-    public String getMessageId();
+    String getMessageId();
 
 }
