@@ -302,7 +302,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 try {
 
                     if ((metricsMessage.getMessageId() == null) || (metricsMessage.getMessageId().trim().equals(""))) {
-                        throw new IllegalStateException("");
+                        throw new IllegalStateException("Message ID cannot be null or blank");
                     }
 
                     HttpProvider provider = httpProviderProvider.get(metricsURL, TIMEOUT);
