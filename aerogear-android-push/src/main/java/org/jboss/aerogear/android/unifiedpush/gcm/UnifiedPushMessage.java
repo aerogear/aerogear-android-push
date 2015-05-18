@@ -19,9 +19,9 @@ package org.jboss.aerogear.android.unifiedpush.gcm;
 public interface UnifiedPushMessage {
 
     /**
-     * Constant for the "push message" key
+     * Constant for the name of the push message alert key
      */
-    String MESSAGE = "alert";
+    String ALERT_KEY = "alert";
 
     /**
      * Constant for the "push payload id" key
