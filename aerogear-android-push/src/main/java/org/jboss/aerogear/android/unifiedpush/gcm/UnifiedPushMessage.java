@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush.gcm;
 
-public interface OnPushRegistrarCreatedListener {
+public interface UnifiedPushMessage {
 
     /**
-     * 
-     * A method called when {@link PushRegistrar} instances are created. Typically this will
-     * be done from {@link PushConfiguration#asRegistrar()  }
-     * 
-     * @param configuration the configuration of the new PushRegistrar
-     * @param registrar the new PushRegistrar
+     * Constant for the name of the push message alert key
      */
-    void onPushRegistrarCreated(PushConfiguration<?> configuration, PushRegistrar registrar);
+    String ALERT_KEY = "alert";
+
+    /**
+     * Constant for the "push payload id" key
+     */
+    String PUSH_MESSAGE_ID = "aerogear-push-id";
 
 }

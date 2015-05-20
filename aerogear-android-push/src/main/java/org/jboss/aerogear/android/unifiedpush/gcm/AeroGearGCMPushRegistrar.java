@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
- * individual contributors.
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
@@ -28,8 +28,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.http.HttpStatus;
+import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.core.Provider;
+import org.jboss.aerogear.android.pipe.http.HttpException;
+import org.jboss.aerogear.android.pipe.http.HttpProvider;
+import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 import org.jboss.aerogear.android.pipe.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.metrics.MetricsSender;
+import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,13 +44,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.core.Provider;
-import org.jboss.aerogear.android.pipe.http.HttpException;
-import org.jboss.aerogear.android.pipe.http.HttpProvider;
-import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 
-public class AeroGearGCMPushRegistrar implements PushRegistrar {
+public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -60,6 +62,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
     private static final String registryDeviceEndpoint = "/rest/registry/device";
+    private static final String metricsEndpoint = "/rest/registry/device/pushMessage";
 
     private static final String DEVICE_ALREADY_UNREGISTERED = "Seems this device was already unregistered";
 
@@ -67,6 +70,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     private GoogleCloudMessaging gcm;
     private URL deviceRegistryURL;
+    private URL metricsURL;
     private String deviceToken = "";
     private final String secret;
     private final String variantId;
@@ -104,6 +108,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         this.categories = new ArrayList<String>(config.getCategories());
         try {
             this.deviceRegistryURL = UrlUtils.appendToBaseURL(config.getPushServerURI().toURL(), registryDeviceEndpoint);
+            this.metricsURL = UrlUtils.appendToBaseURL(config.getPushServerURI().toURL(), metricsEndpoint);
         } catch (MalformedURLException ex) {
             Log.e(TAG, ex.getMessage());
             throw new IllegalStateException("pushserverUrl was not a valid URL");
@@ -199,9 +204,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     /**
      * Unregister device from Unified Push Server.
-     *
+     * 
      * if the device isn't registered onFailure will be called
-     *
+     * 
      * @param context Android application context
      * @param callback a callback.
      */
@@ -280,6 +285,53 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
             return "";
         }
         return registrationId;
+    }
+
+    /**
+     * Send a confirmation the message was opened
+     * 
+     * @param metricsMessage The id of the message received
+     * @param callback a callback.
+     */
+    public void sendMetrics(final UnifiedPushMetricsMessage metricsMessage,
+            final Callback<UnifiedPushMetricsMessage> callback) {
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+
+                try {
+
+                    if ((metricsMessage.getMessageId() == null) || (metricsMessage.getMessageId().trim().equals(""))) {
+                        throw new IllegalStateException("Message ID cannot be null or blank");
+                    }
+
+                    HttpProvider provider = httpProviderProvider.get(metricsURL, TIMEOUT);
+                    setPasswordAuthentication(variantId, secret, provider);
+
+                    try {
+                        provider.put(metricsMessage.getMessageId(), "");
+                        return null;
+                    } catch (HttpException ex) {
+                        return ex;
+                    }
+
+                } catch (Exception ex) {
+                    return ex;
+                }
+
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result == null) {
+                    callback.onSuccess(metricsMessage);
+                } else {
+                    callback.onFailure(result);
+                }
+            }
+
+        }.execute((Void) null);
     }
 
     /**

@@ -14,18 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush;
+package org.jboss.aerogear.android.unifiedpush.metrics;
 
-public interface OnPushRegistrarCreatedListener {
+import android.os.Bundle;
+import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushMessage;
 
-    /**
-     * 
-     * A method called when {@link PushRegistrar} instances are created. Typically this will
-     * be done from {@link PushConfiguration#asRegistrar()  }
-     * 
-     * @param configuration the configuration of the new PushRegistrar
-     * @param registrar the new PushRegistrar
-     */
-    void onPushRegistrarCreated(PushConfiguration<?> configuration, PushRegistrar registrar);
+public class UnifiedPushMetricsMessage implements MetricsMessage {
+
+    private final String messageId;
+
+    public UnifiedPushMetricsMessage(Bundle bundle) {
+        this.messageId = bundle.getString(UnifiedPushMessage.PUSH_MESSAGE_ID);
+    }
+
+    public UnifiedPushMetricsMessage(String messageId) {
+        this.messageId = messageId;
+    }
+
+    @Override
+    public String getMessageId() {
+        return this.messageId;
+    }
 
 }
