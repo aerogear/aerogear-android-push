@@ -16,18 +16,21 @@
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
-import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
-
 import java.net.URI;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-/**
- * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
- */
-public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMPushConfiguration> {
+public final class UnifiedPushConfig {
 
-    private final UnifiedPushConfig pushConfig = new UnifiedPushConfig();
+    private URI pushServerURI;
+    private Set<String> senderIds = new HashSet<String>();
+    private String variantID;
+    private String secret;
+    private String deviceToken = "";
+    private String deviceType = "ANDROID";
+    private String operatingSystem = "android";
+    private String osVersion = android.os.Build.VERSION.RELEASE;
+    private String alias;
+    private List<String> categories = new ArrayList<String>();
 
     /**
      * RegistryURL is the URL of the 3rd party application server
@@ -35,7 +38,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current pushServerURI
      */
     public URI getPushServerURI() {
-        return this.pushConfig.getPushServerURI();
+        return pushServerURI;
     }
 
     /**
@@ -45,8 +48,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setPushServerURI(URI pushServerURI) {
-        this.pushConfig.setPushServerURI(pushServerURI);
+    public UnifiedPushConfig setPushServerURI(URI pushServerURI) {
+        this.pushServerURI = pushServerURI;
         return this;
     }
 
@@ -58,7 +61,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public Set<String> getSenderIds() {
-        return pushConfig.getSenderIds();
+        return Collections.unmodifiableSet(senderIds);
     }
 
     /**
@@ -68,8 +71,10 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param senderIds the new sender Ids to set.
      * @return the current configuration.
      */
-    public AeroGearGCMPushConfiguration setSenderIds(String... senderIds) {
-        this.pushConfig.setSenderIds(senderIds);
+    public UnifiedPushConfig setSenderIds(String... senderIds) {
+        Set<String> newSenderIds = new HashSet<String>(senderIds.length);
+        Collections.addAll(newSenderIds, senderIds);
+        this.senderIds = newSenderIds;
         return this;
     }
 
@@ -80,8 +85,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param senderId a new sender Id to add to the current set of senderIds.
      * @return the current configuration.
      */
-    public AeroGearGCMPushConfiguration addSenderId(String senderId) {
-        this.pushConfig.addSenderId(senderId);
+    public UnifiedPushConfig addSenderId(String senderId) {
+        this.senderIds.add(senderId);
         return this;
     }
 
@@ -91,7 +96,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current variant id
      */
     public String getVariantID() {
-        return pushConfig.getVariantID();
+        return variantID;
     }
 
     /**
@@ -100,8 +105,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param variantID the new variantID
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setVariantID(String variantID) {
-        this.pushConfig.setVariantID(variantID);
+    public UnifiedPushConfig setVariantID(String variantID) {
+        this.variantID = variantID;
         return this;
     }
 
@@ -112,7 +117,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public String getSecret() {
-        return pushConfig.getSecret();
+        return secret;
     }
 
     /**
@@ -121,8 +126,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param secret the new secret
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setSecret(String secret) {
-        this.pushConfig.setSecret(secret);
+    public UnifiedPushConfig setSecret(String secret) {
+        this.secret = secret;
         return this;
     }
 
@@ -134,7 +139,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public String getDeviceToken() {
-        return pushConfig.getDeviceToken();
+        return deviceToken;
     }
 
     /**
@@ -145,8 +150,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setDeviceToken(String deviceToken) {
-        this.pushConfig.setDeviceToken(deviceToken);
+    public UnifiedPushConfig setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
         return this;
     }
 
@@ -159,7 +164,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the device type
      */
     public String getDeviceType() {
-        return pushConfig.getDeviceType();
+        return deviceType;
     }
 
     /**
@@ -172,8 +177,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setDeviceType(String deviceType) {
-        this.pushConfig.setDeviceType(deviceType);
+    public UnifiedPushConfig setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
         return this;
     }
 
@@ -183,7 +188,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the operating system
      */
     public String getOperatingSystem() {
-        return pushConfig.getOperatingSystem();
+        return operatingSystem;
     }
 
     /**
@@ -192,8 +197,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param operatingSystem the new operating system
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setOperatingSystem(String operatingSystem) {
-        this.pushConfig.setOperatingSystem(operatingSystem);
+    public UnifiedPushConfig setOperatingSystem(String operatingSystem) {
+        this.operatingSystem = operatingSystem;
         return this;
     }
 
@@ -206,7 +211,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public String getOsVersion() {
-        return pushConfig.getOsVersion();
+        return osVersion;
     }
 
     /**
@@ -218,7 +223,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public String getAlias() {
-        return pushConfig.getAlias();
+        return alias;
     }
 
     /**
@@ -230,8 +235,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setAlias(String alias) {
-        this.pushConfig.setAlias(alias);
+    public UnifiedPushConfig setAlias(String alias) {
+        this.alias = alias;
         return this;
     }
 
@@ -242,7 +247,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public List<String> getCategories() {
-        return pushConfig.getCategories();
+        return Collections.unmodifiableList(categories);
     }
 
     /**
@@ -252,8 +257,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(List<String> categories) {
-        this.pushConfig.addCategories(categories);
+    public UnifiedPushConfig setCategories(List<String> categories) {
+        this.categories = new ArrayList<String>(categories);
         return this;
     }
 
@@ -264,8 +269,8 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(String... categories) {
-        this.pushConfig.setCategories(categories);
+    public UnifiedPushConfig setCategories(String... categories) {
+        this.categories = Arrays.asList(categories);
         return this;
     }
 
@@ -276,23 +281,39 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration addCategory(String category) {
-        this.pushConfig.addCategory(category);
+    public UnifiedPushConfig addCategory(String category) {
+        categories.add(category);
         return this;
     }
 
     /**
+     * The categories specifies a channel which may be used to send messages
      * 
-     * Protected builder method.
+     * @param categories a category collection to be added to the current list.
+     * @return the current configuration
      * 
-     * @return A configured AeroGearGCMPushRegistrar
-     * 
-     * @throws IllegalStateException if pushServerURI, SenderID, Variant or VariantSecret is null or empty.
      */
-    @Override
-    protected final AeroGearGCMPushRegistrar buildRegistrar() {
-        pushConfig.checkRequiredFields();
-        return new AeroGearGCMPushRegistrar(pushConfig);
+    public UnifiedPushConfig addCategories(List<String> categories) {
+        categories.addAll(categories);
+        return this;
+    }
+
+    public void checkRequiredFields() {
+        if (senderIds == null || senderIds.isEmpty()) {
+            throw new IllegalStateException("SenderIds can't be null or empty");
+        }
+
+        if (pushServerURI == null) {
+            throw new IllegalStateException("PushServerURI can't be null");
+        }
+
+        if (variantID == null) {
+            throw new IllegalStateException("VariantID can't be null");
+        }
+
+        if (secret == null) {
+            throw new IllegalStateException("Secret can't be null");
+        }
     }
 
 }
