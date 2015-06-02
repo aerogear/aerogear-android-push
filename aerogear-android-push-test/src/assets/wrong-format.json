@@ -1,0 +1,6 @@
+{
+  "pushServerURL": "https://localhost:8080/ag-push",
+  "senderID": "123456",
+  "variantID": "8abfae4eb02a6140c0a20798433180a063fd7006",
+  "variantSecret": "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"
+}
