@@ -33,6 +33,12 @@ public class AeroGearGCMPushJsonConfiguration
         extends PushConfiguration<AeroGearGCMPushJsonConfiguration> {
 
     private static final String TAG = AeroGearGCMPushJsonConfiguration.class.getName();
+    private static final String JSON_OBJECT = "android";
+    private static final String JSON_URL = "pushServerURL";
+    private static final String JSON_SENDER_ID = "senderID";
+    private static final String JSON_VARIANT_ID = "variantID";
+    private static final String JSON_VARIANT_SECRET = "variantSecret";
+
     private final UnifiedPushConfig pushConfig = new UnifiedPushConfig();
     private String fileName = "push-config.json";
 
@@ -278,12 +284,12 @@ public class AeroGearGCMPushJsonConfiguration
             String json = new String(buffer);
 
             JSONObject pushConfig = new JSONObject(json);
-            JSONObject pushAndroidConfig = pushConfig.getJSONObject("android");
+            JSONObject pushAndroidConfig = pushConfig.getJSONObject(JSON_OBJECT);
 
-            this.pushConfig.setPushServerURI(new URI(pushConfig.getString("pushServerURL")));
-            this.pushConfig.addSenderId(pushAndroidConfig.getString("senderID"));
-            this.pushConfig.setVariantID(pushAndroidConfig.getString("variantID"));
-            this.pushConfig.setSecret(pushAndroidConfig.getString("variantSecret"));
+            this.pushConfig.setPushServerURI(new URI(pushConfig.getString(JSON_URL)));
+            this.pushConfig.addSenderId(pushAndroidConfig.getString(JSON_SENDER_ID));
+            this.pushConfig.setVariantID(pushAndroidConfig.getString(JSON_VARIANT_ID));
+            this.pushConfig.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
