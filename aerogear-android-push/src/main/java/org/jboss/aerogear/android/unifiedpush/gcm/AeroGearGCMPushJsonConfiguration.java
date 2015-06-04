@@ -250,6 +250,24 @@ public class AeroGearGCMPushJsonConfiguration
         return this;
     }
 
+    /**
+     *
+     * Load push unified push informations from assets/push-config.json
+     *
+     * <pre>
+     * {
+     *   "pushServerURL": "<pushServerURL e.g http(s)//host:port/context >",
+     *   "android": {
+     *     "senderID": "<senderID e.g Google Project ID only for android>",
+     *     "variantID": "<variantID e.g. 1234456-234320>",
+     *     "variantSecret": "<variantSecret e.g. 1234456-234320>"
+     * }
+     * </pre>
+     *
+     * @param context your application's context
+     *
+     * @return the current configuration
+     */
     public AeroGearGCMPushJsonConfiguration loadConfigJson(Context context) {
         try {
             InputStream fileStream = context.getResources().getAssets().open(getFileName());
