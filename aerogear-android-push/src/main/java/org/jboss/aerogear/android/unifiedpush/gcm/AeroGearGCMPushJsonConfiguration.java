@@ -21,6 +21,7 @@ import android.util.Log;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -275,8 +276,9 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      */
     public AeroGearGCMPushJsonConfiguration loadConfigJson(Context context) {
+        InputStream fileStream = null;
         try {
-            InputStream fileStream = context.getResources().getAssets().open(getFileName());
+            fileStream = context.getResources().getAssets().open(getFileName());
             int size = fileStream.available();
             byte[] buffer = new byte[size];
             fileStream.read(buffer);
@@ -291,7 +293,15 @@ public class AeroGearGCMPushJsonConfiguration
             this.pushConfig.setVariantID(pushAndroidConfig.getString(JSON_VARIANT_ID));
             this.pushConfig.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+             Log.e(TAG, e.getMessage(), e);
+        } finally {
+            if (fileStream != null) {
+                try {
+                    fileStream.close();
+                } catch (IOException e) {
+                    // Ignore IOException
+                }
+            }
         }
 
         return this;
