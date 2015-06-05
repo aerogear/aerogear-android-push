@@ -20,7 +20,7 @@ public interface MetricsMessage {
 
     /**
      * A messageId. Some id that the receiver of this message can relate to.
+     * @return the message ID
      */
     String getMessageId();
-
 }

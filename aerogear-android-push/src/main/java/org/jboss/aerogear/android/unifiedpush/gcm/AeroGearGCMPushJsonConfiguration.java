@@ -262,11 +262,11 @@ public class AeroGearGCMPushJsonConfiguration
      *
      * <pre>
      * {
-     *   "pushServerURL": "<pushServerURL e.g http(s)//host:port/context >",
+     *   "pushServerURL": "pushServerURL (e.g http(s)//host:port/context)",
      *   "android": {
-     *     "senderID": "<senderID e.g Google Project ID only for android>",
-     *     "variantID": "<variantID e.g. 1234456-234320>",
-     *     "variantSecret": "<variantSecret e.g. 1234456-234320>"
+     *     "senderID": "senderID (e.g Google Project ID only for android)",
+     *     "variantID": "variantID (e.g. 1234456-234320)",
+     *     "variantSecret": "variantSecret (e.g. 1234456-234320)"
      * }
      * </pre>
      *
