@@ -19,11 +19,13 @@ package org.jboss.aerogear.android.unifiedpush.gcm;
 import android.content.Context;
 import android.util.Log;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
@@ -292,8 +294,15 @@ public class AeroGearGCMPushJsonConfiguration
             this.pushConfig.addSenderId(pushAndroidConfig.getString(JSON_SENDER_ID));
             this.pushConfig.setVariantID(pushAndroidConfig.getString(JSON_VARIANT_ID));
             this.pushConfig.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
-        } catch (Exception e) {
-             Log.e(TAG, e.getMessage(), e);
+        } catch (URISyntaxException e) {
+            // It will never happen
+            Log.e(TAG, e.getMessage(), e);
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new RuntimeException("An error occurred while parsing the " + getFileName() + ". Please check the file format");
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new RuntimeException("An error occurred while parsing the " + getFileName() + ". Please check if the file exists");
         } finally {
             if (fileStream != null) {
                 try {

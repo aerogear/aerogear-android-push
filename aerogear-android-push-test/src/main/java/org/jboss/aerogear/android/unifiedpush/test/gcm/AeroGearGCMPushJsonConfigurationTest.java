@@ -62,7 +62,14 @@ public class AeroGearGCMPushJsonConfigurationTest
     public void testJsonConfigUsingIncorrectFileFormat() {
         AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
         config.setFileName("wrong-format.json");
-        config.loadConfigJson(getActivity());
+
+        fail("Somethings is wrong. File with incorrect format should throw an exception");
+        try {
+            config.loadConfigJson(getActivity());
+        } catch (RuntimeException e) {
+            String errorMessage = "An error occurred while parsing the wrong-format.json. Please check the file format";
+            Assert.assertEquals(errorMessage, e.getMessage());
+        }
 
         Assert.assertNull(config.getPushServerURI());
         Assert.assertEquals(0, config.getSenderIds().size());
@@ -73,23 +80,26 @@ public class AeroGearGCMPushJsonConfigurationTest
     public void testJsonConfigUsingEmptyFile() {
         AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
         config.setFileName("empty-file.json");
-        config.loadConfigJson(getActivity());
 
-        Assert.assertNull(config.getPushServerURI());
-        Assert.assertEquals(0, config.getSenderIds().size());
-        Assert.assertNull(config.getVariantID());
-        Assert.assertNull(config.getSecret());
+        try {
+            config.loadConfigJson(getActivity());
+            fail("Somethings is wrong. Empty file should throw an exception");
+        } catch (RuntimeException e) {
+            String errorMessage = "An error occurred while parsing the empty-file.json. Please check the file format";
+            Assert.assertEquals(errorMessage, e.getMessage());
+        }
     }
 
     public void testJsonConfigUsingAbsentFile() {
         AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
         config.setFileName("blablabla.json");
-        config.loadConfigJson(getActivity());
-
-        Assert.assertNull(config.getPushServerURI());
-        Assert.assertEquals(0, config.getSenderIds().size());
-        Assert.assertNull(config.getVariantID());
-        Assert.assertNull(config.getSecret());
+        try {
+            config.loadConfigJson(getActivity());
+            fail("Somethings is wrong. This file not exists and load should throw an exception");
+        } catch (RuntimeException e) {
+            String errorMessage = "An error occurred while parsing the blablabla.json. Please check if the file exists";
+            Assert.assertEquals(errorMessage, e.getMessage());
+        }
     }
 
 }
