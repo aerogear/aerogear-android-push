@@ -63,9 +63,9 @@ public class AeroGearGCMPushJsonConfigurationTest
         AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
         config.setFileName("wrong-format.json");
 
-        fail("Somethings is wrong. File with incorrect format should throw an exception");
         try {
             config.loadConfigJson(getActivity());
+            fail("Somethings is wrong. File with incorrect format should throw an exception");
         } catch (RuntimeException e) {
             String errorMessage = "An error occurred while parsing the wrong-format.json. Please check the file format";
             Assert.assertEquals(errorMessage, e.getMessage());
