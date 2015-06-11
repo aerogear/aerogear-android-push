@@ -16,18 +16,20 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfigurationProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import org.jboss.aerogear.android.core.ConfigurationProvider;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushJsonConfiguration;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushJsonConfigurationProvider;
+import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfigurationProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jboss.aerogear.android.core.ConfigurationProvider;
 
 /**
  * This is the factory and accessors for PushRegistrars
@@ -50,8 +52,10 @@ public class RegistrarManager {
     };
 
     static {
-        AeroGearGCMPushConfigurationProvider basicConfigurationProvider = new AeroGearGCMPushConfigurationProvider();
-        RegistrarManager.registerConfigurationProvider(AeroGearGCMPushConfiguration.class, basicConfigurationProvider);
+        RegistrarManager.registerConfigurationProvider(AeroGearGCMPushConfiguration.class,
+                new AeroGearGCMPushConfigurationProvider());
+        RegistrarManager.registerConfigurationProvider(AeroGearGCMPushJsonConfiguration.class,
+                new AeroGearGCMPushJsonConfigurationProvider());
     }
 
     /**
@@ -63,7 +67,8 @@ public class RegistrarManager {
      * @param configurationClass the class of configuration to be registered
      * @param provider the instance which will provide the configuration.
      */
-    public static <CFG extends PushConfiguration<CFG>> void registerConfigurationProvider(Class<CFG> configurationClass, ConfigurationProvider<CFG> provider) {
+    public static <CFG extends PushConfiguration<CFG>> void registerConfigurationProvider(
+            Class<CFG> configurationClass, ConfigurationProvider<CFG> provider) {
         configurationProviderMap.put(configurationClass, provider);
     }
 

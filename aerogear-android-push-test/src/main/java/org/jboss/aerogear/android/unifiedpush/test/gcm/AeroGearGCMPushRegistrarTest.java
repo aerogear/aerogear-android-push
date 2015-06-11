@@ -25,6 +25,7 @@ import org.jboss.aerogear.android.pipe.http.HttpException;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushConfig;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
@@ -162,13 +163,13 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
 
         registrar.register(getActivity(), callback);
-        latch.await(1, TimeUnit.SECONDS);
+        latch.await(2, TimeUnit.SECONDS);
         assertNotNull(callback.exception);
         assertFalse(callback.exception instanceof IOException);
     }
 
     public void testUnregisterExceptionsAreCaught() throws Exception {
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        UnifiedPushConfig config = new UnifiedPushConfig()
                 .addSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)

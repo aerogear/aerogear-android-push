@@ -96,7 +96,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    public AeroGearGCMPushRegistrar(AeroGearGCMPushConfiguration config) {
+    public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
         this.senderIds = config.getSenderIds();
         this.deviceToken = config.getDeviceToken();
         this.variantId = config.getVariantID();

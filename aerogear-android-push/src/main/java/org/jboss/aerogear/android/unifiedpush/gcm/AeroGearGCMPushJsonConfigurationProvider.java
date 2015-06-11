@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.metrics;
+package org.jboss.aerogear.android.unifiedpush.gcm;
 
-public interface MetricsMessage {
+import org.jboss.aerogear.android.core.ConfigurationProvider;
 
-    /**
-     * A messageId. Some id that the receiver of this message can relate to.
-     * @return the message ID
-     */
-    String getMessageId();
+public class AeroGearGCMPushJsonConfigurationProvider
+        implements ConfigurationProvider<AeroGearGCMPushJsonConfiguration> {
+
+    @Override
+    public AeroGearGCMPushJsonConfiguration newConfiguration() {
+        return new AeroGearGCMPushJsonConfiguration();
+    }
+
 }

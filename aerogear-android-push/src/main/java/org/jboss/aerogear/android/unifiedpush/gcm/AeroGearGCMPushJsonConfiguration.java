@@ -16,18 +16,42 @@
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
+import android.content.Context;
+import android.util.Log;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
 /**
- * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
+ * A Push Configuration which builds {@link org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar} instances.
  */
-public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMPushConfiguration> {
+public class AeroGearGCMPushJsonConfiguration
+        extends PushConfiguration<AeroGearGCMPushJsonConfiguration> {
+
+    private static final String TAG = AeroGearGCMPushJsonConfiguration.class.getName();
+    private static final String JSON_OBJECT = "android";
+    private static final String JSON_URL = "pushServerURL";
+    private static final String JSON_SENDER_ID = "senderID";
+    private static final String JSON_VARIANT_ID = "variantID";
+    private static final String JSON_VARIANT_SECRET = "variantSecret";
 
     private final UnifiedPushConfig pushConfig = new UnifiedPushConfig();
+    private String fileName = "push-config.json";
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     /**
      * RegistryURL is the URL of the 3rd party application server
@@ -36,18 +60,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      */
     public URI getPushServerURI() {
         return this.pushConfig.getPushServerURI();
-    }
-
-    /**
-     * RegistryURL is the URL of the 3rd party application server
-     * 
-     * @param pushServerURI a new URI
-     * @return the current configuration
-     * 
-     */
-    public AeroGearGCMPushConfiguration setPushServerURI(URI pushServerURI) {
-        this.pushConfig.setPushServerURI(pushServerURI);
-        return this;
     }
 
     /**
@@ -65,22 +77,10 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * SenderIds is a collection of all GCM sender Id elements registered for
      * this application.
      * 
-     * @param senderIds the new sender Ids to set.
-     * @return the current configuration.
-     */
-    public AeroGearGCMPushConfiguration setSenderIds(String... senderIds) {
-        this.pushConfig.setSenderIds(senderIds);
-        return this;
-    }
-
-    /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
-     * this application.
-     * 
      * @param senderId a new sender Id to add to the current set of senderIds.
      * @return the current configuration.
      */
-    public AeroGearGCMPushConfiguration addSenderId(String senderId) {
+    public AeroGearGCMPushJsonConfiguration addSenderId(String senderId) {
         this.pushConfig.addSenderId(senderId);
         return this;
     }
@@ -95,17 +95,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     }
 
     /**
-     * ID of the Variant from the AeroGear UnifiedPush Server.
-     * 
-     * @param variantID the new variantID
-     * @return the current configuration
-     */
-    public AeroGearGCMPushConfiguration setVariantID(String variantID) {
-        this.pushConfig.setVariantID(variantID);
-        return this;
-    }
-
-    /**
      * Secret of the Variant from the AeroGear UnifiedPush Server.
      * 
      * @return the current Secret
@@ -113,17 +102,6 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      */
     public String getSecret() {
         return pushConfig.getSecret();
-    }
-
-    /**
-     * Secret of the Variant from the AeroGear UnifiedPush Server.
-     * 
-     * @param secret the new secret
-     * @return the current configuration
-     */
-    public AeroGearGCMPushConfiguration setSecret(String secret) {
-        this.pushConfig.setSecret(secret);
-        return this;
     }
 
     /**
@@ -145,7 +123,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setDeviceToken(String deviceToken) {
+    public AeroGearGCMPushJsonConfiguration setDeviceToken(String deviceToken) {
         this.pushConfig.setDeviceToken(deviceToken);
         return this;
     }
@@ -172,7 +150,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setDeviceType(String deviceType) {
+    public AeroGearGCMPushJsonConfiguration setDeviceType(String deviceType) {
         this.pushConfig.setDeviceType(deviceType);
         return this;
     }
@@ -192,7 +170,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param operatingSystem the new operating system
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setOperatingSystem(String operatingSystem) {
+    public AeroGearGCMPushJsonConfiguration setOperatingSystem(String operatingSystem) {
         this.pushConfig.setOperatingSystem(operatingSystem);
         return this;
     }
@@ -230,7 +208,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setAlias(String alias) {
+    public AeroGearGCMPushJsonConfiguration setAlias(String alias) {
         this.pushConfig.setAlias(alias);
         return this;
     }
@@ -252,7 +230,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(List<String> categories) {
+    public AeroGearGCMPushJsonConfiguration setCategories(List<String> categories) {
         this.pushConfig.addCategories(categories);
         return this;
     }
@@ -264,7 +242,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(String... categories) {
+    public AeroGearGCMPushJsonConfiguration setCategories(String... categories) {
         this.pushConfig.setCategories(categories);
         return this;
     }
@@ -276,8 +254,65 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration addCategory(String category) {
+    public AeroGearGCMPushJsonConfiguration addCategory(String category) {
         this.pushConfig.addCategory(category);
+        return this;
+    }
+
+    /**
+     *
+     * Load push unified push informations from assets/push-config.json
+     *
+     * <pre>
+     * {
+     *   "pushServerURL": "pushServerURL (e.g http(s)//host:port/context)",
+     *   "android": {
+     *     "senderID": "senderID (e.g Google Project ID only for android)",
+     *     "variantID": "variantID (e.g. 1234456-234320)",
+     *     "variantSecret": "variantSecret (e.g. 1234456-234320)"
+     * }
+     * </pre>
+     *
+     * @param context your application's context
+     *
+     * @return the current configuration
+     */
+    public AeroGearGCMPushJsonConfiguration loadConfigJson(Context context) {
+        InputStream fileStream = null;
+        try {
+            fileStream = context.getResources().getAssets().open(getFileName());
+            int size = fileStream.available();
+            byte[] buffer = new byte[size];
+            fileStream.read(buffer);
+            fileStream.close();
+            String json = new String(buffer);
+
+            JSONObject pushConfig = new JSONObject(json);
+            JSONObject pushAndroidConfig = pushConfig.getJSONObject(JSON_OBJECT);
+
+            this.pushConfig.setPushServerURI(new URI(pushConfig.getString(JSON_URL)));
+            this.pushConfig.addSenderId(pushAndroidConfig.getString(JSON_SENDER_ID));
+            this.pushConfig.setVariantID(pushAndroidConfig.getString(JSON_VARIANT_ID));
+            this.pushConfig.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
+        } catch (URISyntaxException e) {
+            // It will never happen
+            Log.e(TAG, e.getMessage(), e);
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new RuntimeException("An error occurred while parsing the " + getFileName() + ". Please check the file format");
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new RuntimeException("An error occurred while parsing the " + getFileName() + ". Please check if the file exists");
+        } finally {
+            if (fileStream != null) {
+                try {
+                    fileStream.close();
+                } catch (IOException e) {
+                    // Ignore IOException
+                }
+            }
+        }
+
         return this;
     }
 
