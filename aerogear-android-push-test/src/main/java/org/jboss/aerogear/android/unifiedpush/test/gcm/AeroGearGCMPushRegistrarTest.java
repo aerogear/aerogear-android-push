@@ -163,7 +163,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
 
         registrar.register(getActivity(), callback);
-        latch.await(1, TimeUnit.SECONDS);
+        latch.await(2, TimeUnit.SECONDS);
         assertNotNull(callback.exception);
         assertFalse(callback.exception instanceof IOException);
     }
