@@ -53,6 +53,11 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        // Ignore register ACK
+        if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {
+            return;
+        }
+
         if (checkDefaultHandler) {
             checkDefaultHandler = false;
             Bundle metaData = getMetadata(context);
