@@ -1,22 +1,23 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
 import android.content.Context;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.jboss.aerogear.android.core.Provider;
@@ -40,8 +41,12 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
+@RunWith(AndroidJUnit4.class)
+public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
 
     private static final String TEST_SENDER_ID = "272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
@@ -52,6 +57,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         super(MainActivity.class);
     }
 
+    @Test
     public void testAsRegistrarFailsOnNullSenderId() throws URISyntaxException {
         try {
             AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
@@ -60,12 +66,15 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
             config.asRegistrar();
 
         } catch (IllegalStateException ex) {
-            assertEquals("SenderIds can't be null or empty", ex.getMessage());
+            //TO check the message I need to use a exception Rule which 
+            //I am having trouble getting to work right in Android
+            Assert.assertEquals("SenderIds can't be null or empty", ex.getMessage());
             return; // pass
         }
-        fail();
+        Assert.fail();
     }
 
+    @Test
     public void testAsRegistrarFailsOnNullPushServerURI() {
         try {
             AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
@@ -74,12 +83,15 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
             config.asRegistrar();
 
         } catch (IllegalStateException ex) {
-            assertEquals("PushServerURI can't be null", ex.getMessage());
+            //TO check the message I need to use a exception Rule which 
+            //I am having trouble getting to work right in Android
+            Assert.assertEquals("PushServerURI can't be null", ex.getMessage());
             return; // pass
         }
-        fail();
+        Assert.fail();
     }
 
+    @Test
     public void testRegister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
@@ -95,20 +107,21 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         registrar.register(super.getActivity(), callback);
         if (!latch.await(30, TimeUnit.SECONDS)) {
-            fail("Latch wasn't called");
+            Assert.fail("Latch wasn't called");
         }
 
         if (callback.exception != null) {
             Log.e(TAG, callback.exception.getMessage(), callback.exception);
-            fail(callback.exception.getMessage());
+            Assert.fail(callback.exception.getMessage());
         }
 
         ArgumentCaptor<String> postCaptore = ArgumentCaptor.forClass(String.class);
         Mockito.verify(provider.mock).post(postCaptore.capture());
         JSONObject object = new JSONObject(postCaptore.getValue());
-        assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), object.getString("deviceToken"));
+        Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), object.getString("deviceToken"));
     }
 
+    @Test
     public void testUnregister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
@@ -139,15 +152,16 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         if (callback.exception != null) {
             Log.e(TAG, callback.exception.getMessage(), callback.exception);
-            fail(callback.exception.getMessage());
+            Assert.fail(callback.exception.getMessage());
         }
 
         Mockito.verify(gcmProvider.mock).unregister();
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
-        assertNull(callback.exception);
-        assertEquals("", UnitTestUtils.getPrivateField(registrar, "deviceToken"));
+        Assert.assertNull(callback.exception);
+        Assert.assertEquals("", UnitTestUtils.getPrivateField(registrar, "deviceToken"));
     }
 
+    @Test
     public void testRegisterExceptionsAreCaught() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
                 .addSenderId(TEST_SENDER_ID)
@@ -164,10 +178,11 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         registrar.register(getActivity(), callback);
         latch.await(2, TimeUnit.SECONDS);
-        assertNotNull(callback.exception);
-        assertFalse(callback.exception instanceof IOException);
+        Assert.assertNotNull(callback.exception);
+        Assert.assertFalse(callback.exception instanceof IOException);
     }
 
+    @Test
     public void testUnregisterExceptionsAreCaught() throws Exception {
         UnifiedPushConfig config = new UnifiedPushConfig()
                 .addSenderId(TEST_SENDER_ID)
@@ -184,10 +199,11 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         registrar.unregister(getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
-        assertNotNull(callback.exception);
-        assertFalse(callback.exception instanceof IOException);
+        Assert.assertNotNull(callback.exception);
+        Assert.assertFalse(callback.exception instanceof IOException);
     }
 
+    @Test
     public void testUnregisterTwice() throws Exception {
 
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
@@ -218,11 +234,12 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         spy.unregister(super.getActivity(), callback);
         latch.await(2, TimeUnit.SECONDS);
 
-        assertNotNull(callback.exception);
-        assertTrue(callback.exception instanceof IllegalStateException);
+        Assert.assertNotNull(callback.exception);
+        Assert.assertTrue(callback.exception instanceof IllegalStateException);
 
     }
 
+    @Test
     public void testAeroGearGCMPushConfigurationWithoutVariantID() throws Exception {
 
         try {
@@ -235,14 +252,15 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                     .asRegistrar();
 
         } catch (IllegalStateException ex) {
-            assertEquals("VariantID can't be null", ex.getMessage());
+            Assert.assertEquals("VariantID can't be null", ex.getMessage());
             return; // pass
         }
 
-        fail();
+        Assert.fail();
 
     }
 
+    @Test
     public void testAeroGearGCMPushConfigurationWithoutSecret() throws Exception {
 
         try {
@@ -255,11 +273,11 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                     .asRegistrar();
 
         } catch (IllegalStateException ex) {
-            assertEquals("Secret can't be null", ex.getMessage());
+            Assert.assertEquals("Secret can't be null", ex.getMessage());
             return; // pass
         }
 
-        fail();
+        Assert.fail();
 
     }
 
@@ -268,7 +286,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public StubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doReturn(new HeaderAndBody(bytes, new HashMap<String, Object>()))
                     .when(mock)
                     .post((String) Mockito.any());
@@ -289,7 +307,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
         public BrokenStubHttpProvider() {
-            byte[] bytes = { 1 };
+            byte[] bytes = {1};
             Mockito.doThrow(new HttpException(bytes, 401))
                     .when(mock)
                     .post((String) Mockito.any());
