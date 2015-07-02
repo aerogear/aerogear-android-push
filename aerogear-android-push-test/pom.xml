@@ -51,6 +51,7 @@
             <type>aar</type>
         </dependency>
 
+       
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -89,8 +90,32 @@
                     <groupId>org.hamcrest</groupId>
                 </exclusion>
             </exclusions>
-
         </dependency>
+        
+        <dependency>
+            <groupId>com.android.support.test</groupId>
+            <artifactId>runner</artifactId>
+            <version>0.3</version>
+            <type>aar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit-dep</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.support.test</groupId>
+            <artifactId>rules</artifactId>
+            <version>0.3</version>
+            <type>aar</type>
+        </dependency>
+        
     </dependencies>
 
     <build>

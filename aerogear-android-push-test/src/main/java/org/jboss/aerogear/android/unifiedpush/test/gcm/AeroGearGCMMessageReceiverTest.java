@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
@@ -20,21 +20,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.test.runner.AndroidJUnit4;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMMessageReceiver;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
+@RunWith(AndroidJUnit4.class)
+public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentationTestCase {
 
     public AeroGearGCMMessageReceiverTest() {
         super(MainActivity.class);
     }
 
+    @Test
     public void testConsumeMessageNoMetadata() throws InterruptedException {
         Context ctx = getActivity().getApplicationContext();
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
@@ -52,6 +57,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
         assertEquals("testValue", handler.result.getString("testKey"));
     }
 
+    @Test
     public void testConsumeMessageDelete() throws InterruptedException {
         Context ctx = getActivity().getApplicationContext();
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
@@ -69,6 +75,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
 
     }
 
+    @Test
     public void testConsumeMessageError() throws InterruptedException {
         Context ctx = getActivity().getApplicationContext();
         AeroGearGCMMessageReceiver receiver = new AeroGearGCMMessageReceiver();
@@ -93,6 +100,7 @@ public class AeroGearGCMMessageReceiverTest extends PatchedActivityInstrumentati
         Result resultType;
 
         enum Result {
+
             DELETE, MESSAGE, ERROR
         };
 

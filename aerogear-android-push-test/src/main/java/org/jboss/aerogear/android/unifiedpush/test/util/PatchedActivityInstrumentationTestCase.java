@@ -16,8 +16,11 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test.util;
 
+
 import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
+import android.content.Intent;
+import android.support.test.rule.ActivityTestRule;
+import org.junit.Before;
 
 /**
  * All tests which use Mockito should extend this class.
@@ -27,19 +30,25 @@ import android.test.ActivityInstrumentationTestCase2;
  * test setup.
  * 
  */
-public abstract class PatchedActivityInstrumentationTestCase<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
+public abstract class PatchedActivityInstrumentationTestCase {
 
-    public PatchedActivityInstrumentationTestCase(Class<T> activity) {
-        super(activity);
+    
+    private final ActivityTestRule rule;
+
+    public PatchedActivityInstrumentationTestCase(Class<? extends Activity> klass) {
+        rule = new ActivityTestRule(klass, false, false);
     }
-
-    @Override
+        
+    @Before
     /**
      * Sets the dexcache property before test execution.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-        System.setProperty("dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getPath());
+    public void setDexcacheDir() throws Exception {
+        rule.launchActivity(new Intent(Intent.ACTION_MAIN));
+        System.setProperty("dexmaker.dexcache", rule.getActivity().getCacheDir().getPath());
     }
 
+    public Activity getActivity() {
+        return rule.getActivity();
+    }
 }
