@@ -69,8 +69,8 @@ For more details about the current release, please consult [our documentation](h
 
 Take a look in our demo apps
 
-* [AeroGear Push HelloWorld](https://github.com/aerogear/aerogear-push-helloworld)
-* [AeroGear Push Quickstarts](https://github.com/aerogear/aerogear-push-quickstarts)
+* [AeroGear Push HelloWorld](https://github.com/jboss-mobile/unified-push-helloworld/tree/master/android)
+* [AeroGear Push Quickstarts](https://github.com/jboss-mobile/unified-push-quickstarts/tree/master/client/contacts-mobile-android-client)
 
 ## Development
 
