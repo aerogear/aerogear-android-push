@@ -46,14 +46,7 @@
             <version>${aerogear.android.core.version}</version>
             <type>aar</type>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>${aerogear.android.core.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>        
+  
 
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
@@ -61,14 +54,7 @@
             <version>${aerogear.android.pipe.version}</version>
             <type>aar</type>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-pipe</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>        
+      
 
         <!-- Seems like both projects need the APKLIB but don't if it is aar -->
         <dependency>
@@ -83,12 +69,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>7.5.0</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

@@ -52,32 +52,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-pipe</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <scope>provided</scope>
-        </dependency>
-                <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>7.5.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-push</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-       
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
@@ -117,19 +91,6 @@
             </exclusions>
         </dependency>
         
-        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>runner</artifactId>
-            <version>0.3</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>rules</artifactId>
-            <version>0.3</version>
-            <scope>provided</scope>
-        </dependency>
         
         <dependency>
             <groupId>com.android.support.test</groupId>
