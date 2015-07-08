@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.jboss.aerogear.android.core.ConfigurationProvider;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
-import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
@@ -47,7 +46,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase {
         PushConfiguration config = RegistrarManager
                 .config(PUSH, AeroGearGCMPushConfiguration.class)
                 .setPushServerURI(new URI("http://testreg.com"))
-                .setSenderIds("TestID")
+                .setSenderId("TestID")
                 .setVariantID("VariantID")
                 .setSecret("secret");
 
