@@ -73,8 +73,8 @@
         <!-- Seems like both projects need the APKLIB but don't if it is aar -->
         <dependency>
             <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services</artifactId>
-            <version>6.1.11</version>
+            <artifactId>play-services-gcm</artifactId>
+            <version>7.5.0</version>
             <type>aar</type>
             <exclusions>
                 <exclusion>
@@ -83,7 +83,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>play-services-gcm</artifactId>
+            <version>7.5.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
