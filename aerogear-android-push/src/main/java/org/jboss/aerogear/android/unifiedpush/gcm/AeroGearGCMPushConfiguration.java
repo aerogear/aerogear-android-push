@@ -20,7 +20,6 @@ import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
@@ -51,39 +50,28 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
      * @return a copy of the current set of senderIds.
      * 
      */
-    public Set<String> getSenderIds() {
-        return pushConfig.getSenderIds();
+    public String getSenderId() {
+        return pushConfig.getSenderId();
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
-     * @param senderIds the new sender Ids to set.
+     * @param senderId the new senderId to set.
      * @return the current configuration.
      */
-    public AeroGearGCMPushConfiguration setSenderIds(String... senderIds) {
-        this.pushConfig.setSenderIds(senderIds);
+    public AeroGearGCMPushConfiguration setSenderId(String senderId) {
+        this.pushConfig.setSenderId(senderId);
         return this;
     }
 
-    /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
-     * this application.
-     * 
-     * @param senderId a new sender Id to add to the current set of senderIds.
-     * @return the current configuration.
-     */
-    public AeroGearGCMPushConfiguration addSenderId(String senderId) {
-        this.pushConfig.addSenderId(senderId);
-        return this;
-    }
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
