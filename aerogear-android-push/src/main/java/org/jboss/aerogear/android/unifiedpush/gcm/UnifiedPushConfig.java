@@ -22,7 +22,7 @@ import java.util.*;
 public final class UnifiedPushConfig {
 
     private URI pushServerURI;
-    private Set<String> senderIds = new HashSet<String>();
+    private String senderId;
     private String variantID;
     private String secret;
     private String deviceToken = "";
@@ -54,41 +54,28 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
-     * @return a copy of the current set of senderIds.
+     * @return the current senderId.
      * 
      */
-    public Set<String> getSenderIds() {
-        return Collections.unmodifiableSet(senderIds);
+    public String getSenderId() {
+        return senderId;
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
-     * @param senderIds the new sender Ids to set.
+     * @param senderId the new senderId to set.
      * @return the current configuration.
      */
-    public UnifiedPushConfig setSenderIds(String... senderIds) {
-        Set<String> newSenderIds = new HashSet<String>(senderIds.length);
-        Collections.addAll(newSenderIds, senderIds);
-        this.senderIds = newSenderIds;
+    public UnifiedPushConfig setSenderId(String senderId) {
+        this.senderId = senderId;
         return this;
     }
 
-    /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
-     * this application.
-     * 
-     * @param senderId a new sender Id to add to the current set of senderIds.
-     * @return the current configuration.
-     */
-    public UnifiedPushConfig addSenderId(String senderId) {
-        this.senderIds.add(senderId);
-        return this;
-    }
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
@@ -299,8 +286,8 @@ public final class UnifiedPushConfig {
     }
 
     public void checkRequiredFields() {
-        if (senderIds == null || senderIds.isEmpty()) {
-            throw new IllegalStateException("SenderIds can't be null or empty");
+        if (senderId == null || senderId.isEmpty()) {
+            throw new IllegalStateException("SenderId can't be null or empty");
         }
 
         if (pushServerURI == null) {

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Push Configuration which builds {@link org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar} instances.
@@ -63,25 +62,25 @@ public class AeroGearGCMPushJsonConfiguration
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
      * @return a copy of the current set of senderIds.
      * 
      */
-    public Set<String> getSenderIds() {
-        return pushConfig.getSenderIds();
+    public String getSenderId() {
+        return pushConfig.getSenderId();
     }
 
     /**
-     * SenderIds is a collection of all GCM sender Id elements registered for
+     * SenderId is a  GCM sender Id (usually a project number) registered for 
      * this application.
      * 
      * @param senderId a new sender Id to add to the current set of senderIds.
      * @return the current configuration.
      */
-    public AeroGearGCMPushJsonConfiguration addSenderId(String senderId) {
-        this.pushConfig.addSenderId(senderId);
+    public AeroGearGCMPushJsonConfiguration setSenderId(String senderId) {
+        this.pushConfig.setSenderId(senderId);
         return this;
     }
 
@@ -291,7 +290,7 @@ public class AeroGearGCMPushJsonConfiguration
             JSONObject pushAndroidConfig = pushConfig.getJSONObject(JSON_OBJECT);
 
             this.pushConfig.setPushServerURI(new URI(pushConfig.getString(JSON_URL)));
-            this.pushConfig.addSenderId(pushAndroidConfig.getString(JSON_SENDER_ID));
+            this.pushConfig.setSenderId(pushAndroidConfig.getString(JSON_SENDER_ID));
             this.pushConfig.setVariantID(pushAndroidConfig.getString(JSON_VARIANT_ID));
             this.pushConfig.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
         } catch (URISyntaxException e) {

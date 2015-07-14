@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -43,7 +44,6 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
@@ -66,9 +66,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     private static final String DEVICE_ALREADY_UNREGISTERED = "Seems this device was already unregistered";
 
-    private final Set<String> senderIds;
+    private final String senderId;
 
-    private GoogleCloudMessaging gcm;
+    private InstanceID instanceId;
     private URL deviceRegistryURL;
     private URL metricsURL;
     private String deviceToken = "";
@@ -88,16 +88,16 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    private Provider<GoogleCloudMessaging> gcmProvider = new Provider<GoogleCloudMessaging>() {
+    private Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
 
         @Override
-        public GoogleCloudMessaging get(Object... context) {
-            return GoogleCloudMessaging.getInstance((Context) context[0]);
+        public InstanceID get(Object... context) {
+            return InstanceID.getInstance((Context) context[0]);
         }
     };
 
     public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
-        this.senderIds = config.getSenderIds();
+        this.senderId = config.getSenderId();
         this.deviceToken = config.getDeviceToken();
         this.variantId = config.getVariantID();
         this.secret = config.getSecret();
@@ -118,20 +118,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     @Override
     public void register(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
-
+            
             @Override
             protected Exception doInBackground(Void... params) {
 
                 try {
 
-                    if (gcm == null) {
-                        gcm = gcmProvider.get(context);
+                    if (instanceId == null) {
+                        instanceId = instanceIdProvider.get(context);
                     }
                     String regid = getRegistrationId(context);
 
                     if (regid.length() == 0) {
-                        regid = gcm.register(senderIds
-                                .toArray(new String[] {}));
+                        regid = instanceId.getToken(senderId,
+                                                    GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                         AeroGearGCMPushRegistrar.this.setRegistrationId(context, regid);
                     }
 
@@ -222,11 +222,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         throw new IllegalStateException(DEVICE_ALREADY_UNREGISTERED);
                     }
 
-                    if (gcm == null) {
-                        gcm = gcmProvider.get(context);
+                    if (instanceId == null) {
+                        instanceId = instanceIdProvider.get(context);
                     }
 
-                    gcm.unregister();
+                    instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, provider);
@@ -293,6 +293,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
      * @param metricsMessage The id of the message received
      * @param callback a callback.
      */
+    @Override
     public void sendMetrics(final UnifiedPushMetricsMessage metricsMessage,
             final Callback<UnifiedPushMetricsMessage> callback) {
         new AsyncTask<Void, Void, Exception>() {

@@ -23,9 +23,6 @@ import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +31,7 @@ public class AeroGearGCMPushJsonConfigurationTest
         extends PatchedActivityInstrumentationTestCase {
 
     private static final URI pushServerURL = URI.create("https://localhost:8080/ag-push");
-    private static final Set<String> senderIds = new HashSet<String>(Arrays.asList("123456"));
+    private static final String senderId = "123456";
     private static final String variantID = "8abfae4eb02a6140c0a20798433180a063fd7006";
     private static final String secret = "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8";
 
@@ -48,7 +45,7 @@ public class AeroGearGCMPushJsonConfigurationTest
         config.loadConfigJson(getActivity());
 
         Assert.assertEquals(pushServerURL, config.getPushServerURI());
-        Assert.assertEquals(senderIds.iterator().next(), config.getSenderIds().iterator().next());
+        Assert.assertEquals(senderId, config.getSenderId());
         Assert.assertEquals(variantID, config.getVariantID());
         Assert.assertEquals(secret, config.getSecret());
     }
@@ -60,7 +57,7 @@ public class AeroGearGCMPushJsonConfigurationTest
         config.loadConfigJson(getActivity());
 
         Assert.assertEquals(pushServerURL, config.getPushServerURI());
-        Assert.assertEquals(senderIds.iterator().next(), config.getSenderIds().iterator().next());
+        Assert.assertEquals(senderId, config.getSenderId());
         Assert.assertEquals(variantID, config.getVariantID());
         Assert.assertEquals(secret, config.getSecret());
     }
@@ -79,7 +76,7 @@ public class AeroGearGCMPushJsonConfigurationTest
         }
 
         Assert.assertNull(config.getPushServerURI());
-        Assert.assertEquals(0, config.getSenderIds().size());
+        Assert.assertNull(config.getSenderId());
         Assert.assertNull(config.getVariantID());
         Assert.assertNull(config.getSecret());
     }

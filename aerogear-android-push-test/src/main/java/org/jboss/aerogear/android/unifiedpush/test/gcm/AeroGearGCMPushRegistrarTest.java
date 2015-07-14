@@ -19,7 +19,7 @@ package org.jboss.aerogear.android.unifiedpush.test.gcm;
 import android.content.Context;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.anyString;
 
 @RunWith(AndroidJUnit4.class)
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
@@ -68,7 +69,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         } catch (IllegalStateException ex) {
             //TO check the message I need to use a exception Rule which 
             //I am having trouble getting to work right in Android
-            Assert.assertEquals("SenderIds can't be null or empty", ex.getMessage());
+            Assert.assertEquals("SenderId can't be null or empty", ex.getMessage());
             return; // pass
         }
         Assert.fail();
@@ -78,7 +79,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testAsRegistrarFailsOnNullPushServerURI() {
         try {
             AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
-                    .addSenderId(TEST_SENDER_ID);
+                    .setSenderId(TEST_SENDER_ID);
 
             config.asRegistrar();
 
@@ -94,7 +95,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testRegister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
-                .addSenderId(TEST_SENDER_ID)
+                .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
@@ -124,7 +125,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testUnregister() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
-                .addSenderId(TEST_SENDER_ID)
+                .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
@@ -134,8 +135,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
 
-        StubGCMProvider gcmProvider = new StubGCMProvider();
-        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
 
         VoidCallback callback = new VoidCallback(latch);
 
@@ -155,7 +156,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
             Assert.fail(callback.exception.getMessage());
         }
 
-        Mockito.verify(gcmProvider.mock).unregister();
+        Mockito.verify(instanceIdProvider.mock).deleteToken(anyString(), anyString());
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
         Assert.assertNull(callback.exception);
         Assert.assertEquals("", UnitTestUtils.getPrivateField(registrar, "deviceToken"));
@@ -164,7 +165,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testRegisterExceptionsAreCaught() throws Exception {
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
-                .addSenderId(TEST_SENDER_ID)
+                .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
@@ -173,8 +174,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
-        StubGCMProvider gcmProvider = new StubGCMProvider();
-        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
 
         registrar.register(getActivity(), callback);
         latch.await(2, TimeUnit.SECONDS);
@@ -185,7 +186,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testUnregisterExceptionsAreCaught() throws Exception {
         UnifiedPushConfig config = new UnifiedPushConfig()
-                .addSenderId(TEST_SENDER_ID)
+                .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
@@ -194,8 +195,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
-        StubGCMProvider gcmProvider = new StubGCMProvider();
-        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
 
         registrar.unregister(getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -207,7 +208,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     public void testUnregisterTwice() throws Exception {
 
         AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
-                .addSenderId(TEST_SENDER_ID)
+                .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
@@ -217,8 +218,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
 
-        StubGCMProvider gcmProvider = new StubGCMProvider();
-        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
 
         VoidCallback callback = new VoidCallback(latch);
 
@@ -245,9 +246,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         try {
 
             AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
-            config.addSenderId(TEST_SENDER_ID)
+            config.setSenderId(TEST_SENDER_ID)
                     .setPushServerURI(new URI("https://testuri"))
-                    .setSenderIds(TEST_SENDER_ID)
+                    .setSenderId(TEST_SENDER_ID)
                     .setSecret(TEST_SENDER_ID)
                     .asRegistrar();
 
@@ -266,9 +267,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         try {
 
             AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
-            config.addSenderId(TEST_SENDER_ID)
+            config.setSenderId(TEST_SENDER_ID)
                     .setPushServerURI(new URI("https://testuri"))
-                    .setSenderIds(TEST_SENDER_ID)
                     .setVariantID(TEST_SENDER_VARIANT)
                     .asRegistrar();
 
@@ -323,16 +323,16 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         }
     }
 
-    private class StubGCMProvider implements Provider<GoogleCloudMessaging> {
+    private class StubInstanceIDProvider implements Provider<InstanceID> {
 
-        protected final GoogleCloudMessaging mock = Mockito.mock(GoogleCloudMessaging.class);
+        protected final InstanceID mock = Mockito.mock(InstanceID.class);
 
-        public StubGCMProvider() {
+        public StubInstanceIDProvider() {
 
         }
 
         @Override
-        public GoogleCloudMessaging get(Object... in) {
+        public InstanceID get(Object... in) {
             return mock;
         }
     }

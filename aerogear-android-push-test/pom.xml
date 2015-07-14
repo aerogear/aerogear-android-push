@@ -51,7 +51,6 @@
             <type>aar</type>
         </dependency>
 
-       
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -92,6 +91,7 @@
             </exclusions>
         </dependency>
         
+        
         <dependency>
             <groupId>com.android.support.test</groupId>
             <artifactId>runner</artifactId>
@@ -113,6 +113,14 @@
             <groupId>com.android.support.test</groupId>
             <artifactId>rules</artifactId>
             <version>0.3</version>
+            <type>aar</type>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>com.android.support</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>22.2.0</version>
             <type>aar</type>
         </dependency>
         
