@@ -14,7 +14,7 @@ public class GCMSharedPreferenceProvider implements Provider<SharedPreferences>{
     
     @Override
     public SharedPreferences get(Object... in) {
-         if (in == null || in.length != 0 || !(in[0] instanceof Context)) {
+         if (in == null || in.length != 1 || !(in[0] instanceof Context)) {
              throw new IllegalArgumentException("get requires a single Context reference");
          }
          

@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
-import android.content.Context;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import com.google.android.gms.iid.InstanceID;
@@ -45,6 +44,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
@@ -141,8 +141,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
-        Mockito.doReturn("tempId").when(spy).getRegistrationId((Context) Mockito.any());
-
+        
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
 
@@ -224,7 +223,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
-        Mockito.doReturn("tempId").when(spy).getRegistrationId((Context) Mockito.any());
+        
 
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -326,8 +325,14 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     private class StubInstanceIDProvider implements Provider<InstanceID> {
 
         protected final InstanceID mock = Mockito.mock(InstanceID.class);
+        private static final String TEMP_ID = "tempId";
 
         public StubInstanceIDProvider() {
+            try {
+                when(mock.getToken(anyString(), anyString())).thenReturn(TEMP_ID);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
 
         }
 
