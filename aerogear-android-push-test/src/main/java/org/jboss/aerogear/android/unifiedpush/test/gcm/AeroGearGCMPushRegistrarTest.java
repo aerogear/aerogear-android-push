@@ -21,7 +21,6 @@ import android.util.Log;
 import com.google.android.gms.iid.InstanceID;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
-import org.jboss.aerogear.android.pipe.http.HttpException;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
@@ -40,6 +39,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.jboss.aerogear.android.unifiedpush.gcm.GCMSharedPreferenceProvider;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +50,7 @@ import static org.mockito.Mockito.when;
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
 
     private static final String TEST_SENDER_ID = "272275396485";
+    private static final String TEST_REGISTRAR_PREFERENCES_KEY = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
     private static final String TEST_SENDER_VARIANT = "Variant";
     private static final String TAG = AeroGearGCMPushRegistrarTest.class.getSimpleName();
@@ -120,6 +121,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         Mockito.verify(provider.mock).post(postCaptore.capture());
         JSONObject object = new JSONObject(postCaptore.getValue());
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), object.getString("deviceToken"));
+        String jsonData = new GCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, TAG);
+        Assert.assertNotNull(jsonData);
+        Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), new JSONObject(jsonData).getString("deviceToken"));
     }
 
     @Test
@@ -280,7 +284,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
     }
 
-    private class StubHttpProvider implements Provider<HttpProvider> {
+    static class StubHttpProvider implements Provider<HttpProvider> {
 
         protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
 
@@ -301,28 +305,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         }
     }
 
-    private class BrokenStubHttpProvider implements Provider<HttpProvider> {
 
-        protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
-
-        public BrokenStubHttpProvider() {
-            byte[] bytes = {1};
-            Mockito.doThrow(new HttpException(bytes, 401))
-                    .when(mock)
-                    .post((String) Mockito.any());
-
-            Mockito.doThrow(new HttpException(bytes, 401))
-                    .when(mock)
-                    .delete((String) Mockito.any());
-        }
-
-        @Override
-        public HttpProvider get(Object... in) {
-            return mock;
-        }
-    }
-
-    private class StubInstanceIDProvider implements Provider<InstanceID> {
+    static class StubInstanceIDProvider implements Provider<InstanceID> {
 
         protected final InstanceID mock = Mockito.mock(InstanceID.class);
         private static final String TEMP_ID = "tempId";

@@ -50,7 +50,7 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
     private static final String TAG = UnifiedPushInstanceIDListenerService.class.getSimpleName();
     private static final Integer TIMEOUT = 30000;// 30 seconds
 
-    private final GCMSharedPreferenceProvider sharedPreferencesProvider = new GCMSharedPreferenceProvider();
+    private final Provider<SharedPreferences> sharedPreferencesProvider = new GCMSharedPreferenceProvider();
 
     private final Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
 
@@ -95,13 +95,21 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
                     setPasswordAuthentication(variantId, secret, httpProvider);
 
                     JsonObject postData = new JsonObject();
-                    postData.addProperty("deviceType", oldPostData.get("deviceType").getAsString());
+                    if (oldPostData.has("deviceType")&& !oldPostData.get("deviceType").isJsonNull()) {
+                        postData.addProperty("deviceType", oldPostData.get("deviceType").getAsString());
+                    }
                     postData.addProperty("deviceToken", regid);
-                    postData.addProperty("alias", oldPostData.get("alias").getAsString());
-                    postData.addProperty("operatingSystem", oldPostData.get("operatingSystem").getAsString());
-                    postData.addProperty("osVersion", oldPostData.get("osVersion").getAsString());
-
-                    if (oldPostData.has("categories")) {
+                    
+                    if (oldPostData.has("alias") && !oldPostData.get("alias").isJsonNull()) {
+                        postData.addProperty("alias", oldPostData.get("alias").getAsString());
+                    }
+                    if (oldPostData.has("operatingSystem")&& !oldPostData.get("operatingSystem").isJsonNull()) {
+                        postData.addProperty("operatingSystem", oldPostData.get("operatingSystem").getAsString());
+                    }
+                    if (oldPostData.has("osVersion")&& !oldPostData.get("osVersion").isJsonNull()) {
+                        postData.addProperty("osVersion", oldPostData.get("osVersion").getAsString());
+                    }
+                    if (oldPostData.has("categories")&& !oldPostData.get("categories").isJsonNull()) {
                         postData.add("categories", oldPostData.get("categories").getAsJsonArray());
                     }
 
