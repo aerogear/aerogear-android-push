@@ -59,14 +59,11 @@
     </scm>
 
     <properties>
+        <!-- Dependencies versions -->
         <aerogear.bom.version>0.2.10</aerogear.bom.version>
-        <aerogear.android.core.version>3.0.0-SNAPSHOT</aerogear.android.core.version>
-        <aerogear.android.pipe.version>3.0.0-SNAPSHOT</aerogear.android.pipe.version>
 
         <!-- Plugins versions -->
-        <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
         <maven.android.plugin.version>4.3.0</maven.android.plugin.version>
-        <builder.helper.plugin.version>1.7</builder.helper.plugin.version>
 
         <!-- Android configs -->
         <android.platform>19</android.platform>
@@ -134,7 +131,6 @@
             </modules>
         </profile>
     </profiles>
-
 
 </project>
 

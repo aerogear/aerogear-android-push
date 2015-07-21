@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-       JBoss, Home of Professional Open Source
+  JBoss, Home of Professional Open Source
   Copyright Red Hat, Inc., and individual contributors
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,24 +30,35 @@
     </parent>
 
     <properties>
+
+        <!-- Dependencies versions -->
+        <android.support.v4.version>22.2.0</android.support.v4.version>
         <mockito.version>1.9.5</mockito.version>
         <dexmaker.version>1.0</dexmaker.version>
         <dexmaker.mockito.version>1.0</dexmaker.mockito.version>
+        <android.support.test.version>0.3</android.support.test.version>
+
+        <!-- Plugins parameters -->
+        <android.maven.plugin.dex.xms>-Xms256m</android.maven.plugin.dex.xms>
+        <android.maven.plugin.dex.xmx>-Xmx2048m</android.maven.plugin.dex.xmx>
+
         <maven.javadoc.skip>true</maven.javadoc.skip>
+
     </properties>
+
     <dependencies>
 
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-pipe</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <type>aar</type>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-push</artifactId>
             <version>${project.version}</version>
+            <type>aar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.support</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>${android.support.v4.version}</version>
             <type>aar</type>
         </dependency>
 
@@ -90,12 +101,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        
+
         <dependency>
             <groupId>com.android.support.test</groupId>
             <artifactId>runner</artifactId>
-            <version>0.3</version>
+            <version>${android.support.test.version}</version>
             <type>aar</type>
             <exclusions>
                 <exclusion>
@@ -112,69 +122,10 @@
         <dependency>
             <groupId>com.android.support.test</groupId>
             <artifactId>rules</artifactId>
-            <version>0.3</version>
+            <version>${android.support.test.version}</version>
             <type>aar</type>
         </dependency>
-        
-        
-        <dependency>
-            <groupId>com.android.support</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>22.2.0</version>
-            <type>aar</type>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>7.5.0</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>runner</artifactId>
-            <version>0.3</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>rules</artifactId>
-            <version>0.3</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        
-        <dependency>
-            <groupId>com.android.support</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>22.2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-pipe</artifactId>
-            <version>${aerogear.android.pipe.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-push</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-                        
     </dependencies>
 
     <build>
@@ -186,21 +137,20 @@
                     <test>
                         <debug>${android.debug}</debug>
                     </test>
-                    <proguard>
-                        <skip>true</skip>
-                    </proguard>
                     <sdk>
-                        <path>${env.ANDROID_HOME}</path>
                         <platform>${android.platform}</platform>
                     </sdk>
+                    <proguard>
+                        <skip>${proguard.skip}</skip>
+                    </proguard>
+                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <dex>
                         <jvmArguments>
-                            <jvmArgument>-Xms256m</jvmArgument>
-                            <jvmArgument>-Xmx2048m</jvmArgument>
+                            <jvmArgument>${android.maven.plugin.dex.xms}</jvmArgument>
+                            <jvmArgument>${android.maven.plugin.dex.xmx}</jvmArgument>
                         </jvmArguments>
                     </dex>
                 </configuration>
-                <extensions>true</extensions>
             </plugin>
         </plugins>
     </build>
