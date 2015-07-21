@@ -70,7 +70,6 @@
             <scope>provided</scope>
         </dependency>        
 
-        <!-- Seems like both projects need the APKLIB but don't if it is aar -->
         <dependency>
             <groupId>com.google.android.gms</groupId>
             <artifactId>play-services-gcm</artifactId>
@@ -83,12 +82,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>7.5.0</version>
-            <scope>provided</scope>
-        </dependency>
+        
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
