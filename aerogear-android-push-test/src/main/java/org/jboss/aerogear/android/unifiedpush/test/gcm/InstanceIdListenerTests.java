@@ -39,14 +39,14 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 @RunWith(AndroidJUnit4.class)
-public class IInstanceIdListenerTests extends PatchedActivityInstrumentationTestCase {
+public class InstanceIdListenerTests extends PatchedActivityInstrumentationTestCase {
 
     private static final String TEST_SENDER_ID = "272275396485";
     private static final String TEST_REGISTRAR_PREFERENCES_KEY = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
     private static final String TEST_SENDER_VARIANT = "Variant";
     
-    public IInstanceIdListenerTests() {
+    public InstanceIdListenerTests() {
         super(MainActivity.class);
     }
     
