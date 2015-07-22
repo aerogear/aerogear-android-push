@@ -49,15 +49,16 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private static final Integer TIMEOUT = 30000;// 30 seconds
     private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
     /**
-     * This template creates a key used by the registrar to save push data to SharedPreferences. 
-     * This information will be fetched by {@link UnifiedPushInstanceIDListenerService} 
-     * in the event registration IDs are reloaded.
+     * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to 
+     * recognize keys which are saved by this class in the event that registration
+     * tokens are refreshed by Google.
+     * 
      */
     static final String REGISTRAR_PREFERENCE_PATTERN = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:.+";
     /**
      * This template creates a key used by the registrar to save push data to SharedPreferences. 
      * This information will be fetched by {@link UnifiedPushInstanceIDListenerService} 
-     * in the event registration IDs are reloaded.
+     * in the event registration tokens are reloaded.
      */
     static final String REGISTRAR_PREFERENCE_TEMPLATE = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:%s";
     
