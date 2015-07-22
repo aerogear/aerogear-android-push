@@ -130,10 +130,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
-                    String regid = instanceId.getToken(senderId,
+                    String token = instanceId.getToken(senderId,
                                                     GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                     
-                    deviceToken = regid;
+                    deviceToken = token;
 
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, httpProvider);
@@ -325,7 +325,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     /**
      * Save the post sent to UPS.  This will be used by {@link UnifiedPushInstanceIDListenerService} 
-     * to refresh the registrationID if the registrationID changes.
+     * to refresh the registration token if the registration token changes.
      * 
      * @param appContext the application Context 
      */ 
@@ -337,7 +337,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     
     /**
-     * We are no longer registered.  We do not need to respond to changes in registrationID.
+     * We are no longer registered.  We do not need to respond to changes in  registration token.
      * @param appContext the application Context
      */
     private void removeSavedPostData(Context appContext) {

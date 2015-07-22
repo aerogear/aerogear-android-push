@@ -35,7 +35,8 @@ import static org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistra
 
 /**
  * This is an Android Service which listens for InstanceID messages from
- * Google's GCM servicers.
+ * Google's GCM services.  These messages arrive periodically from Google's 
+ * systems to alert the application it needs to refresh its registration tokens.
  *
  * See
  * https://developers.google.com/instance-id/guides/android-implementation#refresh_tokens
@@ -84,7 +85,7 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
                 String senderId = preference.getKey().split(":")[1];
                 InstanceID instanceID = instanceIdProvider.get(this);
                 try {
-                    String regid = instanceID.getToken(senderId,
+                    String token = instanceID.getToken(senderId,
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                     JsonObject oldPostData = new JsonParser().parse(preference.getValue().toString()).getAsJsonObject();
                     URL deviceRegistryURL = new URL(oldPostData.get("deviceRegistryURL").getAsString());
@@ -98,7 +99,7 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
                     if (oldPostData.has("deviceType")&& !oldPostData.get("deviceType").isJsonNull()) {
                         postData.addProperty("deviceType", oldPostData.get("deviceType").getAsString());
                     }
-                    postData.addProperty("deviceToken", regid);
+                    postData.addProperty("deviceToken", token);
                     
                     if (oldPostData.has("alias") && !oldPostData.get("alias").isJsonNull()) {
                         postData.addProperty("alias", oldPostData.get("alias").getAsString());
