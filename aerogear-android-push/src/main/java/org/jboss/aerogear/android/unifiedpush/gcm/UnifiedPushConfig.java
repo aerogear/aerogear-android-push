@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
@@ -32,9 +32,16 @@ public final class UnifiedPushConfig {
     private String alias;
     private List<String> categories = new ArrayList<String>();
 
+    
+    /**
+     * Topics in GCM must conform to this pattern.
+     * See : https://developers.google.com/android/reference/com/google/android/gms/gcm/GcmPubSub#unsubscribe(java.lang.String, java.lang.String)
+     */
+    private static final String GCM_TOPIC_PATTERN = "[a-zA-Z0-9-_.~%]{1,900}";
+    
     /**
      * RegistryURL is the URL of the 3rd party application server
-     * 
+     *
      * @return the current pushServerURI
      */
     public URI getPushServerURI() {
@@ -43,10 +50,10 @@ public final class UnifiedPushConfig {
 
     /**
      * RegistryURL is the URL of the 3rd party application server
-     * 
+     *
      * @param pushServerURI a new URI
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setPushServerURI(URI pushServerURI) {
         this.pushServerURI = pushServerURI;
@@ -54,20 +61,20 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * SenderId is a  GCM sender Id (usually a project number) registered for 
+     * SenderId is a GCM sender Id (usually a project number) registered for
      * this application.
-     * 
+     *
      * @return the current senderId.
-     * 
+     *
      */
     public String getSenderId() {
         return senderId;
     }
 
     /**
-     * SenderId is a  GCM sender Id (usually a project number) registered for 
+     * SenderId is a GCM sender Id (usually a project number) registered for
      * this application.
-     * 
+     *
      * @param senderId the new senderId to set.
      * @return the current configuration.
      */
@@ -76,10 +83,9 @@ public final class UnifiedPushConfig {
         return this;
     }
 
-
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
-     * 
+     *
      * @return the current variant id
      */
     public String getVariantID() {
@@ -88,7 +94,7 @@ public final class UnifiedPushConfig {
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
-     * 
+     *
      * @param variantID the new variantID
      * @return the current configuration
      */
@@ -99,9 +105,9 @@ public final class UnifiedPushConfig {
 
     /**
      * Secret of the Variant from the AeroGear UnifiedPush Server.
-     * 
+     *
      * @return the current Secret
-     * 
+     *
      */
     public String getSecret() {
         return secret;
@@ -109,7 +115,7 @@ public final class UnifiedPushConfig {
 
     /**
      * Secret of the Variant from the AeroGear UnifiedPush Server.
-     * 
+     *
      * @param secret the new secret
      * @return the current configuration
      */
@@ -121,9 +127,9 @@ public final class UnifiedPushConfig {
     /**
      * The device token Identifies the device within its Push Network. It is the
      * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
-     * 
+     *
      * @return the current device token
-     * 
+     *
      */
     public String getDeviceToken() {
         return deviceToken;
@@ -132,10 +138,10 @@ public final class UnifiedPushConfig {
     /**
      * The device token Identifies the device within its Push Network. It is the
      * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
-     * 
+     *
      * @param deviceToken the new device token
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
@@ -145,9 +151,9 @@ public final class UnifiedPushConfig {
     /**
      * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server
-     * 
+     *
      * Defaults to ANDROID
-     * 
+     *
      * @return the device type
      */
     public String getDeviceType() {
@@ -157,12 +163,12 @@ public final class UnifiedPushConfig {
     /**
      * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server.
-     * 
+     *
      * Defaults to ANDROID
-     * 
+     *
      * @param deviceType a new device type
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setDeviceType(String deviceType) {
         this.deviceType = deviceType;
@@ -171,7 +177,7 @@ public final class UnifiedPushConfig {
 
     /**
      * The name of the operating system. Defaults to Android
-     * 
+     *
      * @return the operating system
      */
     public String getOperatingSystem() {
@@ -180,7 +186,7 @@ public final class UnifiedPushConfig {
 
     /**
      * The name of the operating system. Defaults to Android
-     * 
+     *
      * @param operatingSystem the new operating system
      * @return the current configuration
      */
@@ -191,11 +197,11 @@ public final class UnifiedPushConfig {
 
     /**
      * The version of the operating system running.
-     * 
+     *
      * Defaults to the value provided by android.os.Build.VERSION.RELEASE
-     * 
+     *
      * @return the current OSversion
-     * 
+     *
      */
     public String getOsVersion() {
         return osVersion;
@@ -203,11 +209,11 @@ public final class UnifiedPushConfig {
 
     /**
      * The Alias is an identifier of the user of the system.
-     * 
+     *
      * Examples are an email address or a username
-     * 
+     *
      * @return alias
-     * 
+     *
      */
     public String getAlias() {
         return alias;
@@ -215,12 +221,12 @@ public final class UnifiedPushConfig {
 
     /**
      * The Alias is an identifier of the user of the system.
-     * 
+     *
      * Examples are an email address or a username
-     * 
+     *
      * @param alias the new alias
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setAlias(String alias) {
         this.alias = alias;
@@ -229,9 +235,9 @@ public final class UnifiedPushConfig {
 
     /**
      * The categories specifies a channel which may be used to send messages
-     * 
+     *
      * @return the current categories
-     * 
+     *
      */
     public List<String> getCategories() {
         return Collections.unmodifiableList(categories);
@@ -239,48 +245,52 @@ public final class UnifiedPushConfig {
 
     /**
      * The categories specifies a channel which may be used to send messages
-     * 
+     *
      * @param categories the new categories
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setCategories(List<String> categories) {
-        this.categories = categories;
+        validateCategories(categories.toArray(new String[categories.size()]));        
+        this.categories = new ArrayList<String>(categories);
         return this;
     }
 
     /**
      * The categories specifies a channel which may be used to send messages
-     * 
+     *
      * @param categories the new categories
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig setCategories(String... categories) {
+        validateCategories(categories);        
         this.categories = Arrays.asList(categories);
         return this;
     }
 
     /**
      * The categories specifies a channel which may be used to send messages
-     * 
+     *
      * @param category a new category to be added to the current list.
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig addCategory(String category) {
+        validateCategories(category);        
         categories.add(category);
         return this;
     }
 
     /**
      * The categories specifies a channel which may be used to send messages
-     * 
+     *
      * @param categories a category collection to be added to the current list.
      * @return the current configuration
-     * 
+     *
      */
     public UnifiedPushConfig addCategories(List<String> categories) {
+        validateCategories(categories.toArray(new String[categories.size()]));
         this.categories.addAll(categories);
         return this;
     }
@@ -300,6 +310,23 @@ public final class UnifiedPushConfig {
 
         if (secret == null) {
             throw new IllegalStateException("Secret can't be null");
+        }
+    }
+
+    /**
+     * Validates categories against Google's pattern.
+     *
+     * @param categories a group of Strings each will be validated.
+     *
+     * @throws IllegalArgumentException if a category fails to match
+     * [a-zA-Z0-9-_.~%]{1,900}
+     */
+    private static void validateCategories(String... categories) {
+
+        for (String category : categories) {
+            if (!category.matches(GCM_TOPIC_PATTERN)) {
+                throw new IllegalArgumentException(String.format("%s does not match %s", category, GCM_TOPIC_PATTERN));
+            }
         }
     }
 
