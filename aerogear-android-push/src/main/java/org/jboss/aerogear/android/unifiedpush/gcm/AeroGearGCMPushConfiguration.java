@@ -116,7 +116,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The device token Identifies the device within its Push Network. It is the
-     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
+     * value = InstanceID.getInstance(context).instanceId.getToken(SENDER_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
      * 
      * @return the current device token
      * 
@@ -127,7 +127,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
 
     /**
      * The device token Identifies the device within its Push Network. It is the
-     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
+     * value = InstanceID.getInstance(context).instanceId.getToken(SENDER_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
      * 
      * @param deviceToken the new device token
      * @return the current configuration

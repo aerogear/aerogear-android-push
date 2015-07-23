@@ -18,8 +18,6 @@ package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -41,9 +39,7 @@ import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
@@ -51,16 +47,21 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private final static String AUTHORIZATION_METHOD = "Basic";
 
     private static final Integer TIMEOUT = 30000;// 30 seconds
-    /**
-     * Default lifespan (7 days) of a registration until it is considered
-     * expired.
-     */
-    public static final long REGISTRATION_EXPIRY_TIME_MS = 1000 * 3600 * 24 * 7;
-
     private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
-    public static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
-    private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
+    /**
+     * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to 
+     * recognize keys which are saved by this class in the event that registration
+     * tokens are refreshed by Google.
+     * 
+     */
+    static final String REGISTRAR_PREFERENCE_PATTERN = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:.+";
+    /**
+     * This template creates a key used by the registrar to save push data to SharedPreferences. 
+     * This information will be fetched by {@link UnifiedPushInstanceIDListenerService} 
+     * in the event registration tokens are reloaded.
+     */
+    static final String REGISTRAR_PREFERENCE_TEMPLATE = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:%s";
+    
     private static final String registryDeviceEndpoint = "/rest/registry/device";
     private static final String metricsEndpoint = "/rest/registry/device/pushMessage";
 
@@ -78,7 +79,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private final String alias;
     private final String operatingSystem;
     private final String osVersion;
-    private final List<String> categories;
+    private final ArrayList<String> categories;
 
     private Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
 
@@ -95,6 +96,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             return InstanceID.getInstance((Context) context[0]);
         }
     };
+    
+    private Provider<SharedPreferences> preferenceProvider = new GCMSharedPreferenceProvider();
 
     public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
         this.senderId = config.getSenderId();
@@ -127,15 +130,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
-                    String regid = getRegistrationId(context);
-
-                    if (regid.length() == 0) {
-                        regid = instanceId.getToken(senderId,
+                    String token = instanceId.getToken(senderId,
                                                     GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                        AeroGearGCMPushRegistrar.this.setRegistrationId(context, regid);
-                    }
-
-                    deviceToken = regid;
+                    
+                    deviceToken = token;
 
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, httpProvider);
@@ -156,6 +154,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         }
 
                         httpProvider.post(postData.toString());
+                        
+                        postData.addProperty("deviceRegistryURL", deviceRegistryURL.toString());
+                        postData.addProperty("variantId", variantId);
+                        postData.addProperty("secret", secret);
+                        presistPostInformation(context.getApplicationContext(), postData);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -198,6 +201,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 }
             }
 
+            
         }.execute((Void) null);
 
     }
@@ -234,6 +238,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     try {
                         provider.delete(deviceToken);
                         deviceToken = "";
+                        removeSavedPostData(context.getApplicationContext());
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -255,36 +260,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 }
             }
 
-        }.execute((Void) null);
-    }
 
-    /**
-     * Gets the current registration id for application on GCM service.
-     * <p>
-     * If result is empty, the registration has failed.
-     * 
-     * @param context the application context
-     * 
-     * @return registration id, or empty string if the registration is not
-     *         complete.
-     */
-    public String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.length() == 0) {
-            Log.v(TAG, "Registration not found.");
-            return "";
-        }
-        // check if app was updated; if so, it must clear registration id to
-        // avoid a race condition if GCM sends a message
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion
-                || isRegistrationExpired(context)) {
-            Log.v(TAG, "App version changed or registration expired.");
-            return "";
-        }
-        return registrationId;
+        }.execute((Void) null);
     }
 
     /**
@@ -335,65 +312,6 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }.execute((Void) null);
     }
 
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGCMPreferences(Context context) {
-        return context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    /**
-     * Checks if the registration has expired.
-     * 
-     * To avoid the scenario where the device sends the registration to the
-     * server but the server loses it, the app developer may choose to
-     * re-register after REGISTRATION_EXPIRY_TIME_MS.
-     * 
-     * @return true if the registration has expired.
-     */
-    private boolean isRegistrationExpired(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        // checks if the information is not stale
-        long expirationTime = prefs.getLong(PROPERTY_ON_SERVER_EXPIRATION_TIME, -1);
-        return System.currentTimeMillis() > expirationTime;
-    }
-
-    /**
-     * Stores the registration id, app versionCode, and expiration time in the
-     * application's {@code SharedPreferences}.
-     * 
-     * @param context application's context.
-     * @param regId registration id
-     */
-    private void setRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        int appVersion = getAppVersion(context);
-        Log.v(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        long expirationTime = System.currentTimeMillis()
-                + REGISTRATION_EXPIRY_TIME_MS;
-
-        Log.v(TAG, "Setting registration expiry time to "
-                + new Timestamp(expirationTime));
-        editor.putLong(PROPERTY_ON_SERVER_EXPIRATION_TIME, expirationTime);
-        editor.commit();
-    }
-
     public void setPasswordAuthentication(final String username, final String password, final HttpProvider provider) {
         provider.setDefaultHeader(BASIC_HEADER, getHashedAuth(username, password.toCharArray()));
     }
@@ -404,5 +322,29 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         String hashedCrentials = Base64.encodeToString(unhashedCredentials.getBytes(), Base64.DEFAULT | Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
     }
+
+    /**
+     * Save the post sent to UPS.  This will be used by {@link UnifiedPushInstanceIDListenerService} 
+     * to refresh the registration token if the registration token changes.
+     * 
+     * @param appContext the application Context 
+     */ 
+    private void presistPostInformation(Context appContext, JsonObject postData) {
+        preferenceProvider.get(appContext).edit()
+                .putString(String.format(REGISTRAR_PREFERENCE_TEMPLATE, senderId), postData.toString())
+                .commit();
+    }
+
+    
+    /**
+     * We are no longer registered.  We do not need to respond to changes in  registration token.
+     * @param appContext the application Context
+     */
+    private void removeSavedPostData(Context appContext) {
+        preferenceProvider.get(appContext).edit()
+                .remove(String.format(REGISTRAR_PREFERENCE_TEMPLATE, senderId))
+                .commit();
+    }
+    
 
 }
