@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -39,6 +40,7 @@ import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
@@ -159,6 +161,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
+                        for (String catgory : categories) {
+                            GcmPubSub.getInstance(context).subscribe(deviceToken, "/topics/" + URLEncoder.encode(catgory), null);
+                        }
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -230,6 +235,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         instanceId = instanceIdProvider.get(context);
                     }
 
+                    for (String catgory : categories) {
+                            GcmPubSub.getInstance(context).unsubscribe(deviceToken, "/topics/" + URLEncoder.encode(catgory));
+                    }
+                    
                     instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
