@@ -40,7 +40,6 @@ import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
@@ -96,6 +95,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         @Override
         public InstanceID get(Object... context) {
             return InstanceID.getInstance((Context) context[0]);
+        }
+    };
+    
+    private Provider<GcmPubSub> gcmPubProvider = new Provider<GcmPubSub>() {
+
+        @Override
+        public GcmPubSub get(Object... context) {
+            return GcmPubSub.getInstance((Context) context[0]);
         }
     };
     
@@ -161,8 +168,10 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
+                        GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    
                         for (String catgory : categories) {
-                            GcmPubSub.getInstance(context).subscribe(deviceToken, "/topics/" + URLEncoder.encode(catgory), null);
+                            gcmPubSub.getInstance(context).subscribe(deviceToken, "/topics/" + catgory, null);
                         }
                         return null;
                     } catch (HttpException ex) {
@@ -234,9 +243,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
-
+                    
+                    GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    
                     for (String catgory : categories) {
-                            GcmPubSub.getInstance(context).unsubscribe(deviceToken, "/topics/" + URLEncoder.encode(catgory));
+                            gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
                     }
                     
                     instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);

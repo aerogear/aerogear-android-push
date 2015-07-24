@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.iid.InstanceID;
 import java.io.BufferedReader;
 import org.jboss.aerogear.android.core.Provider;
@@ -45,6 +46,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.aerogear.android.unifiedpush.gcm.GCMSharedPreferenceProvider;
+import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +60,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     private static final String TEST_REGISTRAR_PREFERENCES_KEY = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
     private static final String TEST_SENDER_VARIANT = "Variant";
+    private static final String[] CATEGORIES = {"test", "anotherTest"};
+    
     private static final String TAG = AeroGearGCMPushRegistrarTest.class.getSimpleName();
 
     public AeroGearGCMPushRegistrarTest() {
@@ -104,6 +108,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
+                .setCategories(CATEGORIES)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -143,6 +148,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         String jsonData = new GCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, TAG);
         Assert.assertNotNull(jsonData);
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), new JSONObject(jsonData).getString("deviceToken"));
+        Assert.assertEquals(new JSONArray(CATEGORIES).length(), new JSONObject(jsonData).getJSONArray("categories").length());
     }
 
     @Test
@@ -151,6 +157,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
+                .setCategories(CATEGORIES)
                 .setPushServerURI(new URI("https://testuri"));
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
@@ -161,6 +168,21 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
         UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
 
+        final GcmPubSub mockPubSub = Mockito.mock(GcmPubSub.class);
+        Mockito.doNothing().when(mockPubSub).unsubscribe(anyString(), anyString());
+        
+        Provider gcmPubSubProvider = new Provider<GcmPubSub>() {
+
+            @Override
+            public GcmPubSub get(Object... in) {
+                return mockPubSub;
+            }
+
+                
+        };;
+        UnitTestUtils.setPrivateField(registrar, "gcmPubProvider", gcmPubSubProvider);
+
+        
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
@@ -180,6 +202,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         Mockito.verify(instanceIdProvider.mock).deleteToken(anyString(), anyString());
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
+        Mockito.verify(mockPubSub, Mockito.times(1)).unsubscribe(StubInstanceIDProvider.TEMP_ID, "/topics/test");
+        Mockito.verify(mockPubSub, Mockito.times(1)).unsubscribe(StubInstanceIDProvider.TEMP_ID, "/topics/anotherTest");
         Assert.assertNull(callback.exception);
         Assert.assertEquals("", UnitTestUtils.getPrivateField(registrar, "deviceToken"));
     }

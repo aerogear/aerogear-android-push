@@ -63,6 +63,26 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-push</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.support</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>${android.support.v4.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
@@ -106,6 +126,13 @@
             <groupId>com.android.support.test</groupId>
             <artifactId>runner</artifactId>
             <version>${android.support.test.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.support.test</groupId>
+            <artifactId>runner</artifactId>
+            <version>${android.support.test.version}</version>
             <type>aar</type>
             <exclusions>
                 <exclusion>
@@ -124,6 +151,19 @@
             <artifactId>rules</artifactId>
             <version>${android.support.test.version}</version>
             <type>aar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.support.test</groupId>
+            <artifactId>rules</artifactId>
+            <version>${android.support.test.version}</version>
+            <scope>provided</scope>
+        </dependency>
+     <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>play-services-gcm</artifactId>
+            <version>7.5.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
