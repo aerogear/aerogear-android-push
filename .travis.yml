@@ -63,7 +63,7 @@ before_install:
 before_script:
 
   # Create emulator
-  - echo no | android create avd --force -n test -t $ANDROID_EMULATOR --abi $ANDROID_ABI --tag google_apis
+  - echo no | android create avd --force -n test -t "$ANDROID_EMULATOR" --abi $ANDROID_ABI --tag google_apis
 
 script:
   - mvn install -Drelease
