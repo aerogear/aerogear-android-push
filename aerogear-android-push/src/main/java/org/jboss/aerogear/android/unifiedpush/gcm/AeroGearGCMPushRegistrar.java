@@ -227,13 +227,15 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     }
 
                     gcm.unregister();
-
+                    
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, provider);
 
                     try {
                         provider.delete(deviceToken);
                         deviceToken = "";
+                        Log.i(TAG, "unsetting device token");
+                        setRegistrationId(context, deviceToken);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -255,7 +257,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 }
             }
 
-        }.execute((Void) null);
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     /**
@@ -331,7 +333,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 }
             }
 
-        }.execute((Void) null);
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     /**

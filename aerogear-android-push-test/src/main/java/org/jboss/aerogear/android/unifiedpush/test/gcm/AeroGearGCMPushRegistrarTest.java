@@ -40,6 +40,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import junit.framework.Assert;
 
 public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase<MainActivity> {
 
@@ -216,13 +217,42 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         callback = new VoidCallback(latch);
         spy.unregister(super.getActivity(), callback);
         spy.unregister(super.getActivity(), callback);
-        latch.await(2, TimeUnit.SECONDS);
+        latch.await(4, TimeUnit.SECONDS);
 
         assertNotNull(callback.exception);
         assertTrue(callback.exception instanceof IllegalStateException);
 
     }
 
+    public void testRegistrationTokensAreNotCached() throws Exception {
+
+        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+                .addSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)
+                .setPushServerURI(new URI("https://testuri"));
+
+        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        CountDownLatch latch = new CountDownLatch(1);
+        StubHttpProvider provider = new StubHttpProvider();
+        UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
+
+        StubGCMProvider gcmProvider = new StubGCMProvider();
+        UnitTestUtils.setPrivateField(registrar, "gcmProvider", gcmProvider);
+        VoidCallback callback = new VoidCallback(latch);
+
+        registrar.register(super.getActivity(), callback);
+        latch.await(5, TimeUnit.SECONDS);
+        Assert.assertNotNull(super.getActivity().getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE).getString("registration_id", null));        
+        
+        latch = new CountDownLatch(1);
+        callback = new VoidCallback(latch);
+        registrar.unregister(super.getActivity(), callback);
+        latch.await(5, TimeUnit.SECONDS);
+        Assert.assertEquals("", super.getActivity().getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE).getString("registration_id", null));        
+        
+    }
+    
     public void testAeroGearGCMPushConfigurationWithoutVariantID() throws Exception {
 
         try {
