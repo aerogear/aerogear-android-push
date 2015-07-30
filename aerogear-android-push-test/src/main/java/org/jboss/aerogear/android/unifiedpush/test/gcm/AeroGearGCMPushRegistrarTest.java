@@ -16,8 +16,10 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
+import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
@@ -39,6 +41,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import org.jboss.aerogear.android.unifiedpush.gcm.GCMSharedPreferenceProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -236,13 +239,52 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         callback = new VoidCallback(latch);
         spy.unregister(super.getActivity(), callback);
         spy.unregister(super.getActivity(), callback);
-        latch.await(2, TimeUnit.SECONDS);
+        latch.await(4, TimeUnit.SECONDS);
 
         Assert.assertNotNull(callback.exception);
         Assert.assertTrue(callback.exception instanceof IllegalStateException);
 
     }
 
+    @Test
+    public void testRegistrationTokensAreNotCached() throws Exception {
+
+        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+                .setSenderId(TEST_SENDER_ID)
+                .setVariantID(TEST_SENDER_VARIANT)
+                .setSecret(TEST_SENDER_PASSWORD)
+                .setPushServerURI(new URI("https://testuri"));
+
+        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        CountDownLatch latch = new CountDownLatch(1);
+        StubHttpProvider provider = new StubHttpProvider();
+        UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
+
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
+        
+        UnitTestUtils.setPrivateField(registrar, "preferenceProvider", new Provider<SharedPreferences>() {
+
+            @Override
+            public SharedPreferences get(Object... in) {
+               return new GCMSharedPreferenceProvider().get(getActivity());
+            }
+        });
+        
+        VoidCallback callback = new VoidCallback(latch);
+
+        registrar.register(super.getActivity(), callback);
+        latch.await(5, TimeUnit.SECONDS);
+        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));        
+        
+        latch = new CountDownLatch(1);
+        callback = new VoidCallback(latch);
+        registrar.unregister(super.getActivity(), callback);
+        latch.await(5, TimeUnit.SECONDS);
+        Assert.assertNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));        
+        Mockito.verify(instanceIdProvider.mock, Mockito.times(1)).deleteToken(Mockito.eq(TEST_SENDER_ID), Mockito.eq(GoogleCloudMessaging.INSTANCE_ID_SCOPE));
+    }
+    
     @Test
     public void testAeroGearGCMPushConfigurationWithoutVariantID() throws Exception {
 
