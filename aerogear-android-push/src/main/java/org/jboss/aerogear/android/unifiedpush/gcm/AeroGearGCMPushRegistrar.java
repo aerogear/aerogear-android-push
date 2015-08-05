@@ -26,7 +26,7 @@ import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.apache.http.HttpStatus;
+import java.net.HttpURLConnection;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -179,9 +179,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (result instanceof HttpException) {
                         HttpException httpException = (HttpException) result;
                         switch (httpException.getStatusCode()) {
-                        case HttpStatus.SC_MOVED_PERMANENTLY:
-                        case HttpStatus.SC_MOVED_TEMPORARILY:
-                        case HttpStatus.SC_TEMPORARY_REDIRECT:
+                        case HttpURLConnection.HTTP_MOVED_PERM:
+                        case HttpURLConnection.HTTP_MOVED_TEMP:
+                        case 307://Temporary Redirect not in HTTPUrlConnection
                             Log.w(TAG, httpException.getMessage());
                             try {
                                 URL redirectURL = new URL(httpException.getHeaders().get("Location"));
