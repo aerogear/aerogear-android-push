@@ -12,9 +12,11 @@ android:
     - tools
     - build-tools-22.0.1
     - android-22
+    - addon-google_apis-google-22
     - extra-google-m2repository
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-addon-google_apis-google-22
     - extra-google-google_play_services    
 
 notifications:
@@ -24,7 +26,7 @@ env:
   global:
     - RELEASE_VERSION=$(grep "<version>" pom.xml | tr "\n" ":" | cut -d ':' -f1 | sed s/\<version\>//g| sed s/\"//g| sed s/\<\\/version\>//g | tr -d ' ')
   matrix:
-    - ANDROID_SDK=android-22 ANDROID_EMULATOR=android-22 ANDROID_ABI=armeabi-v7a
+    - ANDROID_SDK=android-22 ANDROID_EMULATOR="Google Inc.:Google APIs:22" ANDROID_ABI=google_apis/armeabi-v7a
 
 before_install:
 
@@ -63,7 +65,7 @@ before_install:
 before_script:
 
   # Create emulator
-  - echo no | android create avd --force -n test -t $ANDROID_EMULATOR --abi $ANDROID_ABI
+  - echo no | android create avd --force -n test -t "$ANDROID_EMULATOR" --abi "$ANDROID_ABI"
 
 script:
   - mvn install -Drelease
