@@ -113,7 +113,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         registrar.register(super.getActivity(), callback);
-        if (!latch.await(30, TimeUnit.SECONDS)) {
+        if (!latch.await(60, TimeUnit.SECONDS)) {
             try {
                 Process process = Runtime.getRuntime().exec("logcat -d");
                 BufferedReader bufferedReader = new BufferedReader(
