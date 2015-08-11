@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
@@ -21,6 +21,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import java.io.BufferedReader;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
@@ -36,6 +37,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -111,7 +113,21 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         registrar.register(super.getActivity(), callback);
-        if (!latch.await(30, TimeUnit.SECONDS)) {
+        if (!latch.await(60, TimeUnit.SECONDS)) {
+            try {
+                Process process = Runtime.getRuntime().exec("logcat -d");
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+
+                StringBuilder log = new StringBuilder();
+                String line = "";
+                while ((line = bufferedReader.readLine()) != null) {
+                    log.append(line);
+                }
+                Log.e(TAG, log.toString());    
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage(), e);    
+            }
             Assert.fail("Latch wasn't called");
         }
 
@@ -148,7 +164,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
-        
+
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
 
@@ -230,7 +246,6 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
-        
 
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -262,29 +277,29 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
         UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
-        
+
         UnitTestUtils.setPrivateField(registrar, "preferenceProvider", new Provider<SharedPreferences>() {
 
             @Override
             public SharedPreferences get(Object... in) {
-               return new GCMSharedPreferenceProvider().get(getActivity());
+                return new GCMSharedPreferenceProvider().get(getActivity());
             }
         });
-        
+
         VoidCallback callback = new VoidCallback(latch);
 
         registrar.register(super.getActivity(), callback);
         latch.await(5, TimeUnit.SECONDS);
-        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));        
-        
+        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
+
         latch = new CountDownLatch(1);
         callback = new VoidCallback(latch);
         registrar.unregister(super.getActivity(), callback);
         latch.await(5, TimeUnit.SECONDS);
-        Assert.assertNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));        
+        Assert.assertNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
         Mockito.verify(instanceIdProvider.mock, Mockito.times(1)).deleteToken(Mockito.eq(TEST_SENDER_ID), Mockito.eq(GoogleCloudMessaging.INSTANCE_ID_SCOPE));
     }
-    
+
     @Test
     public void testAeroGearGCMPushConfigurationWithoutVariantID() throws Exception {
 
@@ -346,7 +361,6 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
             return mock;
         }
     }
-
 
     static class StubInstanceIDProvider implements Provider<InstanceID> {
 

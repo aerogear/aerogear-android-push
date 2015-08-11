@@ -1,3 +1,5 @@
+sudo: false # See: docs.travis-ci.com/user/migrating-from-legacy
+
 language: android
 
 jdk:
@@ -8,15 +10,14 @@ android:
   components:
     - platform-tools
     - tools
-    - build-tools-21.1.1
-    - android-21
-    - extra-google-google_play_services
-    - android-19
-    - extra-android-support
+    - build-tools-22.0.1
+    - android-22
+    - addon-google_apis-google-22
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-19
-    - sys-img-armeabi-v7a-addon-google_apis-google-19
+    - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-addon-google_apis-google-22
+    - extra-google-google_play_services    
 
 notifications:
   irc: "irc.freenode.org#aerogear"
@@ -25,13 +26,9 @@ env:
   global:
     - RELEASE_VERSION=$(grep "<version>" pom.xml | tr "\n" ":" | cut -d ':' -f1 | sed s/\<version\>//g| sed s/\"//g| sed s/\<\\/version\>//g | tr -d ' ')
   matrix:
-    - ANDROID_SDK=android-21 ANDROID_EMULATOR=android-19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_SDK=android-22 ANDROID_EMULATOR="Google Inc.:Google APIs:22" ANDROID_ABI=google_apis/armeabi-v7a
 
 before_install:
-
-  # Kill unnecessary services
-  - sudo service mysql stop
-  - sudo service postgresql stop
 
   #################################################
   ########## maven-android-sdk-deployer ###########
@@ -42,13 +39,13 @@ before_install:
 
   # Install android maven repository
   - cd $PWD/maven-android-sdk-deployer/platforms/$ANDROID_SDK
-  - mvn  install -N --quiet
+  - mvn install -N --quiet
   - cd -
-  #Install support testing repositories  
+
   - cd $PWD/maven-android-sdk-deployer/repositories
-  - mvn  install 
+  - mvn install --quiet
   - cd -
-  
+
   #################################################
   ############ Snapshot dependencies ##############
   #################################################
@@ -62,13 +59,13 @@ before_install:
   # AeroGear Android Pipe
   - git clone git://github.com/aerogear/aerogear-android-pipe.git
   - cd $PWD/aerogear-android-pipe
-  - mvn install -fn --quiet
+  - mvn install -DskipTests -fn --quiet
   - cd -
 
 before_script:
 
   # Create emulator
-  - echo no | android create avd --force -n test -t $ANDROID_EMULATOR --abi $ANDROID_ABI
+  - echo no | android create avd --force -n test -t "$ANDROID_EMULATOR" --abi "$ANDROID_ABI"
 
 script:
   - mvn install -Drelease
@@ -82,4 +79,4 @@ script:
   - adb shell input keyevent 82
   - adb shell df
   - adb install target/aerogear-android-push-test-$RELEASE_VERSION.apk
-  - mvn android:instrument
+  - mvn -X android:instrument
