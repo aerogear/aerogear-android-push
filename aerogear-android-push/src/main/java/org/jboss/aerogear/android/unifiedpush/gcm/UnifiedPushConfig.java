@@ -281,7 +281,7 @@ public final class UnifiedPushConfig {
      * 
      */
     public UnifiedPushConfig addCategories(List<String> categories) {
-        categories.addAll(categories);
+        this.categories.addAll(categories);
         return this;
     }
 
