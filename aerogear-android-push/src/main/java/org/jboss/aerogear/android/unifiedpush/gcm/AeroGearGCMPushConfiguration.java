@@ -253,6 +253,18 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      */
     public AeroGearGCMPushConfiguration setCategories(List<String> categories) {
+        this.pushConfig.setCategories(categories);
+        return this;
+    }
+
+    /**
+     * The categories specifies a channel which may be used to send messages
+     *
+     * @param categories add categories
+     * @return the current configuration
+     *
+     */
+    public AeroGearGCMPushConfiguration addCategories(List<String> categories) {
         this.pushConfig.addCategories(categories);
         return this;
     }
