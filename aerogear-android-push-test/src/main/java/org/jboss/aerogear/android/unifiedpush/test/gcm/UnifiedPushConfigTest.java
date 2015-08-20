@@ -47,6 +47,7 @@ public class UnifiedPushConfigTest {
 
         //when
         config.setCategories(categories);
+        // setCategories was doing an add so to test the correct behaviour performing a set twice.
         config.setCategories(categories);
 
         //then
