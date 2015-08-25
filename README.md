@@ -35,8 +35,7 @@ Add to your application's `build.gradle` file
 ```
 dependencies {
     compile 'com.google.android.gms:play-services:+'
-    compile 'org.jboss.aerogear:aerogear-android-core:2.0.0'
-    compile 'org.jboss.aerogear:aerogear-android-push:2.0.0'
+    compile 'org.jboss.aerogear:aerogear-android-push:2.2.1'
 }
 ```
 
@@ -48,7 +47,7 @@ Include the following dependencies in your project's `pom.xml`
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.0.0</version>
+  <version>2.2.1</version>
   <scope>provided</scope>
   <type>jar</type>
 </dependency>
@@ -56,7 +55,7 @@ Include the following dependencies in your project's `pom.xml`
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.0.0</version>
+  <version>2.2.1</version>
   <type>aar</type>
 </dependency>
 ```
