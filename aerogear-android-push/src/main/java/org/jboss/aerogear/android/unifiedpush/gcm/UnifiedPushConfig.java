@@ -245,7 +245,7 @@ public final class UnifiedPushConfig {
      * 
      */
     public UnifiedPushConfig setCategories(List<String> categories) {
-        this.categories = new ArrayList<String>(categories);
+        this.categories = categories;
         return this;
     }
 

@@ -23,6 +23,9 @@ import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -106,6 +109,24 @@ public class AeroGearGCMPushJsonConfigurationTest
             String errorMessage = "An error occurred while parsing the blablabla.json. Please check if the file exists";
             Assert.assertEquals(errorMessage, e.getMessage());
         }
+    }
+
+    @Test
+    public void testSetCategoriesUsingStringArray() {
+        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        config.setCategories("A", "B");
+        Assert.assertEquals(2, config.getCategories().size());
+    }
+
+    @Test
+    public void testSetCategoriesUsingList() {
+        List<String> myCategories = new ArrayList<String>();
+        myCategories.add("A");
+        myCategories.add("B");
+
+        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        config.setCategories(myCategories);
+        Assert.assertEquals(2, config.getCategories().size());
     }
 
 }
