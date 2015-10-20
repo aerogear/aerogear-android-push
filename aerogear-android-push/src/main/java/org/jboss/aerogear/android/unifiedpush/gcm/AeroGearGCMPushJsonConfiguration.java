@@ -231,6 +231,18 @@ public class AeroGearGCMPushJsonConfiguration
      * 
      */
     public AeroGearGCMPushJsonConfiguration setCategories(List<String> categories) {
+        this.pushConfig.setCategories(categories);
+        return this;
+    }
+
+    /**
+     * The categories specifies a channel which may be used to send messages
+     *
+     * @param categories add categories
+     * @return the current configuration
+     *
+     */
+    public AeroGearGCMPushJsonConfiguration addCategories(List<String> categories) {
         this.pushConfig.addCategories(categories);
         return this;
     }

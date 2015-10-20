@@ -208,7 +208,6 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         VoidCallback callback = new VoidCallback(latch);
 
         AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
-        Mockito.doReturn("tempId").when(spy).getRegistrationId((Context) Mockito.any());
 
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -219,8 +218,8 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         spy.unregister(super.getActivity(), callback);
         latch.await(4, TimeUnit.SECONDS);
 
-        assertNotNull(callback.exception);
-        assertTrue(callback.exception instanceof IllegalStateException);
+        Assert.assertNotNull(callback.exception);
+        Assert.assertTrue(callback.exception instanceof IllegalStateException);
 
     }
 
