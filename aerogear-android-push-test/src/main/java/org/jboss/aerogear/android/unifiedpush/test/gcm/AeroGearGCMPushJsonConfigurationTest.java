@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,9 +22,7 @@ import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class AeroGearGCMPushJsonConfigurationTest
         extends PatchedActivityInstrumentationTestCase<MainActivity> {
@@ -100,6 +98,22 @@ public class AeroGearGCMPushJsonConfigurationTest
             String errorMessage = "An error occurred while parsing the blablabla.json. Please check if the file exists";
             Assert.assertEquals(errorMessage, e.getMessage());
         }
+    }
+
+    public void testSetCategoriesUsingStringArray() {
+        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        config.setCategories("A", "B");
+        Assert.assertEquals(2, config.getCategories().size());
+    }
+
+    public void testSetCategoriesUsingList() {
+        List<String> myCategories = new ArrayList<String>();
+        myCategories.add("A");
+        myCategories.add("B");
+
+        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        config.setCategories(myCategories);
+        Assert.assertEquals(2, config.getCategories().size());
     }
 
 }
