@@ -43,11 +43,11 @@
         <!-- Dependencies versions -->
         <aerogear.android.core.version>3.0.0-SNAPSHOT</aerogear.android.core.version>
         <aerogear.android.pipe.version>3.0.0-SNAPSHOT</aerogear.android.pipe.version>
-        <google.play.services.version>7.5.0</google.play.services.version>
+        <google.play.services.version>8.4.0</google.play.services.version>
 
         <!-- Plugins versions -->
-        <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
-        <builder.helper.plugin.version>1.7</builder.helper.plugin.version>
+        <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
+        <builder.helper.plugin.version>1.10</builder.helper.plugin.version>
 
     </properties>
 
