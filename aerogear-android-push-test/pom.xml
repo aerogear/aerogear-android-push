@@ -36,7 +36,7 @@
         <mockito.version>1.9.5</mockito.version>
         <dexmaker.version>1.0</dexmaker.version>
         <dexmaker.mockito.version>1.0</dexmaker.mockito.version>
-        <android.support.test.version>0.3</android.support.test.version>
+        <android.support.test.version>0.5</android.support.test.version>
 
         <!-- Plugins parameters -->
         <android.maven.plugin.dex.xms>-Xms256m</android.maven.plugin.dex.xms>
