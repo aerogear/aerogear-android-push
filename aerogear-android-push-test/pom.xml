@@ -32,11 +32,12 @@
     <properties>
 
         <!-- Dependencies versions -->
-        <android.support.v4.version>22.2.0</android.support.v4.version>
+        <android.support.v4.version>23.3.0</android.support.v4.version>
         <mockito.version>1.9.5</mockito.version>
         <dexmaker.version>1.0</dexmaker.version>
         <dexmaker.mockito.version>1.0</dexmaker.mockito.version>
         <android.support.test.version>0.5</android.support.test.version>
+        <google.play.services.version>8.4.0</google.play.services.version>
 
         <!-- Plugins parameters -->
         <android.maven.plugin.dex.xms>-Xms256m</android.maven.plugin.dex.xms>
@@ -72,13 +73,6 @@
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-android-core</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.android.support</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>${android.support.v4.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -121,13 +115,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+<!--
         <dependency>
             <groupId>com.android.support.test</groupId>
             <artifactId>runner</artifactId>
             <version>${android.support.test.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.android.support.test</groupId>
@@ -153,18 +147,18 @@
             <type>aar</type>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>com.android.support.test</groupId>
             <artifactId>rules</artifactId>
             <version>${android.support.test.version}</version>
             <scope>provided</scope>
-        </dependency>
-     <dependency>
+        </dependency>-->
+<!--     <dependency>
             <groupId>com.google.android.gms</groupId>
             <artifactId>play-services-gcm</artifactId>
-            <version>7.5.0</version>
+            <version>${google.play.services.version}    </version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 
