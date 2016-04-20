@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.unifiedpush.test.gcm;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -50,6 +51,7 @@ import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -115,21 +117,32 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
+                
+        StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
+        UnitTestUtils.setPrivateField(registrar, "instanceIdProvider", instanceIdProvider);
+
         VoidCallback callback = new VoidCallback(latch);
 
+        final GcmPubSub mockPubSub = Mockito.mock(GcmPubSub.class);
+        Mockito.doNothing().when(mockPubSub).unsubscribe(anyString(), anyString());
+        Mockito.doNothing().when(mockPubSub).subscribe(anyString(), anyString(), any(Bundle.class));
+        
+        Provider gcmPubSubProvider = new Provider<GcmPubSub>() {
+
+            @Override
+            public GcmPubSub get(Object... in) {
+                return mockPubSub;
+            }
+
+                
+        };;
+        UnitTestUtils.setPrivateField(registrar, "gcmPubProvider", gcmPubSubProvider);
+
+        
         registrar.register(super.getActivity(), callback);
         if (!latch.await(60, TimeUnit.SECONDS)) {
             try {
-                Process process = Runtime.getRuntime().exec("logcat -d");
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-
-                StringBuilder log = new StringBuilder();
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    log.append(line);
-                }
-                Log.e(TAG, log.toString());    
+                writeLogcatLogs();
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage(), e);    
             }
@@ -149,6 +162,9 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         Assert.assertNotNull(jsonData);
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), new JSONObject(jsonData).getString("deviceToken"));
         Assert.assertEquals(new JSONArray(CATEGORIES).length(), new JSONObject(jsonData).getJSONArray("categories").length());
+        Mockito.verify(mockPubSub, Mockito.times(1)).subscribe(StubInstanceIDProvider.TEMP_ID, "/topics/test", null);
+        Mockito.verify(mockPubSub, Mockito.times(1)).subscribe(StubInstanceIDProvider.TEMP_ID, "/topics/anotherTest", null);
+        Mockito.verify(mockPubSub, Mockito.times(1)).subscribe(StubInstanceIDProvider.TEMP_ID, "/topics/" + TEST_SENDER_VARIANT, null);
     }
 
     @Test
@@ -170,6 +186,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         final GcmPubSub mockPubSub = Mockito.mock(GcmPubSub.class);
         Mockito.doNothing().when(mockPubSub).unsubscribe(anyString(), anyString());
+        Mockito.doNothing().when(mockPubSub).subscribe(anyString(), anyString(), any(Bundle.class));
         
         Provider gcmPubSubProvider = new Provider<GcmPubSub>() {
 
@@ -204,6 +221,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         Mockito.verify(provider.mock).delete(Mockito.matches("tempId"));
         Mockito.verify(mockPubSub, Mockito.times(1)).unsubscribe(StubInstanceIDProvider.TEMP_ID, "/topics/test");
         Mockito.verify(mockPubSub, Mockito.times(1)).unsubscribe(StubInstanceIDProvider.TEMP_ID, "/topics/anotherTest");
+        Mockito.verify(mockPubSub, Mockito.times(1)).unsubscribe(StubInstanceIDProvider.TEMP_ID, "/topics/" + TEST_SENDER_VARIANT);
         Assert.assertNull(callback.exception);
         Assert.assertEquals("", UnitTestUtils.getPrivateField(registrar, "deviceToken"));
     }
@@ -262,6 +280,23 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
+        
+        final GcmPubSub mockPubSub = Mockito.mock(GcmPubSub.class);
+        Mockito.doNothing().when(mockPubSub).unsubscribe(anyString(), anyString());
+        Mockito.doNothing().when(mockPubSub).subscribe(anyString(), anyString(), any(Bundle.class));
+        
+        Provider gcmPubSubProvider = new Provider<GcmPubSub>() {
+
+            @Override
+            public GcmPubSub get(Object... in) {
+                return mockPubSub;
+            }
+
+                
+        };;
+        UnitTestUtils.setPrivateField(registrar, "gcmPubProvider", gcmPubSubProvider);
+
+        
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
 
         StubInstanceIDProvider instanceIdProvider = new StubInstanceIDProvider();
@@ -274,9 +309,15 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
 
-        latch = new CountDownLatch(2);
+        latch = new CountDownLatch(1);
         callback = new VoidCallback(latch);
         spy.unregister(super.getActivity(), callback);
+        latch.await(4, TimeUnit.SECONDS);
+        
+        Assert.assertNull(callback.exception);
+        
+        latch = new CountDownLatch(1);
+        callback = new VoidCallback(latch);
         spy.unregister(super.getActivity(), callback);
         latch.await(4, TimeUnit.SECONDS);
 
@@ -296,6 +337,23 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
+        
+                final GcmPubSub mockPubSub = Mockito.mock(GcmPubSub.class);
+        Mockito.doNothing().when(mockPubSub).unsubscribe(anyString(), anyString());
+        Mockito.doNothing().when(mockPubSub).subscribe(anyString(), anyString(), any(Bundle.class));
+        
+        Provider gcmPubSubProvider = new Provider<GcmPubSub>() {
+
+            @Override
+            public GcmPubSub get(Object... in) {
+                return mockPubSub;
+            }
+
+                
+        };;
+        UnitTestUtils.setPrivateField(registrar, "gcmPubProvider", gcmPubSubProvider);
+
+        
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
 
@@ -320,6 +378,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         callback = new VoidCallback(latch);
         registrar.unregister(super.getActivity(), callback);
         latch.await(5, TimeUnit.SECONDS);
+        Assert.assertNull(callback.exception);
         Assert.assertNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
         Mockito.verify(instanceIdProvider.mock, Mockito.times(1)).deleteToken(Mockito.eq(TEST_SENDER_ID), Mockito.eq(GoogleCloudMessaging.INSTANCE_ID_SCOPE));
     }
@@ -363,6 +422,19 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         Assert.fail();
 
+    }
+
+    private void writeLogcatLogs() throws IOException {
+        Process process = Runtime.getRuntime().exec("logcat -d");
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(process.getInputStream()));
+
+        StringBuilder log = new StringBuilder();
+        String line = "";
+        while ((line = bufferedReader.readLine()) != null) {
+            log.append(line);
+        }
+        Log.e(TAG, log.toString());    
     }
 
     static class StubHttpProvider implements Provider<HttpProvider> {

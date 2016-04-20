@@ -115,13 +115,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>runner</artifactId>
-            <version>${android.support.test.version}</version>
-            <scope>provided</scope>
-        </dependency>-->
 
         <dependency>
             <groupId>com.android.support.test</groupId>
@@ -146,19 +139,6 @@
             <version>${android.support.test.version}</version>
             <type>aar</type>
         </dependency>
-
-<!--        <dependency>
-            <groupId>com.android.support.test</groupId>
-            <artifactId>rules</artifactId>
-            <version>${android.support.test.version}</version>
-            <scope>provided</scope>
-        </dependency>-->
-<!--     <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>${google.play.services.version}    </version>
-            <scope>provided</scope>
-        </dependency>-->
 
     </dependencies>
 

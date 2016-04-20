@@ -171,8 +171,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         GcmPubSub gcmPubSub = gcmPubProvider.get(context);
                     
                         for (String catgory : categories) {
-                            gcmPubSub.getInstance(context).subscribe(deviceToken, "/topics/" + catgory, null);
+                            gcmPubSub.subscribe(deviceToken, "/topics/" + catgory, null);
                         }
+                        
+                        //Subscribe to global topic
+                        gcmPubSub.subscribe(deviceToken, "/topics/" + variantId, null);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -249,6 +252,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     for (String catgory : categories) {
                             gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
                     }
+                    
+                    //Unsubscribe to generic topic
+                    gcmPubSub.unsubscribe(deviceToken, "/topics/" + variantId);
                     
                     instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
 
