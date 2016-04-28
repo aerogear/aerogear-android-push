@@ -160,7 +160,7 @@ public class RegistrarManager {
 
     /**
      * 
-     * This will deliver an intent to all registered handlers. See {@link PushConstants} for information on how messages will be routed.
+     * This will deliver an intent to all registered handlers. 
      * 
      * @param message the message to pass
      * @param defaultHandler a default handler is a handler which will be called
