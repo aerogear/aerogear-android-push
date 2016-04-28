@@ -16,19 +16,16 @@
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.gcm.GcmListenerService;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 
-import static org.jboss.aerogear.android.unifiedpush.PushConstants.*;
 
 /**
  * <p>
@@ -37,7 +34,7 @@ import static org.jboss.aerogear.android.unifiedpush.PushConstants.*;
  * <p>
  * Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
  */
-public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
+public class AeroGearGCMMessageReceiver extends GcmListenerService {
 
     public static final int NOTIFICATION_ID = 1;
 
@@ -46,21 +43,18 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
     private static final String TAG = AeroGearGCMMessageReceiver.class.getSimpleName();
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
-    /**
+    @Override
+        /**
      * When a GCM message is received, the attached implementations of our <code>MessageHandler</code> interface
      * are being notified.
      */
-    @Override
-    public void onReceive(Context context, Intent intent) {
 
-        // Ignore register ACK
-        if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {
-            return;
-        }
+    public void onMessageReceived(String from, Bundle message) {
+        super.onMessageReceived(from, message); 
 
         if (checkDefaultHandler) {
             checkDefaultHandler = false;
-            Bundle metaData = getMetadata(context);
+            Bundle metaData = getMetadata(getApplicationContext());
             if (metaData != null) {
 
                 String defaultHandlerClassName = metaData.getString(DEFAULT_MESSAGE_HANDLER_KEY);
@@ -76,18 +70,8 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
             }
         }
 
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-        String messageType = gcm.getMessageType(intent);
-        if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-            intent.putExtra(ERROR, true);
-        } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-            intent.putExtra(DELETED, true);
-        } else {
-            intent.putExtra(MESSAGE, true);
-        }
-
         // notity all attached MessageHandler implementations:
-        RegistrarManager.notifyHandlers(context, intent, defaultHandler);
+        RegistrarManager.notifyHandlers(message, defaultHandler);
     }
 
     private Bundle getMetadata(Context context) {

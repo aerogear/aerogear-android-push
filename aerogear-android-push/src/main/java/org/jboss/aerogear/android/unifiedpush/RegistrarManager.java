@@ -16,8 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
-import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import org.jboss.aerogear.android.core.ConfigurationProvider;
@@ -36,18 +35,18 @@ import java.util.Map;
  */
 public class RegistrarManager {
 
-    private static final Map<String, PushRegistrar> registrars = new HashMap<String, PushRegistrar>();
+    private static final Map<String, PushRegistrar> REGISTRARS = new HashMap<>();
 
-    private static final List<MessageHandler> mainThreadHandlers = new ArrayList<MessageHandler>();
-    private static final List<MessageHandler> backgroundThreadHandlers = new ArrayList<MessageHandler>();
+    private static final List<MessageHandler> MAIN_THREAD_HANDLERS = new ArrayList<>();
+    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = new ArrayList<>();
 
-    private static Map<Class<? extends PushConfiguration<?>>, ConfigurationProvider<?>> configurationProviderMap = new HashMap<Class<? extends PushConfiguration<?>>, ConfigurationProvider<?>>();
+    private static final Map<Class<? extends PushConfiguration<?>>, ConfigurationProvider<?>> CONFIGURATION_PROVIDER_MAP = new HashMap<>();
 
-    private static OnPushRegistrarCreatedListener onPushRegistrarCreatedListener = new OnPushRegistrarCreatedListener() {
+    private static final OnPushRegistrarCreatedListener ON_PUSH_REGISTRAR_CREATED_LISTENER = new OnPushRegistrarCreatedListener() {
 
         @Override
         public void onPushRegistrarCreated(PushConfiguration<?> configuration, PushRegistrar registrar) {
-            registrars.put(configuration.getName(), registrar);
+            REGISTRARS.put(configuration.getName(), registrar);
         }
     };
 
@@ -69,7 +68,7 @@ public class RegistrarManager {
      */
     public static <CFG extends PushConfiguration<CFG>> void registerConfigurationProvider(
             Class<CFG> configurationClass, ConfigurationProvider<CFG> provider) {
-        configurationProviderMap.put(configurationClass, provider);
+        CONFIGURATION_PROVIDER_MAP.put(configurationClass, provider);
     }
 
     /**
@@ -87,7 +86,7 @@ public class RegistrarManager {
     public static <CFG extends PushConfiguration<CFG>> CFG config(String name, Class<CFG> pushConfigurationClass) {
 
         @SuppressWarnings("unchecked")
-        ConfigurationProvider<? extends PushConfiguration<CFG>> provider = (ConfigurationProvider<? extends PushConfiguration<CFG>>) configurationProviderMap
+        ConfigurationProvider<? extends PushConfiguration<CFG>> provider = (ConfigurationProvider<? extends PushConfiguration<CFG>>) CONFIGURATION_PROVIDER_MAP
                 .get(pushConfigurationClass);
 
         if (provider == null) {
@@ -96,7 +95,7 @@ public class RegistrarManager {
 
         return provider.newConfiguration()
                 .setName(name)
-                .addOnPushRegistrarCreatedListener(onPushRegistrarCreatedListener);
+                .addOnPushRegistrarCreatedListener(ON_PUSH_REGISTRAR_CREATED_LISTENER);
 
     }
 
@@ -109,7 +108,7 @@ public class RegistrarManager {
      * @return the named {@link PushRegistrar} or null
      */
     public static PushRegistrar getRegistrar(String name) {
-        return registrars.get(name);
+        return REGISTRARS.get(name);
     }
 
     /**
@@ -121,7 +120,7 @@ public class RegistrarManager {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerMainThreadHandler(MessageHandler handler) {
-        mainThreadHandlers.add(handler);
+        MAIN_THREAD_HANDLERS.add(handler);
     }
 
     /**
@@ -133,7 +132,7 @@ public class RegistrarManager {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerBackgroundThreadHandler(MessageHandler handler) {
-        backgroundThreadHandlers.add(handler);
+        BACKGROUND_THREAD_HANDLERS.add(handler);
     }
 
     /**
@@ -145,7 +144,7 @@ public class RegistrarManager {
      * @param handler a new handler
      */
     public static void unregisterMainThreadHandler(MessageHandler handler) {
-        mainThreadHandlers.remove(handler);
+        MAIN_THREAD_HANDLERS.remove(handler);
     }
 
     /**
@@ -156,66 +155,43 @@ public class RegistrarManager {
      * @param handler a new handler
      */
     public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
-        backgroundThreadHandlers.remove(handler);
+        BACKGROUND_THREAD_HANDLERS.remove(handler);
     }
 
     /**
      * 
      * This will deliver an intent to all registered handlers. See {@link PushConstants} for information on how messages will be routed.
      * 
-     * @param context the application's context
      * @param message the message to pass
      * @param defaultHandler a default handler is a handler which will be called
      *            if there are no other handlers registered. May be null
      */
-    public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
+    public static void notifyHandlers(final Bundle message, final MessageHandler defaultHandler) {
 
-        if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()
+        if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                 && defaultHandler != null) {
             new Thread(new Runnable() {
                 public void run() {
-
-                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
-                        defaultHandler.onError();
-                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) {
-                        defaultHandler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        defaultHandler.onMessage(context, message.getExtras());
-                    }
-
+                    defaultHandler.onMessage(message);
                 }
             }).start();
         }
 
-        for (final MessageHandler handler : backgroundThreadHandlers) {
+        for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
             new Thread(new Runnable() {
                 public void run() {
-
-                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
-                        handler.onError();
-                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) {
-                        handler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        handler.onMessage(context, message.getExtras());
-                    }
-
+                    handler.onMessage(message);
                 }
             }).start();
         }
 
         Looper main = Looper.getMainLooper();
 
-        for (final MessageHandler handler : mainThreadHandlers) {
+        for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
             new Handler(main).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
-                        handler.onError();
-                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) {
-                        handler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        handler.onMessage(context, message.getExtras());
-                    }
+                    handler.onMessage(message);
                 }
             });
         }
@@ -228,12 +204,10 @@ public class RegistrarManager {
      * 
      * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
      * 
-     * @param context the application's context
      * @param message the message to pass
      */
-    protected static void notifyHandlers(final Context context,
-            final Intent message) {
-        notifyHandlers(context, message, null);
+    protected static void notifyHandlers(final Bundle message) {
+        notifyHandlers(message, null);
     }
 
 }
