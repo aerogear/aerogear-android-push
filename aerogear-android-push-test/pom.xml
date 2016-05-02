@@ -32,11 +32,12 @@
     <properties>
 
         <!-- Dependencies versions -->
-        <android.support.v4.version>22.2.0</android.support.v4.version>
+        <android.support.v4.version>23.3.0</android.support.v4.version>
         <mockito.version>1.9.5</mockito.version>
         <dexmaker.version>1.0</dexmaker.version>
         <dexmaker.mockito.version>1.0</dexmaker.mockito.version>
         <android.support.test.version>0.5</android.support.test.version>
+        <google.play.services.version>8.4.0</google.play.services.version>
 
         <!-- Plugins parameters -->
         <android.maven.plugin.dex.xms>-Xms256m</android.maven.plugin.dex.xms>
@@ -60,6 +61,19 @@
             <artifactId>support-v4</artifactId>
             <version>${android.support.v4.version}</version>
             <type>aar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-push</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-android-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

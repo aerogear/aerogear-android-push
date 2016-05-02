@@ -65,9 +65,11 @@ public class InstanceIdListenerTests extends PatchedActivityInstrumentationTestC
         VoidCallback callback = new VoidCallback(latch);
 
         registrar.register(super.getActivity(), callback);
+        
         if (!latch.await(30, TimeUnit.SECONDS)) {
             Assert.fail("Latch wasn't called");
         }
+        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, null));
     }
     
     @Test

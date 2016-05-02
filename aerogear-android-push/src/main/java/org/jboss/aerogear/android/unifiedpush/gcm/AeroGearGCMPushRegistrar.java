@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -97,6 +98,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
     
+    private Provider<GcmPubSub> gcmPubProvider = new Provider<GcmPubSub>() {
+
+        @Override
+        public GcmPubSub get(Object... context) {
+            return GcmPubSub.getInstance((Context) context[0]);
+        }
+    };
+    
     private Provider<SharedPreferences> preferenceProvider = new GCMSharedPreferenceProvider();
 
     public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
@@ -159,6 +168,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
+                        GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    
+                        for (String catgory : categories) {
+                            gcmPubSub.subscribe(deviceToken, "/topics/" + catgory, null);
+                        }
+                        
+                        //Subscribe to global topic
+                        gcmPubSub.subscribe(deviceToken, "/topics/" + variantId, null);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -229,7 +246,16 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
-
+                    
+                    GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    
+                    for (String catgory : categories) {
+                            gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
+                    }
+                    
+                    //Unsubscribe to generic topic
+                    gcmPubSub.unsubscribe(deviceToken, "/topics/" + variantId);
+                    
                     instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);

@@ -294,5 +294,5 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
         pushConfig.checkRequiredFields();
         return new AeroGearGCMPushRegistrar(pushConfig);
     }
-
+    
 }
