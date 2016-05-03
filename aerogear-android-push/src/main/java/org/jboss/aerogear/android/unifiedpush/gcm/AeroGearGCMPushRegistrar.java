@@ -47,22 +47,25 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
 
+    private static final String LEGACY_PROPERTY_REG_ID = "registration_id";
+
     private static final Integer TIMEOUT = 30000;// 30 seconds
     private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
     /**
-     * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to 
-     * recognize keys which are saved by this class in the event that registration
-     * tokens are refreshed by Google.
-     * 
+     * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to
+     * recognize keys which are saved by this class in the event that
+     * registration tokens are refreshed by Google.
+     *
      */
     static final String REGISTRAR_PREFERENCE_PATTERN = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:.+";
     /**
-     * This template creates a key used by the registrar to save push data to SharedPreferences. 
-     * This information will be fetched by {@link UnifiedPushInstanceIDListenerService} 
-     * in the event registration tokens are reloaded.
+     * This template creates a key used by the registrar to save push data to
+     * SharedPreferences. This information will be fetched by
+     * {@link UnifiedPushInstanceIDListenerService} in the event registration
+     * tokens are reloaded.
      */
     static final String REGISTRAR_PREFERENCE_TEMPLATE = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:%s";
-    
+
     private static final String registryDeviceEndpoint = "/rest/registry/device";
     private static final String metricsEndpoint = "/rest/registry/device/pushMessage";
 
@@ -97,7 +100,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             return InstanceID.getInstance((Context) context[0]);
         }
     };
-    
+
     private Provider<GcmPubSub> gcmPubProvider = new Provider<GcmPubSub>() {
 
         @Override
@@ -105,7 +108,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             return GcmPubSub.getInstance((Context) context[0]);
         }
     };
-    
+
     private Provider<SharedPreferences> preferenceProvider = new GCMSharedPreferenceProvider();
 
     public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
@@ -130,18 +133,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     @Override
     public void register(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
-            
+
             @Override
             protected Exception doInBackground(Void... params) {
 
                 try {
 
+                    removeLegacyRegistrationId(context);
+
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
                     String token = instanceId.getToken(senderId,
-                                                    GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                    
+                            GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+
                     deviceToken = token;
 
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
@@ -163,17 +168,17 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         }
 
                         httpProvider.post(postData.toString());
-                        
+
                         postData.addProperty("deviceRegistryURL", deviceRegistryURL.toString());
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
                         GcmPubSub gcmPubSub = gcmPubProvider.get(context);
-                    
+
                         for (String catgory : categories) {
                             gcmPubSub.subscribe(deviceToken, "/topics/" + catgory, null);
                         }
-                        
+
                         //Subscribe to global topic
                         gcmPubSub.subscribe(deviceToken, "/topics/" + variantId, null);
                         return null;
@@ -192,10 +197,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             protected void onPostExecute(Exception result) {
                 if (result == null) {
                     callback.onSuccess(null);
-                } else {
-                    if (result instanceof HttpException) {
-                        HttpException httpException = (HttpException) result;
-                        switch (httpException.getStatusCode()) {
+                } else if (result instanceof HttpException) {
+                    HttpException httpException = (HttpException) result;
+                    switch (httpException.getStatusCode()) {
                         case HttpURLConnection.HTTP_MOVED_PERM:
                         case HttpURLConnection.HTTP_MOVED_TEMP:
                         case 307://Temporary Redirect not in HTTPUrlConnection
@@ -210,24 +214,21 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                             break;
                         default:
                             callback.onFailure(result);
-                        }
-                    } else {
-                        callback.onFailure(result);
                     }
-
+                } else {
+                    callback.onFailure(result);
                 }
             }
 
-            
         }.execute((Void) null);
 
     }
 
     /**
      * Unregister device from Unified Push Server.
-     * 
+     *
      * if the device isn't registered onFailure will be called
-     * 
+     *
      * @param context Android application context
      * @param callback a callback.
      */
@@ -246,16 +247,16 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = instanceIdProvider.get(context);
                     }
-                    
+
                     GcmPubSub gcmPubSub = gcmPubProvider.get(context);
-                    
+
                     for (String catgory : categories) {
-                            gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
+                        gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
                     }
-                    
+
                     //Unsubscribe to generic topic
                     gcmPubSub.unsubscribe(deviceToken, "/topics/" + variantId);
-                    
+
                     instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
@@ -286,13 +287,12 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 }
             }
 
-
         }.execute((Void) null);
     }
 
     /**
      * Send a confirmation the message was opened
-     * 
+     *
      * @param metricsMessage The id of the message received
      * @param callback a callback.
      */
@@ -350,20 +350,22 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     }
 
     /**
-     * Save the post sent to UPS.  This will be used by {@link UnifiedPushInstanceIDListenerService} 
-     * to refresh the registration token if the registration token changes.
-     * 
-     * @param appContext the application Context 
-     */ 
+     * Save the post sent to UPS. This will be used by
+     * {@link UnifiedPushInstanceIDListenerService} to refresh the registration
+     * token if the registration token changes.
+     *
+     * @param appContext the application Context
+     */
     private void presistPostInformation(Context appContext, JsonObject postData) {
         preferenceProvider.get(appContext).edit()
                 .putString(String.format(REGISTRAR_PREFERENCE_TEMPLATE, senderId), postData.toString())
                 .commit();
     }
 
-    
     /**
-     * We are no longer registered.  We do not need to respond to changes in  registration token.
+     * We are no longer registered. We do not need to respond to changes in
+     * registration token.
+     *
      * @param appContext the application Context
      */
     private void removeSavedPostData(Context appContext) {
@@ -371,6 +373,35 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                 .remove(String.format(REGISTRAR_PREFERENCE_TEMPLATE, senderId))
                 .commit();
     }
-    
+
+    /**
+     * Gets the current registration id for application on GCM service.
+     * <p>
+     * If result is empty, the registration has failed.
+     *
+     * @param context the application context
+     *
+     * @return registration id, or empty string if the registration is not
+     * complete.
+     */
+    private void removeLegacyRegistrationId(Context context) {
+        try {
+            final SharedPreferences prefs = context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
+            String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
+            Log.v(TAG, "Found legacy ID " + registrationId);
+            if (registrationId.length() != 0) {
+
+                HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
+                setPasswordAuthentication(variantId, secret, provider);
+
+                provider.delete(registrationId);
+                prefs.edit().remove(LEGACY_PROPERTY_REG_ID).commit();
+
+            }
+        } catch (Exception ignore) {
+            Log.v(TAG, "Exception Thrown attempting to unregister legacy token", ignore);
+        }
+
+    }
 
 }
