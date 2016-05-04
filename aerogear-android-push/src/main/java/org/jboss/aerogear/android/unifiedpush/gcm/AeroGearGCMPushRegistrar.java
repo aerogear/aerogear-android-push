@@ -388,8 +388,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         try {
             final SharedPreferences prefs = context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
             String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
-            Log.v(TAG, "Found legacy ID " + registrationId);
             if (registrationId.length() != 0) {
+                Log.v(TAG, "Found legacy ID: '" + registrationId + "'");
 
                 HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                 setPasswordAuthentication(variantId, secret, provider);
