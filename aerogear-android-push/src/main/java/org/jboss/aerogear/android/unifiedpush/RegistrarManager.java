@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -160,19 +161,20 @@ public class RegistrarManager {
 
     /**
      * 
-     * This will deliver an intent to all registered handlers. 
+     * This will deliver an message to all registered handlers. 
      * 
+     * @param context the message context
      * @param message the message to pass
      * @param defaultHandler a default handler is a handler which will be called
      *            if there are no other handlers registered. May be null
      */
-    public static void notifyHandlers(final Bundle message, final MessageHandler defaultHandler) {
+    public static void notifyHandlers(final Context context, final Bundle message, final MessageHandler defaultHandler) {
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                 && defaultHandler != null) {
             new Thread(new Runnable() {
                 public void run() {
-                    defaultHandler.onMessage(message);
+                    defaultHandler.onMessage(context, message);
                 }
             }).start();
         }
@@ -180,7 +182,7 @@ public class RegistrarManager {
         for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
             new Thread(new Runnable() {
                 public void run() {
-                    handler.onMessage(message);
+                    handler.onMessage(context, message);
                 }
             }).start();
         }
@@ -191,7 +193,7 @@ public class RegistrarManager {
             new Handler(main).post(new Runnable() {
                 @Override
                 public void run() {
-                    handler.onMessage(message);
+                    handler.onMessage(context, message);
                 }
             });
         }
@@ -199,15 +201,13 @@ public class RegistrarManager {
 
     /**
      * 
-     * This will deliver an intent to all registered handlers. Currently it is
-     * GCM centric, but this will be changed in the future.
+     * This will deliver an message to all registered handlers.
      * 
-     * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
-     * 
+     * @param context the message context
      * @param message the message to pass
      */
-    protected static void notifyHandlers(final Bundle message) {
-        notifyHandlers(message, null);
+    protected static void notifyHandlers(final Context context, final Bundle message) {
+        notifyHandlers(context, message, null);
     }
 
 }

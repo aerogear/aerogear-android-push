@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
+import android.content.Context;
 import android.os.Bundle;
 
 /**
@@ -26,8 +27,9 @@ public interface MessageHandler {
     /**
      * Invoked when the Google Cloud Messaging Server delivered a message to the device.
      * 
+     * @param context The Context the message was received in.  
      * @param message A map containing the submitted key/value pairs
      */
-    public void onMessage(Bundle message);
+    public void onMessage(Context context, Bundle message);
 
 }

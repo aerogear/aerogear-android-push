@@ -71,7 +71,7 @@ public class AeroGearGCMMessageReceiver extends GcmListenerService {
         }
 
         // notity all attached MessageHandler implementations:
-        RegistrarManager.notifyHandlers(message, defaultHandler);
+        RegistrarManager.notifyHandlers(getApplicationContext(), message, defaultHandler);
     }
 
     private Bundle getMetadata(Context context) {
