@@ -58,7 +58,7 @@
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
-        <receiver
+        <service
             android:name="org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMMessageReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
@@ -67,7 +67,7 @@
 
                 <category android:name="org.jboss.aerogear.unifiedpush.helloworld.test"/>
             </intent-filter>
-        </receiver>
+        </service>
     </application>
 
 </manifest>
