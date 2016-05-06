@@ -115,19 +115,6 @@ public class AeroGearGCMPushJsonConfiguration
     }
 
     /**
-     * The device token Identifies the device within its Push Network. It is the
-     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
-     * 
-     * @param deviceToken the new device token
-     * @return the current configuration
-     * 
-     */
-    public AeroGearGCMPushJsonConfiguration setDeviceToken(String deviceToken) {
-        this.pushConfig.setDeviceToken(deviceToken);
-        return this;
-    }
-
-    /**
      * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server
      * 
