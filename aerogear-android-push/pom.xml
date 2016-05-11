@@ -41,8 +41,8 @@
     <properties>
 
         <!-- Dependencies versions -->
-        <aerogear.android.core.version>3.0.0-SNAPSHOT</aerogear.android.core.version>
-        <aerogear.android.pipe.version>3.0.0-SNAPSHOT</aerogear.android.pipe.version>
+        <aerogear.android.core.version>3.0.0</aerogear.android.core.version>
+        <aerogear.android.pipe.version>3.0.0</aerogear.android.pipe.version>
         <google.play.services.version>8.4.0</google.play.services.version>
 
         <!-- Plugins versions -->
