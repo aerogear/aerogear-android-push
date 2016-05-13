@@ -18,8 +18,8 @@ package org.jboss.aerogear.android.unifiedpush.gcm;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
@@ -77,7 +77,7 @@ public class AeroGearGCMMessageReceiver extends GcmListenerService {
     private Bundle getMetadata(Context context) {
         final ComponentName componentName = new ComponentName(context, AeroGearGCMMessageReceiver.class);
         try {
-            ActivityInfo ai = context.getPackageManager().getReceiverInfo(componentName, PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA);
+            ServiceInfo ai = context.getPackageManager().getServiceInfo(componentName, PackageManager.GET_META_DATA);
             Bundle metaData = ai.metaData;
             if (metaData == null) {
                 Log.d(TAG, "metaData is null. Unable to get meta data for " + componentName);
