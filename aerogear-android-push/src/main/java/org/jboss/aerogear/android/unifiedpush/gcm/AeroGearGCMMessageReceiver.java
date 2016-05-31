@@ -22,8 +22,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.util.Log;
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
+import com.google.firebase.messaging.RemoteMessage;
+import java.util.Map;
+
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 
 
@@ -34,7 +37,7 @@ import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
  * <p>
  * Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
  */
-public class AeroGearGCMMessageReceiver extends GcmListenerService {
+public class AeroGearGCMMessageReceiver extends FirebaseMessagingService {
 
     public static final int NOTIFICATION_ID = 1;
 
@@ -49,9 +52,16 @@ public class AeroGearGCMMessageReceiver extends GcmListenerService {
      * are being notified.
      */
 
-    public void onMessageReceived(String from, Bundle message) {
-        super.onMessageReceived(from, message); 
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        String from = remoteMessage.getFrom();
+        Map<String, String> messageMap = remoteMessage.getData();
 
+        Bundle message = new Bundle();
+        
+        for (Map.Entry<String, String> messageMapEntry : messageMap.entrySet()) {
+            message.putString(messageMapEntry.getKey(), messageMapEntry.getValue());
+        }
+        
         if (checkDefaultHandler) {
             checkDefaultHandler = false;
             Bundle metaData = getMetadata(getApplicationContext());

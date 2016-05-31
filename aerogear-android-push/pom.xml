@@ -20,7 +20,7 @@
 
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android-push</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>aar</packaging>
     <name>AeroGear Android Push Library</name>
     <url>http://aerogear.org</url>
@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-android-push-parent</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <scm>

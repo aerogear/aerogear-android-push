@@ -16,14 +16,12 @@
  */
 package org.jboss.aerogear.android.unifiedpush.gcm;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-import com.google.android.gms.iid.InstanceIDListenerService;
 import com.google.gson.JsonObject;
+import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.net.URL;
@@ -43,7 +41,7 @@ import static org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistra
  * for official docs
  *
  */
-public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerService {
+public class UnifiedPushInstanceIDListenerService extends FirebaseInstanceIdService {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -53,11 +51,11 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
 
     private final Provider<SharedPreferences> sharedPreferencesProvider = new GCMSharedPreferenceProvider();
 
-    private final Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
+    private final Provider<FirebaseInstanceId> instanceIdProvider = new Provider<FirebaseInstanceId>() {
 
         @Override
-        public InstanceID get(Object... context) {
-            return InstanceID.getInstance((Context) context[0]);
+        public FirebaseInstanceId get(Object... context) {
+            return FirebaseInstanceId.getInstance();
         }
     };
 
@@ -82,11 +80,10 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
 
         for (Map.Entry<String, ?> preference : preferences.entrySet()) {
             if (preference.getKey().matches(REGISTRAR_PREFERENCE_PATTERN)) {
-                String senderId = preference.getKey().split(":")[1];
-                InstanceID instanceID = instanceIdProvider.get(this);
+
+                FirebaseInstanceId instanceID = instanceIdProvider.get(this);
                 try {
-                    String token = instanceID.getToken(senderId,
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    String token = instanceID.getToken();
                     JsonObject oldPostData = new JsonParser().parse(preference.getValue().toString()).getAsJsonObject();
                     URL deviceRegistryURL = new URL(oldPostData.get("deviceRegistryURL").getAsString());
                     String variantId = oldPostData.get("variantId").getAsString();

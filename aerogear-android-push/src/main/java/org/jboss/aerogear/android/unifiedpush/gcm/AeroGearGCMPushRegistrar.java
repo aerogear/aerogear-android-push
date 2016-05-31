@@ -21,13 +21,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import java.net.HttpURLConnection;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -73,7 +72,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     private final String senderId;
 
-    private InstanceID instanceId;
+    private FirebaseInstanceId instanceId;
     private URL deviceRegistryURL;
     private URL metricsURL;
     private String deviceToken = "";
@@ -93,19 +92,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    private Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
+    
+    private Provider<FirebaseInstanceId> firebaseInstanceIdProvider = new Provider<FirebaseInstanceId>() {
 
         @Override
-        public InstanceID get(Object... context) {
-            return InstanceID.getInstance((Context) context[0]);
+        public FirebaseInstanceId get(Object... context) {
+            return FirebaseInstanceId.getInstance();
         }
     };
-
-    private Provider<GcmPubSub> gcmPubProvider = new Provider<GcmPubSub>() {
+    
+    private Provider<FirebaseMessaging> firebaseMessagingProvider = new Provider<FirebaseMessaging>() {
 
         @Override
-        public GcmPubSub get(Object... context) {
-            return GcmPubSub.getInstance((Context) context[0]);
+        public FirebaseMessaging get(Object... context) {
+            return FirebaseMessaging.getInstance();
         }
     };
 
@@ -142,10 +142,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     removeLegacyRegistrationId(context);
 
                     if (instanceId == null) {
-                        instanceId = instanceIdProvider.get(context);
+                        instanceId = firebaseInstanceIdProvider.get(context);
                     }
-                    String token = instanceId.getToken(senderId,
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    String token = instanceId.getToken();
 
                     deviceToken = token;
 
@@ -173,14 +172,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
-                        GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                        FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
 
                         for (String catgory : categories) {
-                            gcmPubSub.subscribe(deviceToken, "/topics/" + catgory, null);
+                            firebaseMessaging.subscribeToTopic(catgory);
                         }
 
                         //Subscribe to global topic
-                        gcmPubSub.subscribe(deviceToken, "/topics/" + variantId, null);
+                        firebaseMessaging.subscribeToTopic(variantId);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -245,19 +244,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     }
 
                     if (instanceId == null) {
-                        instanceId = instanceIdProvider.get(context);
+                        instanceId = firebaseInstanceIdProvider.get(context);
                     }
+                    String token = instanceId.getToken();
 
-                    GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
 
                     for (String catgory : categories) {
-                        gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
+                        firebaseMessaging.unsubscribeFromTopic(catgory);
                     }
 
                     //Unsubscribe to generic topic
-                    gcmPubSub.unsubscribe(deviceToken, "/topics/" + variantId);
+                    firebaseMessaging.unsubscribeFromTopic(variantId);
 
-                    instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    instanceId.deleteInstanceId();
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, provider);
