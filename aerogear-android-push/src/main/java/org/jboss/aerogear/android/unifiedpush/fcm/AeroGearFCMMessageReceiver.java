@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,28 +32,28 @@ import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 
 /**
  * <p>
- * AeroGear specific <code>BroadcastReceiver</code> implementation for Google Cloud Messaging.
+ * AeroGear specific <code>BroadcastReceiver</code> implementation for Firebase Cloud Messaging.
  * 
  * <p>
  * Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
  */
-public class AeroGearGCMMessageReceiver extends FirebaseMessagingService {
+public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
 
     public static final int NOTIFICATION_ID = 1;
 
     private static MessageHandler defaultHandler;
     private static boolean checkDefaultHandler = true;
-    private static final String TAG = AeroGearGCMMessageReceiver.class.getSimpleName();
+    private static final String TAG = AeroGearFCMMessageReceiver.class.getSimpleName();
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     @Override
         /**
-     * When a GCM message is received, the attached implementations of our <code>MessageHandler</code> interface
+     * When a FCM message is received, the attached implementations of our <code>MessageHandler</code> interface
      * are being notified.
      */
 
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        String from = remoteMessage.getFrom();
+
         Map<String, String> messageMap = remoteMessage.getData();
 
         Bundle message = new Bundle();
@@ -85,7 +85,7 @@ public class AeroGearGCMMessageReceiver extends FirebaseMessagingService {
     }
 
     private Bundle getMetadata(Context context) {
-        final ComponentName componentName = new ComponentName(context, AeroGearGCMMessageReceiver.class);
+        final ComponentName componentName = new ComponentName(context, AeroGearFCMMessageReceiver.class);
         try {
             ServiceInfo si = context.getPackageManager().getServiceInfo(componentName, PackageManager.GET_META_DATA);
             Bundle metaData = si.metaData;

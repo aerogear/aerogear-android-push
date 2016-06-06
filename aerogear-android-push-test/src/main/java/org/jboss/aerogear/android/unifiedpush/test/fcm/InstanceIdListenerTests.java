@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.test.gcm;
+package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
 import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
@@ -22,10 +22,10 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.jboss.aerogear.android.core.Provider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
-import org.jboss.aerogear.android.unifiedpush.gcm.GCMSharedPreferenceProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushInstanceIDListenerService;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.fcm.FCMSharedPreferenceProvider;
+import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushInstanceIDListenerService;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -53,18 +53,18 @@ public class InstanceIdListenerTests extends PatchedActivityInstrumentationTestC
 
     @Before
     public void fakeRegister() throws Exception {
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
-        AeroGearGCMPushRegistrarTest.StubHttpProvider provider = new AeroGearGCMPushRegistrarTest.StubHttpProvider();
+        AeroGearFCMPushRegistrarTest.StubHttpProvider provider = new AeroGearFCMPushRegistrarTest.StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
         VoidCallback callback = new VoidCallback(latch);
-        UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", new AeroGearGCMPushRegistrarTest.StubInstanceIDProvider());
+        UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", new AeroGearFCMPushRegistrarTest.StubInstanceIDProvider());
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
         Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
@@ -90,12 +90,12 @@ public class InstanceIdListenerTests extends PatchedActivityInstrumentationTestC
             throw callback.exception;
         }
 
-        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, null));
+        Assert.assertNotNull(new FCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, null));
     }
 
     @Test
     public void refreshIntentSendsCallsRefresh() throws Exception {
-        AeroGearGCMPushRegistrarTest.StubHttpProvider httpProvider = new AeroGearGCMPushRegistrarTest.StubHttpProvider();
+        AeroGearFCMPushRegistrarTest.StubHttpProvider httpProvider = new AeroGearFCMPushRegistrarTest.StubHttpProvider();
 
         UnifiedPushInstanceIDListenerService service = new UnifiedPushInstanceIDListenerService();
         UnitTestUtils.setPrivateField(service, "httpProviderProvider", httpProvider);
@@ -104,11 +104,11 @@ public class InstanceIdListenerTests extends PatchedActivityInstrumentationTestC
 
             @Override
             public SharedPreferences get(Object... in) {
-                return new GCMSharedPreferenceProvider().get(getActivity());
+                return new FCMSharedPreferenceProvider().get(getActivity());
             }
         });
 
-        UnitTestUtils.setPrivateField(service, "instanceIdProvider", new AeroGearGCMPushRegistrarTest.StubInstanceIDProvider());
+        UnitTestUtils.setPrivateField(service, "instanceIdProvider", new AeroGearFCMPushRegistrarTest.StubInstanceIDProvider());
 
         service.onTokenRefresh();
 

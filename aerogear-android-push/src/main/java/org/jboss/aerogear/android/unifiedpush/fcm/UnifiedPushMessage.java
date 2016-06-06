@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
-import org.jboss.aerogear.android.core.ConfigurationProvider;
+public interface UnifiedPushMessage {
 
-public class AeroGearGCMPushJsonConfigurationProvider
-        implements ConfigurationProvider<AeroGearGCMPushJsonConfiguration> {
+    /**
+     * Constant for the name of the push message alert key
+     */
+    String ALERT_KEY = "alert";
 
-    @Override
-    public AeroGearGCMPushJsonConfiguration newConfiguration() {
-        return new AeroGearGCMPushJsonConfiguration();
-    }
+    /**
+     * Constant for the "push payload id" key
+     */
+    String PUSH_MESSAGE_ID = "aerogear-push-id";
 
 }

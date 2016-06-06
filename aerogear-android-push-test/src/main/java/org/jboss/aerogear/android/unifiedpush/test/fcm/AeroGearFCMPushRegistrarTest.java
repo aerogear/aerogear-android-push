@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.unifiedpush.test.gcm;
+package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
 import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
@@ -25,9 +25,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
-import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushConfig;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushConfig;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.aerogear.android.unifiedpush.gcm.GCMSharedPreferenceProvider;
+import org.jboss.aerogear.android.unifiedpush.fcm.FCMSharedPreferenceProvider;
 import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,7 +53,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
-public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
+public class AeroGearFCMPushRegistrarTest extends PatchedActivityInstrumentationTestCase {
 
     private static final String TEST_SENDER_ID = "272275396485";
     private static final String TEST_REGISTRAR_PREFERENCES_KEY = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:272275396485";
@@ -61,16 +61,16 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     private static final String TEST_SENDER_VARIANT = "Variant";
     private static final String[] CATEGORIES = {"test", "anotherTest"};
     
-    private static final String TAG = AeroGearGCMPushRegistrarTest.class.getSimpleName();
+    private static final String TAG = AeroGearFCMPushRegistrarTest.class.getSimpleName();
 
-    public AeroGearGCMPushRegistrarTest() {
+    public AeroGearFCMPushRegistrarTest() {
         super(MainActivity.class);
     }
 
     @Test
     public void testAsRegistrarFailsOnNullSenderId() throws URISyntaxException {
         try {
-            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+            AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                     .setPushServerURI(new URI("https://testuri"));
 
             config.asRegistrar();
@@ -87,7 +87,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testAsRegistrarFailsOnNullPushServerURI() {
         try {
-            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+            AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                     .setSenderId(TEST_SENDER_ID);
 
             config.asRegistrar();
@@ -103,14 +103,14 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
     @Test
     public void testRegister() throws Exception {
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setCategories(CATEGORIES)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
@@ -155,7 +155,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         Mockito.verify(provider.mock).post(postCaptore.capture());
         JSONObject object = new JSONObject(postCaptore.getValue());
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), object.getString("deviceToken"));
-        String jsonData = new GCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, TAG);
+        String jsonData = new FCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, TAG);
         Assert.assertNotNull(jsonData);
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), new JSONObject(jsonData).getString("deviceToken"));
         Assert.assertEquals(new JSONArray(CATEGORIES).length(), new JSONObject(jsonData).getJSONArray("categories").length());
@@ -166,14 +166,14 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
     @Test
     public void testUnregister() throws Exception {
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setCategories(CATEGORIES)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
@@ -199,7 +199,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
         
         VoidCallback callback = new VoidCallback(latch);
 
-        AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
+        AeroGearFCMPushRegistrar spy = Mockito.spy(registrar);
 
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -225,13 +225,13 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
     @Test
     public void testRegisterExceptionsAreCaught() throws Exception {
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
@@ -252,7 +252,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = new AeroGearGCMPushRegistrar(config);
+        AeroGearFCMPushRegistrar registrar = new AeroGearFCMPushRegistrar(config);
         CountDownLatch latch = new CountDownLatch(1);
         VoidCallback callback = new VoidCallback(latch);
 
@@ -268,13 +268,13 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testUnregisterTwice() throws Exception {
 
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
         
@@ -301,7 +301,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         VoidCallback callback = new VoidCallback(latch);
 
-        AeroGearGCMPushRegistrar spy = Mockito.spy(registrar);
+        AeroGearFCMPushRegistrar spy = Mockito.spy(registrar);
 
         spy.register(super.getActivity(), callback);
         latch.await(1, TimeUnit.SECONDS);
@@ -326,13 +326,13 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
     @Test
     public void testRegistrationTokensAreNotCached() throws Exception {
 
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration()
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration()
                 .setSenderId(TEST_SENDER_ID)
                 .setVariantID(TEST_SENDER_VARIANT)
                 .setSecret(TEST_SENDER_PASSWORD)
                 .setPushServerURI(new URI("https://testuri"));
 
-        AeroGearGCMPushRegistrar registrar = (AeroGearGCMPushRegistrar) config.asRegistrar();
+        AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
         
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
@@ -361,7 +361,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
             @Override
             public SharedPreferences get(Object... in) {
-                return new GCMSharedPreferenceProvider().get(getActivity());
+                return new FCMSharedPreferenceProvider().get(getActivity());
             }
         });
 
@@ -369,14 +369,14 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         registrar.register(super.getActivity(), callback);
         latch.await(5, TimeUnit.SECONDS);
-        Assert.assertNotNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
+        Assert.assertNotNull(new FCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
 
         latch = new CountDownLatch(1);
         callback = new VoidCallback(latch);
         registrar.unregister(super.getActivity(), callback);
         latch.await(5, TimeUnit.SECONDS);
         Assert.assertNull(callback.exception);
-        Assert.assertNull(new GCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
+        Assert.assertNull(new FCMSharedPreferenceProvider().get(getActivity()).getString("org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:" + TEST_SENDER_ID, null));
         Mockito.verify(firebaseInstanceIdProvider.mock, Mockito.times(1)).deleteInstanceId();
     }
 
@@ -385,7 +385,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         try {
 
-            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
+            AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration();
             config.setSenderId(TEST_SENDER_ID)
                     .setPushServerURI(new URI("https://testuri"))
                     .setSenderId(TEST_SENDER_ID)
@@ -406,7 +406,7 @@ public class AeroGearGCMPushRegistrarTest extends PatchedActivityInstrumentation
 
         try {
 
-            AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
+            AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration();
             config.setSenderId(TEST_SENDER_ID)
                     .setPushServerURI(new URI("https://testuri"))
                     .setVariantID(TEST_SENDER_VARIANT)

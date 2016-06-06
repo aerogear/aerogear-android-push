@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.Context;
 import android.util.Log;
@@ -29,12 +29,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 /**
- * A Push Configuration which builds {@link org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar} instances.
+ * A Push Configuration which builds {@link org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar} instances.
  */
-public class AeroGearGCMPushJsonConfiguration
-        extends PushConfiguration<AeroGearGCMPushJsonConfiguration> {
+public class AeroGearFCMPushJsonConfiguration
+        extends PushConfiguration<AeroGearFCMPushJsonConfiguration> {
 
-    private static final String TAG = AeroGearGCMPushJsonConfiguration.class.getName();
+    private static final String TAG = AeroGearFCMPushJsonConfiguration.class.getName();
     private static final String JSON_OBJECT = "android";
     private static final String JSON_URL = "pushServerURL";
     private static final String JSON_SENDER_ID = "senderID";
@@ -79,7 +79,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @param senderId a new sender Id to add to the current set of senderIds.
      * @return the current configuration.
      */
-    public AeroGearGCMPushJsonConfiguration setSenderId(String senderId) {
+    public AeroGearFCMPushJsonConfiguration setSenderId(String senderId) {
         this.pushConfig.setSenderId(senderId);
         return this;
     }
@@ -105,7 +105,7 @@ public class AeroGearGCMPushJsonConfiguration
 
     /**
      * The device token Identifies the device within its Push Network. It is the
-     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
+     * value = FirebaseInstanceId.getInstance().getToken();
      * 
      * @return the current device token
      * 
@@ -136,7 +136,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushJsonConfiguration setDeviceType(String deviceType) {
+    public AeroGearFCMPushJsonConfiguration setDeviceType(String deviceType) {
         this.pushConfig.setDeviceType(deviceType);
         return this;
     }
@@ -156,7 +156,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @param operatingSystem the new operating system
      * @return the current configuration
      */
-    public AeroGearGCMPushJsonConfiguration setOperatingSystem(String operatingSystem) {
+    public AeroGearFCMPushJsonConfiguration setOperatingSystem(String operatingSystem) {
         this.pushConfig.setOperatingSystem(operatingSystem);
         return this;
     }
@@ -194,7 +194,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushJsonConfiguration setAlias(String alias) {
+    public AeroGearFCMPushJsonConfiguration setAlias(String alias) {
         this.pushConfig.setAlias(alias);
         return this;
     }
@@ -216,7 +216,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushJsonConfiguration setCategories(List<String> categories) {
+    public AeroGearFCMPushJsonConfiguration setCategories(List<String> categories) {
         this.pushConfig.setCategories(categories);
         return this;
     }
@@ -228,7 +228,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      *
      */
-    public AeroGearGCMPushJsonConfiguration addCategories(List<String> categories) {
+    public AeroGearFCMPushJsonConfiguration addCategories(List<String> categories) {
         this.pushConfig.addCategories(categories);
         return this;
     }
@@ -240,7 +240,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushJsonConfiguration setCategories(String... categories) {
+    public AeroGearFCMPushJsonConfiguration setCategories(String... categories) {
         this.pushConfig.setCategories(categories);
         return this;
     }
@@ -252,7 +252,7 @@ public class AeroGearGCMPushJsonConfiguration
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushJsonConfiguration addCategory(String category) {
+    public AeroGearFCMPushJsonConfiguration addCategory(String category) {
         this.pushConfig.addCategory(category);
         return this;
     }
@@ -275,7 +275,7 @@ public class AeroGearGCMPushJsonConfiguration
      *
      * @return the current configuration
      */
-    public AeroGearGCMPushJsonConfiguration loadConfigJson(Context context) {
+    public AeroGearFCMPushJsonConfiguration loadConfigJson(Context context) {
         InputStream fileStream = null;
         try {
             fileStream = context.getResources().getAssets().open(getFileName());
@@ -323,9 +323,9 @@ public class AeroGearGCMPushJsonConfiguration
      * @throws IllegalStateException if pushServerURI, SenderID, Variant or VariantSecret is null or empty.
      */
     @Override
-    protected final AeroGearGCMPushRegistrar buildRegistrar() {
+    protected final AeroGearFCMPushRegistrar buildRegistrar() {
         pushConfig.checkRequiredFields();
-        return new AeroGearGCMPushRegistrar(pushConfig);
+        return new AeroGearFCMPushRegistrar(pushConfig);
     }
 
 }

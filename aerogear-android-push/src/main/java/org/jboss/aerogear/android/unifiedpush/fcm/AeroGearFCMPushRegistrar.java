@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,7 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
+public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -49,7 +49,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private static final String LEGACY_PROPERTY_REG_ID = "registration_id";
 
     private static final Integer TIMEOUT = 30000;// 30 seconds
-    private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
+    private static final String TAG = AeroGearFCMPushRegistrar.class.getSimpleName();
     /**
      * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to
      * recognize keys which are saved by this class in the event that
@@ -109,9 +109,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    private Provider<SharedPreferences> preferenceProvider = new GCMSharedPreferenceProvider();
+    private Provider<SharedPreferences> preferenceProvider = new FCMSharedPreferenceProvider();
 
-    public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
+    public AeroGearFCMPushRegistrar(UnifiedPushConfig config) {
         this.senderId = config.getSenderId();
         this.deviceToken = config.getDeviceToken();
         this.variantId = config.getVariantID();
@@ -205,7 +205,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                             Log.w(TAG, httpException.getMessage());
                             try {
                                 URL redirectURL = new URL(httpException.getHeaders().get("Location"));
-                                AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                AeroGearFCMPushRegistrar.this.deviceRegistryURL = redirectURL;
                                 register(context, callback);
                             } catch (MalformedURLException e) {
                                 callback.onFailure(e);
@@ -375,7 +375,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     }
 
     /**
-     * Gets the current registration id for application on GCM service.
+     * Gets the current registration id for application on FCM service.
      * <p>
      * If result is empty, the registration has failed.
      *
@@ -386,7 +386,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
      */
     private void removeLegacyRegistrationId(Context context) {
         try {
-            final SharedPreferences prefs = context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
+            final SharedPreferences prefs = context.getSharedPreferences(AeroGearFCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
             String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
             if (registrationId.length() != 0) {
                 Log.v(TAG, "Found legacy ID: '" + registrationId + "'");

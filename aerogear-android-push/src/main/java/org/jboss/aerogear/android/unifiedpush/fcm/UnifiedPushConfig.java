@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import java.net.URI;
 import java.util.*;
@@ -37,10 +37,10 @@ public final class UnifiedPushConfig {
      * Topics in GCM must conform to this pattern.
      * See : https://developers.google.com/android/reference/com/google/android/gms/gcm/GcmPubSub#unsubscribe(java.lang.String, java.lang.String)
      */
-    private static final String GCM_TOPIC_PATTERN = "[a-zA-Z0-9-_.~%]{1,900}";
+    private static final String FCM_TOPIC_PATTERN = "[a-zA-Z0-9-_.~%]{1,900}";
     
     /**
-     * RegistryURL is the URL of the 3rd party application server
+     * PushServerURI is the URL of the 3rd party application server
      *
      * @return the current pushServerURI
      */
@@ -49,7 +49,7 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * RegistryURL is the URL of the 3rd party application server
+     * PushServerURI is the URL of the 3rd party application server
      *
      * @param pushServerURI a new URI
      * @return the current configuration
@@ -61,7 +61,7 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * SenderId is a GCM sender Id (usually a project number) registered for
+     * SenderId is a FCM sender Id (usually a project number) registered for
      * this application.
      *
      * @return the current senderId.
@@ -72,7 +72,7 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * SenderId is a GCM sender Id (usually a project number) registered for
+     * SenderId is a FCM sender Id (usually a project number) registered for
      * this application.
      *
      * @param senderId the new senderId to set.
@@ -311,8 +311,8 @@ public final class UnifiedPushConfig {
     private static void validateCategories(String... categories) {
 
         for (String category : categories) {
-            if (!category.matches(GCM_TOPIC_PATTERN)) {
-                throw new IllegalArgumentException(String.format("%s does not match %s", category, GCM_TOPIC_PATTERN));
+            if (!category.matches(FCM_TOPIC_PATTERN)) {
+                throw new IllegalArgumentException(String.format("%s does not match %s", category, FCM_TOPIC_PATTERN));
             }
         }
     }

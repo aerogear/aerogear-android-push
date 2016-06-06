@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.SharedPreferences;
 import android.util.Base64;
@@ -29,11 +29,11 @@ import java.util.Map;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
 import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
-import static org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar.REGISTRAR_PREFERENCE_PATTERN;
+import static org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar.REGISTRAR_PREFERENCE_PATTERN;
 
 /**
  * This is an Android Service which listens for InstanceID messages from
- * Google's GCM services.  These messages arrive periodically from Google's 
+ * Google's FCM services.  These messages arrive periodically from Google's 
  * systems to alert the application it needs to refresh its registration tokens.
  *
  * See
@@ -49,7 +49,7 @@ public class UnifiedPushInstanceIDListenerService extends FirebaseInstanceIdServ
     private static final String TAG = UnifiedPushInstanceIDListenerService.class.getSimpleName();
     private static final Integer TIMEOUT = 30000;// 30 seconds
 
-    private final Provider<SharedPreferences> sharedPreferencesProvider = new GCMSharedPreferenceProvider();
+    private final Provider<SharedPreferences> sharedPreferencesProvider = new FCMSharedPreferenceProvider();
 
     private final Provider<FirebaseInstanceId> instanceIdProvider = new Provider<FirebaseInstanceId>() {
 

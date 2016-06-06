@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,9 +24,9 @@ import org.jboss.aerogear.android.core.Provider;
 /**
  * Provides a standard shared preferences reference
  */
-public class GCMSharedPreferenceProvider implements Provider<SharedPreferences>{
+public class FCMSharedPreferenceProvider implements Provider<SharedPreferences>{
 
-    private static final String preferencesKey = GCMSharedPreferenceProvider.class.getName();
+    private static final String preferencesKey = FCMSharedPreferenceProvider.class.getName();
     
     @Override
     public SharedPreferences get(Object... in) {
