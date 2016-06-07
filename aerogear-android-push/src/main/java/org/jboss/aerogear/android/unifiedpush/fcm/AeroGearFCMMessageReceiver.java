@@ -18,24 +18,27 @@ package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
 import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 
-
 /**
  * <p>
- * AeroGear specific <code>BroadcastReceiver</code> implementation for Firebase Cloud Messaging.
- * 
+ * AeroGear specific <code>BroadcastReceiver</code> implementation for Firebase
+ * Cloud Messaging.
+ *
  * <p>
- * Internally received messages are delivered to attached implementations of our <code>MessageHandler</code> interface.
+ * Internally received messages are delivered to attached implementations of our
+ * <code>MessageHandler</code> interface.
  */
 public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
 
@@ -47,9 +50,9 @@ public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     @Override
-        /**
-     * When a FCM message is received, the attached implementations of our <code>MessageHandler</code> interface
-     * are being notified.
+    /**
+     * When a FCM message is received, the attached implementations of our
+     * <code>MessageHandler</code> interface are being notified.
      */
 
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -57,11 +60,11 @@ public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
         Map<String, String> messageMap = remoteMessage.getData();
 
         Bundle message = new Bundle();
-        
+
         for (Map.Entry<String, String> messageMapEntry : messageMap.entrySet()) {
             message.putString(messageMapEntry.getKey(), messageMapEntry.getValue());
         }
-        
+
         if (checkDefaultHandler) {
             checkDefaultHandler = false;
             Bundle metaData = getMetadata(getApplicationContext());
@@ -85,20 +88,22 @@ public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
     }
 
     private Bundle getMetadata(Context context) {
-        final ComponentName componentName = new ComponentName(context, AeroGearFCMMessageReceiver.class);
         try {
-            ServiceInfo si = context.getPackageManager().getServiceInfo(componentName, PackageManager.GET_META_DATA);
+            final ComponentName componentName = new ComponentName(context, AeroGearFCMMessageReceiver.class);
+            ApplicationInfo si = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             Bundle metaData = si.metaData;
             if (metaData == null) {
                 Log.d(TAG, "metaData is null. Unable to get meta data for " + componentName);
             } else {
                 return metaData;
             }
-        } catch (PackageManager.NameNotFoundException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
-        }
-        return null;
 
+        } catch (PackageManager.NameNotFoundException ex) {
+            Logger.getLogger(AeroGearFCMMessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return null;
     }
 
 }
