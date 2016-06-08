@@ -20,7 +20,7 @@
 
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android-push-parent</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>AeroGear Android Push Parent</name>
     <url>http://aerogear.org</url>

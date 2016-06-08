@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 
@@ -22,9 +22,9 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * A Push Configuration which builds {@link AeroGearGCMPushRegistrar} instances.
+ * A Push Configuration which builds {@link AeroGearFCMPushRegistrar} instances.
  */
-public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMPushConfiguration> {
+public class AeroGearFCMPushConfiguration extends PushConfiguration<AeroGearFCMPushConfiguration> {
 
     private final UnifiedPushConfig pushConfig = new UnifiedPushConfig();
 
@@ -44,14 +44,15 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setPushServerURI(URI pushServerURI) {
+    public AeroGearFCMPushConfiguration setPushServerURI(URI pushServerURI) {
         this.pushConfig.setPushServerURI(pushServerURI);
         return this;
     }
 
     /**
-     * SenderId is a  GCM sender Id (usually a project number) registered for 
-     * this application.
+     * SenderId is a  FCM sender Id (usually a project number) registered for 
+     * this application.  If you are using the Google Services plugin this value
+     * is supplied by getString(R.string.gcm_defaultSenderId)
      * 
      * @return a copy of the current set of senderIds.
      * 
@@ -61,13 +62,14 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
     }
 
     /**
-     * SenderId is a  GCM sender Id (usually a project number) registered for 
-     * this application.
+     * SenderId is a  FCM sender Id (usually a project number) registered for 
+     * this application.  If you are using the Google Services plugin this value
+     * is supplied by getString(R.string.gcm_defaultSenderId)
      * 
      * @param senderId the new senderId to set.
      * @return the current configuration.
      */
-    public AeroGearGCMPushConfiguration setSenderId(String senderId) {
+    public AeroGearFCMPushConfiguration setSenderId(String senderId) {
         this.pushConfig.setSenderId(senderId);
         return this;
     }
@@ -88,7 +90,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param variantID the new variantID
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setVariantID(String variantID) {
+    public AeroGearFCMPushConfiguration setVariantID(String variantID) {
         this.pushConfig.setVariantID(variantID);
         return this;
     }
@@ -109,7 +111,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param secret the new secret
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setSecret(String secret) {
+    public AeroGearFCMPushConfiguration setSecret(String secret) {
         this.pushConfig.setSecret(secret);
         return this;
     }
@@ -147,7 +149,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setDeviceType(String deviceType) {
+    public AeroGearFCMPushConfiguration setDeviceType(String deviceType) {
         this.pushConfig.setDeviceType(deviceType);
         return this;
     }
@@ -167,7 +169,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @param operatingSystem the new operating system
      * @return the current configuration
      */
-    public AeroGearGCMPushConfiguration setOperatingSystem(String operatingSystem) {
+    public AeroGearFCMPushConfiguration setOperatingSystem(String operatingSystem) {
         this.pushConfig.setOperatingSystem(operatingSystem);
         return this;
     }
@@ -205,7 +207,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setAlias(String alias) {
+    public AeroGearFCMPushConfiguration setAlias(String alias) {
         this.pushConfig.setAlias(alias);
         return this;
     }
@@ -227,7 +229,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(List<String> categories) {
+    public AeroGearFCMPushConfiguration setCategories(List<String> categories) {
         this.pushConfig.setCategories(categories);
         return this;
     }
@@ -239,7 +241,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      *
      */
-    public AeroGearGCMPushConfiguration addCategories(List<String> categories) {
+    public AeroGearFCMPushConfiguration addCategories(List<String> categories) {
         this.pushConfig.addCategories(categories);
         return this;
     }
@@ -251,7 +253,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration setCategories(String... categories) {
+    public AeroGearFCMPushConfiguration setCategories(String... categories) {
         this.pushConfig.setCategories(categories);
         return this;
     }
@@ -263,7 +265,7 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * @return the current configuration
      * 
      */
-    public AeroGearGCMPushConfiguration addCategory(String category) {
+    public AeroGearFCMPushConfiguration addCategory(String category) {
         this.pushConfig.addCategory(category);
         return this;
     }
@@ -272,14 +274,14 @@ public class AeroGearGCMPushConfiguration extends PushConfiguration<AeroGearGCMP
      * 
      * Protected builder method.
      * 
-     * @return A configured AeroGearGCMPushRegistrar
+     * @return A configured AeroGearFCMPushRegistrar
      * 
      * @throws IllegalStateException if pushServerURI, SenderID, Variant or VariantSecret is null or empty.
      */
     @Override
-    protected final AeroGearGCMPushRegistrar buildRegistrar() {
+    protected final AeroGearFCMPushRegistrar buildRegistrar() {
         pushConfig.checkRequiredFields();
-        return new AeroGearGCMPushRegistrar(pushConfig);
+        return new AeroGearFCMPushRegistrar(pushConfig);
     }
     
 }

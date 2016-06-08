@@ -21,8 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.jboss.aerogear.android.core.ConfigurationProvider;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
@@ -44,7 +44,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase {
     public void testDefaultConfig() throws URISyntaxException {
 
         PushConfiguration config = RegistrarManager
-                .config(PUSH, AeroGearGCMPushConfiguration.class)
+                .config(PUSH, AeroGearFCMPushConfiguration.class)
                 .setPushServerURI(new URI("http://testreg.com"))
                 .setSenderId("TestID")
                 .setVariantID("VariantID")
@@ -53,7 +53,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase {
         config.asRegistrar();
         PushRegistrar registrar = RegistrarManager.getRegistrar(PUSH);
         Assert.assertNotNull(registrar);
-        Assert.assertTrue(registrar instanceof AeroGearGCMPushRegistrar);
+        Assert.assertTrue(registrar instanceof AeroGearFCMPushRegistrar);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,7 +75,7 @@ public class RegistrationsTest extends PatchedActivityInstrumentationTestCase {
         StubConfig config = RegistrarManager.config(PUSH, StubConfig.class);
         config.asRegistrar();
         Assert.assertNotNull(RegistrarManager.getRegistrar(PUSH));
-        Assert.assertFalse(RegistrarManager.getRegistrar(PUSH) instanceof AeroGearGCMPushRegistrar);
+        Assert.assertFalse(RegistrarManager.getRegistrar(PUSH) instanceof AeroGearFCMPushRegistrar);
 
     }
 

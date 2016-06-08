@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.test.gcm;
+package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
 import android.support.test.runner.AndroidJUnit4;
 import org.junit.Assert;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushJsonConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushJsonConfiguration;
 import org.jboss.aerogear.android.unifiedpush.test.MainActivity;
 import org.jboss.aerogear.android.unifiedpush.test.util.PatchedActivityInstrumentationTestCase;
 
@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class AeroGearGCMPushJsonConfigurationTest
+public class AeroGearFCMPushJsonConfigurationTest
         extends PatchedActivityInstrumentationTestCase {
 
     private static final URI pushServerURL = URI.create("https://localhost:8080/ag-push");
@@ -38,13 +38,13 @@ public class AeroGearGCMPushJsonConfigurationTest
     private static final String variantID = "8abfae4eb02a6140c0a20798433180a063fd7006";
     private static final String secret = "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8";
 
-    public AeroGearGCMPushJsonConfigurationTest() {
+    public AeroGearFCMPushJsonConfigurationTest() {
         super(MainActivity.class);
     }
 
     @Test
     public void testJsonConfigUsingDefaultFileName() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.loadConfigJson(getActivity());
 
         Assert.assertEquals(pushServerURL, config.getPushServerURI());
@@ -55,7 +55,7 @@ public class AeroGearGCMPushJsonConfigurationTest
 
     @Test
     public void testJsonConfigUsingDifferentFileName() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setFileName("correct-config.json");
         config.loadConfigJson(getActivity());
 
@@ -67,7 +67,7 @@ public class AeroGearGCMPushJsonConfigurationTest
 
     @Test
     public void testJsonConfigUsingIncorrectFileFormat() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setFileName("wrong-format.json");
 
         try {
@@ -86,7 +86,7 @@ public class AeroGearGCMPushJsonConfigurationTest
 
     @Test
     public void testJsonConfigUsingEmptyFile() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setFileName("empty-file.json");
 
         try {
@@ -100,7 +100,7 @@ public class AeroGearGCMPushJsonConfigurationTest
 
     @Test
     public void testJsonConfigUsingAbsentFile() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setFileName("blablabla.json");
         try {
             config.loadConfigJson(getActivity());
@@ -113,7 +113,7 @@ public class AeroGearGCMPushJsonConfigurationTest
 
     @Test
     public void testSetCategoriesUsingStringArray() {
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setCategories("A", "B");
         Assert.assertEquals(2, config.getCategories().size());
     }
@@ -124,7 +124,7 @@ public class AeroGearGCMPushJsonConfigurationTest
         myCategories.add("A");
         myCategories.add("B");
 
-        AeroGearGCMPushJsonConfiguration config = new AeroGearGCMPushJsonConfiguration();
+        AeroGearFCMPushJsonConfiguration config = new AeroGearFCMPushJsonConfiguration();
         config.setCategories(myCategories);
         Assert.assertEquals(2, config.getCategories().size());
     }

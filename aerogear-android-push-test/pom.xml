@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-android-push-parent</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -148,6 +148,7 @@
                 <groupId>com.simpligility.maven.plugins</groupId>
                 <artifactId>android-maven-plugin</artifactId>
                 <configuration>
+                    
                     <test>
                         <debug>${android.debug}</debug>
                     </test>

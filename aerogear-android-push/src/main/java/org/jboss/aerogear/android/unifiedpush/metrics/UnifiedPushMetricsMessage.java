@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.unifiedpush.metrics;
 
 import android.os.Bundle;
-import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushMessage;
+import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushMessage;
 
 public class UnifiedPushMetricsMessage implements MetricsMessage {
 

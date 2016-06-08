@@ -14,20 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import java.net.HttpURLConnection;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -42,7 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
+public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -50,7 +49,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private static final String LEGACY_PROPERTY_REG_ID = "registration_id";
 
     private static final Integer TIMEOUT = 30000;// 30 seconds
-    private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
+    private static final String TAG = AeroGearFCMPushRegistrar.class.getSimpleName();
     /**
      * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to
      * recognize keys which are saved by this class in the event that
@@ -73,7 +72,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     private final String senderId;
 
-    private InstanceID instanceId;
+    private FirebaseInstanceId instanceId;
     private URL deviceRegistryURL;
     private URL metricsURL;
     private String deviceToken = "";
@@ -93,25 +92,26 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    private Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
+    
+    private Provider<FirebaseInstanceId> firebaseInstanceIdProvider = new Provider<FirebaseInstanceId>() {
 
         @Override
-        public InstanceID get(Object... context) {
-            return InstanceID.getInstance((Context) context[0]);
+        public FirebaseInstanceId get(Object... context) {
+            return FirebaseInstanceId.getInstance();
+        }
+    };
+    
+    private Provider<FirebaseMessaging> firebaseMessagingProvider = new Provider<FirebaseMessaging>() {
+
+        @Override
+        public FirebaseMessaging get(Object... context) {
+            return FirebaseMessaging.getInstance();
         }
     };
 
-    private Provider<GcmPubSub> gcmPubProvider = new Provider<GcmPubSub>() {
+    private Provider<SharedPreferences> preferenceProvider = new FCMSharedPreferenceProvider();
 
-        @Override
-        public GcmPubSub get(Object... context) {
-            return GcmPubSub.getInstance((Context) context[0]);
-        }
-    };
-
-    private Provider<SharedPreferences> preferenceProvider = new GCMSharedPreferenceProvider();
-
-    public AeroGearGCMPushRegistrar(UnifiedPushConfig config) {
+    public AeroGearFCMPushRegistrar(UnifiedPushConfig config) {
         this.senderId = config.getSenderId();
         this.deviceToken = config.getDeviceToken();
         this.variantId = config.getVariantID();
@@ -142,10 +142,9 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     removeLegacyRegistrationId(context);
 
                     if (instanceId == null) {
-                        instanceId = instanceIdProvider.get(context);
+                        instanceId = firebaseInstanceIdProvider.get(context);
                     }
-                    String token = instanceId.getToken(senderId,
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    String token = instanceId.getToken();
 
                     deviceToken = token;
 
@@ -173,14 +172,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                         postData.addProperty("variantId", variantId);
                         postData.addProperty("secret", secret);
                         presistPostInformation(context.getApplicationContext(), postData);
-                        GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                        FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
 
                         for (String catgory : categories) {
-                            gcmPubSub.subscribe(deviceToken, "/topics/" + catgory, null);
+                            firebaseMessaging.subscribeToTopic(catgory);
                         }
 
                         //Subscribe to global topic
-                        gcmPubSub.subscribe(deviceToken, "/topics/" + variantId, null);
+                        firebaseMessaging.subscribeToTopic(variantId);
                         return null;
                     } catch (HttpException ex) {
                         return ex;
@@ -206,7 +205,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                             Log.w(TAG, httpException.getMessage());
                             try {
                                 URL redirectURL = new URL(httpException.getHeaders().get("Location"));
-                                AeroGearGCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                AeroGearFCMPushRegistrar.this.deviceRegistryURL = redirectURL;
                                 register(context, callback);
                             } catch (MalformedURLException e) {
                                 callback.onFailure(e);
@@ -245,19 +244,20 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     }
 
                     if (instanceId == null) {
-                        instanceId = instanceIdProvider.get(context);
+                        instanceId = firebaseInstanceIdProvider.get(context);
                     }
+                    String token = instanceId.getToken();
 
-                    GcmPubSub gcmPubSub = gcmPubProvider.get(context);
+                    FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
 
                     for (String catgory : categories) {
-                        gcmPubSub.unsubscribe(deviceToken, "/topics/" + catgory);
+                        firebaseMessaging.unsubscribeFromTopic(catgory);
                     }
 
                     //Unsubscribe to generic topic
-                    gcmPubSub.unsubscribe(deviceToken, "/topics/" + variantId);
+                    firebaseMessaging.unsubscribeFromTopic(variantId);
 
-                    instanceId.deleteToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    instanceId.deleteInstanceId();
 
                     HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, provider);
@@ -375,7 +375,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     }
 
     /**
-     * Gets the current registration id for application on GCM service.
+     * Gets the current registration id for application on FCM service.
      * <p>
      * If result is empty, the registration has failed.
      *
@@ -386,7 +386,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar, MetricsSender<Un
      */
     private void removeLegacyRegistrationId(Context context) {
         try {
-            final SharedPreferences prefs = context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
+            final SharedPreferences prefs = context.getSharedPreferences(AeroGearFCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
             String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
             if (registrationId.length() != 0) {
                 Log.v(TAG, "Found legacy ID: '" + registrationId + "'");

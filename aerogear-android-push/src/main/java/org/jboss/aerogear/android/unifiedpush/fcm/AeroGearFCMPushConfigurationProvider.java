@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import org.jboss.aerogear.android.core.ConfigurationProvider;
 
-public class AeroGearGCMPushConfigurationProvider implements ConfigurationProvider<AeroGearGCMPushConfiguration> {
+public class AeroGearFCMPushConfigurationProvider implements ConfigurationProvider<AeroGearFCMPushConfiguration> {
 
     @Override
-    public AeroGearGCMPushConfiguration newConfiguration() {
-        return new AeroGearGCMPushConfiguration();
+    public AeroGearFCMPushConfiguration newConfiguration() {
+        return new AeroGearFCMPushConfiguration();
     }
 
 }

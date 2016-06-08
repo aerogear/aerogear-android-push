@@ -20,7 +20,7 @@
 
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android-push</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>aar</packaging>
     <name>AeroGear Android Push Library</name>
     <url>http://aerogear.org</url>
@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-android-push-parent</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -43,7 +43,7 @@
         <!-- Dependencies versions -->
         <aerogear.android.core.version>3.0.0</aerogear.android.core.version>
         <aerogear.android.pipe.version>3.0.0</aerogear.android.pipe.version>
-        <google.play.services.version>8.4.0</google.play.services.version>
+        <firebase.version>9.0.0</firebase.version>
 
         <!-- Plugins versions -->
         <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
@@ -85,9 +85,9 @@
 
 
         <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>play-services-gcm</artifactId>
-            <version>${google.play.services.version}</version>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-messaging</artifactId>
+            <version>${firebase.version}</version>
             <type>aar</type>
             <exclusions>
                 <exclusion>

@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package org.jboss.aerogear.android.unifiedpush.test.gcm;
+ package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushConfig;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class UnifiedPushConfigTest {
     @Test
     public void shouldPushConfigSetCategories() throws Exception {
         //given
-        AeroGearGCMPushConfiguration config = new AeroGearGCMPushConfiguration();
+        AeroGearFCMPushConfiguration config = new AeroGearFCMPushConfiguration();
         List<String> categories = Arrays.asList("cat1", "cat2");
 
         //when

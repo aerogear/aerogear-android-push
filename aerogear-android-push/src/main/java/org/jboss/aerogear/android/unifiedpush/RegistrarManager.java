@@ -21,10 +21,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import org.jboss.aerogear.android.core.ConfigurationProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushJsonConfiguration;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushJsonConfigurationProvider;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfigurationProvider;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushJsonConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushJsonConfigurationProvider;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfigurationProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,10 +52,10 @@ public class RegistrarManager {
     };
 
     static {
-        RegistrarManager.registerConfigurationProvider(AeroGearGCMPushConfiguration.class,
-                new AeroGearGCMPushConfigurationProvider());
-        RegistrarManager.registerConfigurationProvider(AeroGearGCMPushJsonConfiguration.class,
-                new AeroGearGCMPushJsonConfigurationProvider());
+        RegistrarManager.registerConfigurationProvider(AeroGearFCMPushConfiguration.class,
+                new AeroGearFCMPushConfigurationProvider());
+        RegistrarManager.registerConfigurationProvider(AeroGearFCMPushJsonConfiguration.class,
+                new AeroGearFCMPushJsonConfigurationProvider());
     }
 
     /**

@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush.gcm;
+package org.jboss.aerogear.android.unifiedpush.fcm;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-import com.google.android.gms.iid.InstanceIDListenerService;
 import com.google.gson.JsonObject;
+import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.net.URL;
@@ -31,11 +29,11 @@ import java.util.Map;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
 import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
-import static org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar.REGISTRAR_PREFERENCE_PATTERN;
+import static org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar.REGISTRAR_PREFERENCE_PATTERN;
 
 /**
  * This is an Android Service which listens for InstanceID messages from
- * Google's GCM services.  These messages arrive periodically from Google's 
+ * Google's FCM services.  These messages arrive periodically from Google's 
  * systems to alert the application it needs to refresh its registration tokens.
  *
  * See
@@ -43,7 +41,7 @@ import static org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistra
  * for official docs
  *
  */
-public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerService {
+public class UnifiedPushInstanceIDListenerService extends FirebaseInstanceIdService {
 
     private final static String BASIC_HEADER = "Authorization";
     private final static String AUTHORIZATION_METHOD = "Basic";
@@ -51,13 +49,13 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
     private static final String TAG = UnifiedPushInstanceIDListenerService.class.getSimpleName();
     private static final Integer TIMEOUT = 30000;// 30 seconds
 
-    private final Provider<SharedPreferences> sharedPreferencesProvider = new GCMSharedPreferenceProvider();
+    private final Provider<SharedPreferences> sharedPreferencesProvider = new FCMSharedPreferenceProvider();
 
-    private final Provider<InstanceID> instanceIdProvider = new Provider<InstanceID>() {
+    private final Provider<FirebaseInstanceId> instanceIdProvider = new Provider<FirebaseInstanceId>() {
 
         @Override
-        public InstanceID get(Object... context) {
-            return InstanceID.getInstance((Context) context[0]);
+        public FirebaseInstanceId get(Object... context) {
+            return FirebaseInstanceId.getInstance();
         }
     };
 
@@ -82,11 +80,10 @@ public class UnifiedPushInstanceIDListenerService extends InstanceIDListenerServ
 
         for (Map.Entry<String, ?> preference : preferences.entrySet()) {
             if (preference.getKey().matches(REGISTRAR_PREFERENCE_PATTERN)) {
-                String senderId = preference.getKey().split(":")[1];
-                InstanceID instanceID = instanceIdProvider.get(this);
+
+                FirebaseInstanceId instanceID = instanceIdProvider.get(this);
                 try {
-                    String token = instanceID.getToken(senderId,
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                    String token = instanceID.getToken();
                     JsonObject oldPostData = new JsonParser().parse(preference.getValue().toString()).getAsJsonObject();
                     URL deviceRegistryURL = new URL(oldPostData.get("deviceRegistryURL").getAsString());
                     String variantId = oldPostData.get("variantId").getAsString();

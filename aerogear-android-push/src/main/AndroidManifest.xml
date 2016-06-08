@@ -20,22 +20,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.jboss.aerogear.android.unifiedpush">
     <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="23"/>
-    <service android:name="org.jboss.aerogear.android.unifiedpush.gcm.UnifiedPushInstanceIDListenerService" android:exported="false">
-        <intent-filter>
-            <action android:name="com.google.android.gms.iid.InstanceID"/>
-        </intent-filter>
-    </service>
-    
-    <receiver
-        android:name="com.google.android.gms.gcm.GcmReceiver"
-        android:permission="com.google.android.c2dm.permission.SEND">
-        <intent-filter>
-            <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-            <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+    <application>
+     <service android:name="org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushInstanceIDListenerService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
 
-            <category android:name="org.jboss.aerogear.unifiedpush.helloworld"/>
-        </intent-filter>
-        <meta-data android:name="DEFAULT_MESSAGE_HANDLER_KEY" android:value="org.jboss.aerogear.unifiedpush.helloworld.handler.NotificationBarMessageHandler"/>
-    </receiver>
-    
+        <service
+            android:name="org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMMessageReceiver">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+        </service>
+    </application>
 </manifest>
