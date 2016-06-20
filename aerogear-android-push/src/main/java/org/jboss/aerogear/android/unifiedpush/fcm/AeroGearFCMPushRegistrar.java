@@ -144,7 +144,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = firebaseInstanceIdProvider.get(context);
                     }
-                    String token = instanceId.getToken();
+                    String token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
 
                     deviceToken = token;
 
