@@ -85,11 +85,21 @@ public class UnifiedPushInstanceIDListenerService extends FirebaseInstanceIdServ
                 try {
                     String token = instanceID.getToken();
                     JsonObject oldPostData = new JsonParser().parse(preference.getValue().toString()).getAsJsonObject();
+                    String oldToken = "";
+                    try {
+                        oldToken = oldPostData.get("deviceToken").getAsString();
+                    } catch (Exception exception) {
+                        //We don't care if the old device token isn't set right.
+                        Log.w(TAG, exception.getMessage(), exception);
+                    }
                     URL deviceRegistryURL = new URL(oldPostData.get("deviceRegistryURL").getAsString());
                     String variantId = oldPostData.get("variantId").getAsString();
                     String secret = oldPostData.get("secret").getAsString();
 
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
+
+                    httpProvider.setDefaultHeader("x-ag-old-token", oldToken);
+
                     setPasswordAuthentication(variantId, secret, httpProvider);
 
                     JsonObject postData = new JsonObject();

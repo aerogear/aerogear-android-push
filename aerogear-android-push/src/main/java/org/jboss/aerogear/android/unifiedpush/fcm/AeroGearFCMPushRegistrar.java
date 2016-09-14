@@ -27,6 +27,7 @@ import com.google.gson.JsonPrimitive;
 import java.net.HttpURLConnection;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonParser;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -92,7 +93,6 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         }
     };
 
-    
     private Provider<FirebaseInstanceId> firebaseInstanceIdProvider = new Provider<FirebaseInstanceId>() {
 
         @Override
@@ -100,7 +100,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             return FirebaseInstanceId.getInstance();
         }
     };
-    
+
     private Provider<FirebaseMessaging> firebaseMessagingProvider = new Provider<FirebaseMessaging>() {
 
         @Override
@@ -144,13 +144,13 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = firebaseInstanceIdProvider.get(context);
                     }
-                    
+
                     /*
                     The getToken method will return a cached token.  If the 
                     token is null then we need to force a token to be loaded.
-                    */
+                     */
                     String token = instanceId.getToken();
-                    
+                    String oldToken = getOldToken(context);
                     if (token == null) {
                         token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
                     }
@@ -160,6 +160,8 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
                     setPasswordAuthentication(variantId, secret, httpProvider);
 
+                    httpProvider.setDefaultHeader("x-ag-old-token", oldToken);
+                    
                     try {
                         JsonObject postData = new JsonObject();
                         postData.addProperty("deviceType", deviceType);
@@ -384,14 +386,29 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     }
 
     /**
-     * Gets the current registration id for application on FCM service.
-     * <p>
-     * If result is empty, the registration has failed.
-     *
-     * @param context the application context
-     *
-     * @return registration id, or empty string if the registration is not
-     * complete.
+     * Returns the most recently used deviceToken 
+     * @return a deviceToken or an empty string
+     */
+    private String getOldToken(Context appContext) {
+        String jsonData = preferenceProvider.get(appContext).getString(String.format(REGISTRAR_PREFERENCE_TEMPLATE, senderId), "");
+        if (jsonData.isEmpty()) {
+            return "";
+        }
+        
+        JsonObject jsonedPreferences = new JsonParser().parse(jsonData).getAsJsonObject();
+        try {
+            return jsonedPreferences.get("deviceToken").getAsString();
+        } catch (Exception ignore) {
+            //There was something wrong with the deviceToken or the jsonPreferences.  
+            //This probably means that there isn't an oldToken.  Let's log and return an empty String
+            Log.w(TAG, ignore.getMessage(), ignore);
+            return "";
+        }
+        
+    }
+
+    /**
+     * Removes the old GCM token if this application is upgraded from AGpush 2.x
      */
     private void removeLegacyRegistrationId(Context context) {
         try {
