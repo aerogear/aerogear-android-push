@@ -43,7 +43,7 @@
         <!-- Dependencies versions -->
         <aerogear.android.core.version>3.0.0</aerogear.android.core.version>
         <aerogear.android.pipe.version>3.0.0</aerogear.android.pipe.version>
-        <firebase.version>9.0.0</firebase.version>
+        <firebase.version>9.4.0</firebase.version>
 
         <!-- Plugins versions -->
         <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
