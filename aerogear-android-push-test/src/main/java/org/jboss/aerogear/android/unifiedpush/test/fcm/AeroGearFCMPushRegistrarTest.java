@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -158,7 +159,7 @@ public class AeroGearFCMPushRegistrarTest extends PatchedActivityInstrumentation
         String jsonData = new FCMSharedPreferenceProvider().get(getActivity()).getString(TEST_REGISTRAR_PREFERENCES_KEY, TAG);
         Assert.assertNotNull(jsonData);
         Assert.assertEquals(UnitTestUtils.getPrivateField(registrar, "deviceToken"), new JSONObject(jsonData).getString("deviceToken"));
-        Assert.assertEquals(new JSONArray(CATEGORIES).length(), new JSONObject(jsonData).getJSONArray("categories").length());
+        Assert.assertEquals(new JSONArray(Arrays.asList(CATEGORIES)).length(), new JSONObject(jsonData).getJSONArray("categories").length());
         Mockito.verify(mockPubSub, Mockito.times(1)).subscribeToTopic("test");
         Mockito.verify(mockPubSub, Mockito.times(1)).subscribeToTopic("anotherTest");
         Mockito.verify(mockPubSub, Mockito.times(1)).subscribeToTopic(TEST_SENDER_VARIANT);
