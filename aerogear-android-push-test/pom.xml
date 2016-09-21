@@ -138,13 +138,7 @@
             <version>${android.support.test.version}</version>
             <type>aar</type>
         </dependency>
-        <dependency>
-            <groupId>android</groupId>
-            <artifactId>android</artifactId>
-            <version>4.1.2_r5</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
