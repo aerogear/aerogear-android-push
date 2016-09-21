@@ -13,7 +13,7 @@ android:
   components:
     - platform-tools
     - tools
-    - build-tools-23.0.3
+    - build-tools-23.0.2
     - android-23
     - addon-google_apis-google-23
     - extra-google-m2repository
@@ -29,9 +29,12 @@ env:
   global:
     - RELEASE_VERSION=$(grep "<version>" pom.xml | tr "\n" ":" | cut -d ':' -f1 | sed s/\<version\>//g| sed s/\"//g| sed s/\<\\/version\>//g | tr -d ' ')
   matrix:
-    - ANDROID_SDK=android-23 ANDROID_EMULATOR="Google Inc.:Google APIs:23" ANDROID_ABI=google_apis/armeabi-v7a
+    - ANDROID_SDK="android-23" ANDROID_ABI=google_apis/armeabi-v7a    ANDROID_PKGS=addon-google_apis-google-23,sys-img-armeabi-v7a-google_apis-23
 
 before_install:
+
+  # Install Android dependencies only on this Matrix 
+  - echo y | android update sdk -a -u -t ${ANDROID_PKGS:-}
 
   #################################################
   ########## maven-android-sdk-deployer ###########
@@ -66,9 +69,7 @@ before_install:
   - cd -
 
 before_script:
-
-  # Create emulator
-  - echo no | android create avd --force -n test -t "$ANDROID_EMULATOR" --abi "$ANDROID_ABI"
+  - echo no | android create avd --force -n test -t "$ANDROID_SDK" --abi "$ANDROID_ABI"
 
 script:
   - mvn install -Drelease
