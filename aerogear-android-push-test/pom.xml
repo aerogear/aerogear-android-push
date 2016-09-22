@@ -68,12 +68,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-android-core</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -138,13 +132,7 @@
             <version>${android.support.test.version}</version>
             <type>aar</type>
         </dependency>
-        <dependency>
-            <groupId>android</groupId>
-            <artifactId>android</artifactId>
-            <version>4.1.2_r5</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
