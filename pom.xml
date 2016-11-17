@@ -63,7 +63,7 @@
         <aerogear.bom.version>0.2.21</aerogear.bom.version>
 
         <!-- Plugins versions -->
-        <maven.android.plugin.version>4.4.1</maven.android.plugin.version>
+        <maven.android.plugin.version>4.4.3</maven.android.plugin.version>
 
         <!-- Android configs -->
         <android.platform>24</android.platform>
