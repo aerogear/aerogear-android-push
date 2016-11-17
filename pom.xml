@@ -32,7 +32,7 @@
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.20</version>
+        <version>0.2.21</version>
     </parent>
 
     <licenses>
@@ -60,7 +60,7 @@
 
     <properties>
         <!-- Dependencies versions -->
-        <aerogear.bom.version>0.2.20</aerogear.bom.version>
+        <aerogear.bom.version>0.2.21</aerogear.bom.version>
 
         <!-- Plugins versions -->
         <maven.android.plugin.version>4.4.1</maven.android.plugin.version>
