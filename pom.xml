@@ -66,8 +66,8 @@
         <maven.android.plugin.version>4.4.1</maven.android.plugin.version>
 
         <!-- Android configs -->
-        <android.platform>23</android.platform>
-        <android.buildTools>23.0.2</android.buildTools>
+        <android.platform>24</android.platform>
+        <android.buildTools>24.0.3</android.buildTools>
         <android.debug>false</android.debug>
         <proguard.skip>true</proguard.skip>
     </properties>
