@@ -1,14 +1,16 @@
-# AeroGear Android Push [![Build Status](https://travis-ci.org/aerogear/aerogear-android-push.png)](https://travis-ci.org/aerogear/aerogear-android-push)
+# AeroGear Android Push
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear/aerogear-android-push/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear/aerogear-android-push/)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](http://github.com/aerogear/aerogear-android-push)
+[![Travis](https://img.shields.io/travis/aerogear/aerogear-android-push.svg)](http://travis-ci.org/aerogear/aerogear-android-push)
+[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/aerogear-android-push.svg)](http://search.maven.org/#search%7Cga%7C1%7Caerogear-android-push)
 [![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/aerogear-android-push.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/aerogear-android-push)
-
 
 AeroGear's Android libraries were built as jar and aar packages using [Maven](http://maven.apache.org/) and the [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Maven layout so it can be imported directly into most IDEs as a Maven project.
 
 ## Push
 
-AeroGear for Android provides support for integrating with push. Currently only using Google’s Cloud Messaging (GCM) with the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server) is supported, but we are planning to add support for Mozilla’s Simple Push, MQTT, and standalone GCM soon.
+AeroGear Android Push provides support for integrating with push. Currently only using Firebase Cloud Messaging (FCM) with the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server) is supported, but we are planning to add support for Mozilla’s Simple Push, MQTT, and standalone GCM soon.
 
 |                 | Project Info  |
 | --------------- | ------------- |
@@ -36,10 +38,10 @@ There are two supported ways of developing apps using AeroGear for Android: Andr
 
 Add to your application's `build.gradle` file
 
-```
+```groovy
 dependencies {
-    compile 'com.google.android.gms:play-services:+'
-    compile 'org.jboss.aerogear:aerogear-android-push:2.2.1'
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    compile 'org.jboss.aerogear:aerogear-android-push:4.1.0'
 }
 ```
 
@@ -47,11 +49,11 @@ dependencies {
 
 Include the following dependencies in your project's `pom.xml`
 
-```
+```xml
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.2.1</version>
+  <version>4.1.0</version>
   <scope>provided</scope>
   <type>jar</type>
 </dependency>
@@ -59,21 +61,21 @@ Include the following dependencies in your project's `pom.xml`
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.2.1</version>
+  <version>4.1.0</version>
   <type>aar</type>
 </dependency>
 ```
 
 ## Documentation
 
-For more details about the current release, please consult [our documentation](http://aerogear.org/docs/guides/aerogear-android/).
+For more details about the current release, please consult [our documentation](http://aerogear.org/android/).
 
 ## Demo apps
 
 Take a look in our demo apps
 
-* [AeroGear Push HelloWorld](https://github.com/jboss-mobile/unified-push-helloworld/tree/master/android)
-* [AeroGear Push Quickstarts](https://github.com/jboss-mobile/unified-push-quickstarts/tree/master/client/contacts-mobile-android-client)
+* [Hello Push](https://github.com/aerogear/aerogear-android-cookbook/tree/master/HelloPush)
+* [AeroDoc](https://github.com/aerogear/aerogear-android-cookbook/tree/master/AeroDoc)
 
 ## Development
 
