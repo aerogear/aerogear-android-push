@@ -1,8 +1,10 @@
-# AeroGear Android Push [![Build Status](https://travis-ci.org/aerogear/aerogear-android-push.png)](https://travis-ci.org/aerogear/aerogear-android-push)
+# AeroGear Android Push
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear/aerogear-android-push/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear/aerogear-android-push/)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](http://github.com/aerogear/aerogear-android-push)
+[![Travis](https://img.shields.io/travis/aerogear/aerogear-android-push.svg)](http://travis-ci.org/aerogear/aerogear-android-push)
+[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/aerogear-android-push.svg)](http://search.maven.org/#search%7Cga%7C1%7Caerogear-android-push)
 [![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/aerogear-android-push.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/aerogear-android-push)
-
 
 AeroGear's Android libraries were built as jar and aar packages using [Maven](http://maven.apache.org/) and the [android-maven-plugin](https://github.com/jayway/maven-android-plugin). The project follows the standard Maven layout so it can be imported directly into most IDEs as a Maven project.
 
