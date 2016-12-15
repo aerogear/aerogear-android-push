@@ -40,8 +40,8 @@ Add to your application's `build.gradle` file
 
 ```groovy
 dependencies {
-    compile 'com.google.android.gms:play-services:+'
-    compile 'org.jboss.aerogear:aerogear-android-push:2.2.1'
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    compile 'org.jboss.aerogear:aerogear-android-push:4.1.0'
 }
 ```
 
@@ -53,7 +53,7 @@ Include the following dependencies in your project's `pom.xml`
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.2.1</version>
+  <version>4.1.0</version>
   <scope>provided</scope>
   <type>jar</type>
 </dependency>
@@ -61,7 +61,7 @@ Include the following dependencies in your project's `pom.xml`
 <dependency>
   <groupId>org.jboss.aerogear</groupId>
   <artifactId>aerogear-android-push</artifactId>
-  <version>2.2.1</version>
+  <version>4.1.0</version>
   <type>aar</type>
 </dependency>
 ```
