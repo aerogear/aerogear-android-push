@@ -10,7 +10,7 @@ AeroGear's Android libraries were built as jar and aar packages using [Maven](ht
 
 ## Push
 
-AeroGear Android Push provides support for integrating with push. Currently only using Firebase Cloud Messaging (FCM) with the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server) is supported, but we are planning to add support for Mozilla’s Simple Push, MQTT, and standalone GCM soon.
+AeroGear Android Push provides support for integrating with push. Currently only using Firebase Cloud Messaging (FCM) with the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server) is supported, but we are planning to add support for Mozilla’s Simple Push, MQTT, and standalone FCM soon.
 
 |                 | Project Info  |
 | --------------- | ------------- |
