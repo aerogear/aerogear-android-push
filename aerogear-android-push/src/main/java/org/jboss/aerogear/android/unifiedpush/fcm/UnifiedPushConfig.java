@@ -37,7 +37,7 @@ public final class UnifiedPushConfig {
      * Topics in GCM must conform to this pattern.
      * See : https://developers.google.com/android/reference/com/google/android/gms/gcm/GcmPubSub#unsubscribe(java.lang.String, java.lang.String)
      */
-    private static final String FCM_TOPIC_PATTERN = "[a-zA-Z0-9-_.~%]{1,900}";
+    private static final String FCM_TOPIC_PATTERN = "[a-zA-Z0-9-_.~%]+";
     
     /**
      * PushServerURI is the URL of the 3rd party application server
@@ -305,8 +305,7 @@ public final class UnifiedPushConfig {
      *
      * @param categories a group of Strings each will be validated.
      *
-     * @throws IllegalArgumentException if a category fails to match
-     * [a-zA-Z0-9-_.~%]{1,900}
+     * @throws IllegalArgumentException if a category fails to match [a-zA-Z0-9-_.~%]+
      */
     private static void validateCategories(String... categories) {
 
