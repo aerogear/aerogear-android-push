@@ -1,6 +1,5 @@
 # AeroGear Android Push
 
-[![Travis](https://img.shields.io/travis/aerogear/aerogear-android-push.svg)](http://travis-ci.org/aerogear/aerogear-android-push)
 [![circle-ci](https://img.shields.io/circleci/project/github/aerogear/aerogear-android-push/master.svg)](https://circleci.com/gh/aerogear/aerogear-android-push)
 [![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/aerogear-android-push.svg)](http://search.maven.org/#search%7Cga%7C1%7Caerogear-android-push)
