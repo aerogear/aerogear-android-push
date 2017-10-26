@@ -4,7 +4,7 @@ machine:
   environment:
     QEMU_AUDIO_DRV: none
     ANDROID_SDK: "android-26"
-    BUILD_TOOLS: "26.0.1"
+    BUILD_TOOLS: "26.0.2"
     ANDROID_EMULATOR: "circleci-android24"
     ANDROID_ABI: "armeabi-v7a"
 
@@ -32,3 +32,6 @@ test:
 
   override:
     - ./gradlew build connectedCheck
+
+  post:
+    - bash <(curl -s https://codecov.io/bash)
