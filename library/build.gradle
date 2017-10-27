@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'jacoco-android'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
 
         versionCode Integer.parseInt(project.property("VERSION_CODE"))
         versionName project.property("VERSION_NAME")
@@ -15,6 +16,9 @@ android {
 
     }
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -23,9 +27,9 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'org.jboss.aerogear:aerogear-android-pipe:3.1.0'
-    compile ('com.google.firebase:firebase-messaging:9.8.0', {
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'org.jboss.aerogear:aerogear-android-pipe:4.0.0'
+    compile ('com.google.firebase:firebase-messaging:11.4.2', {
         exclude group: 'com.android.support', module: 'support-v4'
     })
 
