@@ -18,7 +18,7 @@ package org.jboss.aerogear.android.unifiedpush.fcm;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
+import android.content.pm.ServiceInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,8 +90,10 @@ public class AeroGearFCMMessageReceiver extends FirebaseMessagingService {
     private Bundle getMetadata(Context context) {
         try {
             final ComponentName componentName = new ComponentName(context, AeroGearFCMMessageReceiver.class);
-            ApplicationInfo si = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            
+            ServiceInfo si = context.getPackageManager().getServiceInfo(componentName, PackageManager.GET_META_DATA);
             Bundle metaData = si.metaData;
+            
             if (metaData == null) {
                 Log.d(TAG, "metaData is null. Unable to get meta data for " + componentName);
             } else {
