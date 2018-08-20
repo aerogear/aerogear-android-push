@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -119,8 +120,8 @@ public class AeroGearFCMPushRegistrarTest {
         VoidCallback callback = new VoidCallback(latch);
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -181,8 +182,8 @@ public class AeroGearFCMPushRegistrarTest {
         UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", firebaseInstanceIdProvider);
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -279,8 +280,8 @@ public class AeroGearFCMPushRegistrarTest {
         StubHttpProvider provider = new StubHttpProvider();
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -337,8 +338,8 @@ public class AeroGearFCMPushRegistrarTest {
         CountDownLatch latch = new CountDownLatch(1);
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 

@@ -19,6 +19,7 @@ package org.jboss.aerogear.android.unifiedpush.test.fcm;
 import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jboss.aerogear.android.core.Provider;
@@ -66,8 +67,8 @@ public class InstanceIdListenerTests {
         UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", new AeroGearFCMPushRegistrarTest.StubInstanceIDProvider());
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
