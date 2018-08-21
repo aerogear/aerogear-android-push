@@ -26,7 +26,7 @@ import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.fcm.FCMSharedPreferenceProvider;
-import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushInstanceIDListenerService;
+import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushService;
 import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
 import org.jboss.aerogear.android.unifiedpush.test.util.VoidCallback;
 import org.junit.Assert;
@@ -98,7 +98,7 @@ public class InstanceIdListenerTests {
     public void refreshIntentSendsCallsRefresh() throws Exception {
         AeroGearFCMPushRegistrarTest.StubHttpProvider httpProvider = new AeroGearFCMPushRegistrarTest.StubHttpProvider();
 
-        UnifiedPushInstanceIDListenerService service = new UnifiedPushInstanceIDListenerService();
+        UnifiedPushService service = new UnifiedPushService();
         UnitTestUtils.setPrivateField(service, "httpProviderProvider", httpProvider);
 
         UnitTestUtils.setPrivateField(service, "sharedPreferencesProvider", new Provider<SharedPreferences>() {

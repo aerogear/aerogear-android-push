@@ -20,16 +20,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.jboss.aerogear.android.unifiedpush">
     <application>
-     <service android:name="org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushInstanceIDListenerService" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
 
         <service
-            android:name="org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMMessageReceiver">
+            android:name="org.jboss.aerogear.android.unifiedpush.fcm.AeroGearUPSMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+
             </intent-filter>
 
         </service>
