@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,15 +19,23 @@ package org.jboss.aerogear.android.unifiedpush.fcm;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import java.net.HttpURLConnection;
+
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonParser;
+
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.pipe.http.HttpException;
@@ -55,7 +63,6 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
      * This pattern is used by {@link AeroGearUPSMessageService} to
      * recognize keys which are saved by this class in the event that
      * registration tokens are refreshed by Google.
-     *
      */
     static final String REGISTRAR_PREFERENCE_PATTERN = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:.+";
     /**
@@ -132,114 +139,110 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     @Override
     public void register(final Context context, final Callback<Void> callback) {
-        new AsyncTask<Void, Void, Exception>() {
 
-            @Override
-            protected Exception doInBackground(Void... params) {
+        if (instanceId == null) {
+            instanceId = firebaseInstanceIdProvider.get(context);
+        }
 
-                try {
-
-                    removeLegacyRegistrationId(context);
-
-                    if (instanceId == null) {
-                        instanceId = firebaseInstanceIdProvider.get(context);
-                    }
-
-                    /*
-                    The getToken method will return a cached token.  If the 
-                    token is null then we need to force a token to be loaded.
-                     */
-                    String token = instanceId.getToken();
-                    String oldToken = getOldToken(context);
-                    if (token == null) {
-                        token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
-                    }
-
-                    deviceToken = token;
-
-                    HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
-                    setPasswordAuthentication(variantId, secret, httpProvider);
-
-                    httpProvider.setDefaultHeader("x-ag-old-token", oldToken);
-                    
-                    try {
-                        JsonObject postData = new JsonObject();
-                        postData.addProperty("deviceType", deviceType);
-                        postData.addProperty("deviceToken", deviceToken);
-                        postData.addProperty("alias", alias);
-                        postData.addProperty("operatingSystem", operatingSystem);
-                        postData.addProperty("osVersion", osVersion);
-                        if (categories != null && !categories.isEmpty()) {
-                            JsonArray jsonCategories = new JsonArray();
-                            for (String category : categories) {
-                                jsonCategories.add(new JsonPrimitive(category));
+        instanceId.getInstanceId().addOnCompleteListener(
+                new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Exception taskException = task.getException();
+                            if (taskException == null) {
+                                Log.e(TAG, "Task did not leave an exception.  Populating exception with dummy data.");
+                                taskException = new Exception("Get InstanceId failed without an exception");
                             }
-                            postData.add("categories", jsonCategories);
-                        }
-
-                        httpProvider.post(postData.toString());
-
-                        postData.addProperty("deviceRegistryURL", deviceRegistryURL.toString());
-                        postData.addProperty("variantId", variantId);
-                        postData.addProperty("secret", secret);
-                        presistPostInformation(context.getApplicationContext(), postData);
-                        FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
-
-                        for (String catgory : categories) {
-                            firebaseMessaging.subscribeToTopic(catgory);
-                        }
-
-                        //Subscribe to global topic
-                        firebaseMessaging.subscribeToTopic(variantId);
-                        return null;
-                    } catch (HttpException ex) {
-                        return ex;
-                    }
-
-                } catch (Exception ex) {
-                    return ex;
-                }
-
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void onPostExecute(Exception result) {
-                if (result == null) {
-                    callback.onSuccess(null);
-                } else if (result instanceof HttpException) {
-                    HttpException httpException = (HttpException) result;
-                    switch (httpException.getStatusCode()) {
-                        case HttpURLConnection.HTTP_MOVED_PERM:
-                        case HttpURLConnection.HTTP_MOVED_TEMP:
-                        case 307://Temporary Redirect not in HTTPUrlConnection
-                            Log.w(TAG, httpException.getMessage());
+                            Log.e(TAG, taskException.getMessage());
+                            callback.onFailure(taskException);
+                        } else {
                             try {
-                                URL redirectURL = new URL(httpException.getHeaders().get("Location"));
-                                AeroGearFCMPushRegistrar.this.deviceRegistryURL = redirectURL;
-                                register(context, callback);
-                            } catch (MalformedURLException e) {
-                                callback.onFailure(e);
-                            }
-                            break;
-                        default:
-                            callback.onFailure(result);
-                    }
-                } else {
-                    callback.onFailure(result);
-                }
-            }
+                                /*
+                                The getToken method will return a cached token.  If the
+                                token is null then we need to force a token to be loaded.
+                                 */
+                                String token = instanceId.getToken();
+                                String oldToken = getOldToken(context);
+                                if (token == null) {
+                                    token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
+                                }
 
-        }.execute((Void) null);
+                                deviceToken = token;
+
+                                HttpProvider httpProvider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
+                                setPasswordAuthentication(variantId, secret, httpProvider);
+
+                                httpProvider.setDefaultHeader("x-ag-old-token", oldToken);
+
+                                try {
+                                    JsonObject postData = new JsonObject();
+                                    postData.addProperty("deviceType", deviceType);
+                                    postData.addProperty("deviceToken", deviceToken);
+                                    postData.addProperty("alias", alias);
+                                    postData.addProperty("operatingSystem", operatingSystem);
+                                    postData.addProperty("osVersion", osVersion);
+                                    if (categories != null && !categories.isEmpty()) {
+                                        JsonArray jsonCategories = new JsonArray();
+                                        for (String category : categories) {
+                                            jsonCategories.add(new JsonPrimitive(category));
+                                        }
+                                        postData.add("categories", jsonCategories);
+                                    }
+
+                                    httpProvider.post(postData.toString());
+
+                                    postData.addProperty("deviceRegistryURL", deviceRegistryURL.toString());
+                                    postData.addProperty("variantId", variantId);
+                                    postData.addProperty("secret", secret);
+                                    presistPostInformation(context.getApplicationContext(), postData);
+                                    FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
+
+                                    for (String catgory : categories) {
+                                        firebaseMessaging.subscribeToTopic(catgory);
+                                    }
+
+                                    //Subscribe to global topic
+                                    firebaseMessaging.subscribeToTopic(variantId);
+                                    callback.onSuccess(null);
+
+                                } catch (HttpException result) {
+                                    HttpException httpException = (HttpException) result;
+                                    switch (httpException.getStatusCode()) {
+                                        case HttpURLConnection.HTTP_MOVED_PERM:
+                                        case HttpURLConnection.HTTP_MOVED_TEMP:
+                                        case 307://Temporary Redirect not in HTTPUrlConnection
+                                            Log.w(TAG, httpException.getMessage());
+                                            try {
+                                                URL redirectURL = new URL(httpException.getHeaders().get("Location"));
+                                                AeroGearFCMPushRegistrar.this.deviceRegistryURL = redirectURL;
+                                                register(context, callback);
+                                            } catch (MalformedURLException e) {
+                                                callback.onFailure(e);
+                                            }
+                                            break;
+                                        default:
+                                            callback.onFailure(result);
+                                    }
+                                }
+                            } catch (Exception result) {
+                                callback.onFailure(result);
+                            }
+
+                        }
+                    }
+                }
+        );
+
 
     }
 
     /**
      * Unregister device from Unified Push Server.
-     *
+     * <p>
      * if the device isn't registered onFailure will be called
      *
-     * @param context Android application context
+     * @param context  Android application context
      * @param callback a callback.
      */
     @Override
@@ -305,11 +308,11 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
      * Send a confirmation the message was opened
      *
      * @param metricsMessage The id of the message received
-     * @param callback a callback.
+     * @param callback       a callback.
      */
     @Override
     public void sendMetrics(final UnifiedPushMetricsMessage metricsMessage,
-            final Callback<UnifiedPushMetricsMessage> callback) {
+                            final Callback<UnifiedPushMetricsMessage> callback) {
         new AsyncTask<Void, Void, Exception>() {
             @Override
             protected Exception doInBackground(Void... params) {
@@ -362,7 +365,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     /**
      * Save the post sent to UPS. This will be used by
-     * {@link UnifiedPushService} to refresh the registration
+     * {@link AeroGearUPSMessageService} to refresh the registration
      * token if the registration token changes.
      *
      * @param appContext the application Context
@@ -386,7 +389,8 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     }
 
     /**
-     * Returns the most recently used deviceToken 
+     * Returns the most recently used deviceToken
+     *
      * @return a deviceToken or an empty string
      */
     private String getOldToken(Context appContext) {
@@ -394,7 +398,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
         if (jsonData.isEmpty()) {
             return "";
         }
-        
+
         JsonObject jsonedPreferences = new JsonParser().parse(jsonData).getAsJsonObject();
         try {
             return jsonedPreferences.get("deviceToken").getAsString();
@@ -404,30 +408,8 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             Log.w(TAG, ignore.getMessage(), ignore);
             return "";
         }
-        
-    }
-
-    /**
-     * Removes the old GCM token if this application is upgraded from AGpush 2.x
-     */
-    private void removeLegacyRegistrationId(Context context) {
-        try {
-            final SharedPreferences prefs = context.getSharedPreferences(AeroGearFCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
-            String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
-            if (registrationId.length() != 0) {
-                Log.v(TAG, "Found legacy ID: '" + registrationId + "'");
-
-                HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
-                setPasswordAuthentication(variantId, secret, provider);
-
-                provider.delete(registrationId);
-                prefs.edit().remove(LEGACY_PROPERTY_REG_ID).commit();
-
-            }
-        } catch (Exception ignore) {
-            Log.v(TAG, "Exception Thrown attempting to unregister legacy token", ignore);
-        }
 
     }
+
 
 }
