@@ -477,6 +477,21 @@ public class AeroGearFCMPushRegistrarTest {
 
         public StubInstanceIDProvider() {
             Task<InstanceIdResult> mockInstanceIdTask = mock(Task.class);
+            when(mockInstanceIdTask.isComplete()).thenReturn(true);
+            when(mockInstanceIdTask.isSuccessful()).thenReturn(true);
+            when(mockInstanceIdTask.getResult()).thenReturn(new InstanceIdResult() {
+                @NonNull
+                @Override
+                public String getId() {
+                    return TEST_SENDER_ID;
+                }
+
+                @NonNull
+                @Override
+                public String getToken() {
+                    return TEMP_ID;
+                }
+            });
             when(mockInstanceIdTask.addOnCompleteListener((OnCompleteListener<InstanceIdResult>) any())).thenAnswer(new Answer<Object>() {
                 @Override
                 public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -514,3 +529,4 @@ public class AeroGearFCMPushRegistrarTest {
     }
 
 }
+
