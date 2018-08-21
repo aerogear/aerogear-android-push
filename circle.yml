@@ -3,8 +3,8 @@ machine:
     version: oraclejdk8
   environment:
     QEMU_AUDIO_DRV: none
-    ANDROID_SDK: "android-26"
-    BUILD_TOOLS: "26.0.2"
+    ANDROID_SDK: "android-28"
+    BUILD_TOOLS: "28.0.2"
     ANDROID_EMULATOR: "circleci-android24"
     ANDROID_ABI: "armeabi-v7a"
 

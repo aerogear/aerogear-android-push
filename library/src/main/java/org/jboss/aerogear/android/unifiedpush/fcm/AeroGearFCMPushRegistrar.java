@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+
+import com.google.android.gms.tasks.Tasks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -41,6 +43,7 @@ import org.jboss.aerogear.android.unifiedpush.metrics.UnifiedPushMetricsMessage;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<UnifiedPushMetricsMessage> {
 
@@ -52,7 +55,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     private static final Integer TIMEOUT = 30000;// 30 seconds
     private static final String TAG = AeroGearFCMPushRegistrar.class.getSimpleName();
     /**
-     * This pattern is used by {@link UnifiedPushInstanceIDListenerService} to
+     * This pattern is used by {@link AeroGearUPSMessageService} to
      * recognize keys which are saved by this class in the event that
      * registration tokens are refreshed by Google.
      *
@@ -61,7 +64,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
     /**
      * This template creates a key used by the registrar to save push data to
      * SharedPreferences. This information will be fetched by
-     * {@link UnifiedPushInstanceIDListenerService} in the event registration
+     * {@link AeroGearUPSMessageService} in the event registration
      * tokens are reloaded.
      */
     static final String REGISTRAR_PREFERENCE_TEMPLATE = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:%s";
@@ -139,8 +142,6 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
                 try {
 
-                    removeLegacyRegistrationId(context);
-
                     if (instanceId == null) {
                         instanceId = firebaseInstanceIdProvider.get(context);
                     }
@@ -149,7 +150,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     The getToken method will return a cached token.  If the 
                     token is null then we need to force a token to be loaded.
                      */
-                    String token = instanceId.getToken();
+                    String token = Tasks.await(instanceId.getInstanceId(), 30, TimeUnit.SECONDS).getToken();
                     String oldToken = getOldToken(context);
                     if (token == null) {
                         token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
@@ -257,7 +258,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                     if (instanceId == null) {
                         instanceId = firebaseInstanceIdProvider.get(context);
                     }
-                    String token = instanceId.getToken();
+                    String token = Tasks.await(instanceId.getInstanceId(), 30, TimeUnit.SECONDS).getToken();
 
                     FirebaseMessaging firebaseMessaging = firebaseMessagingProvider.get(context);
 
@@ -362,7 +363,7 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
 
     /**
      * Save the post sent to UPS. This will be used by
-     * {@link UnifiedPushInstanceIDListenerService} to refresh the registration
+     * {@link AeroGearUPSMessageService} to refresh the registration
      * token if the registration token changes.
      *
      * @param appContext the application Context
@@ -405,29 +406,6 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
             return "";
         }
         
-    }
-
-    /**
-     * Removes the old GCM token if this application is upgraded from AGpush 2.x
-     */
-    private void removeLegacyRegistrationId(Context context) {
-        try {
-            final SharedPreferences prefs = context.getSharedPreferences(AeroGearFCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
-            String registrationId = prefs.getString(LEGACY_PROPERTY_REG_ID, "");
-            if (registrationId.length() != 0) {
-                Log.v(TAG, "Found legacy ID: '" + registrationId + "'");
-
-                HttpProvider provider = httpProviderProvider.get(deviceRegistryURL, TIMEOUT);
-                setPasswordAuthentication(variantId, secret, provider);
-
-                provider.delete(registrationId);
-                prefs.edit().remove(LEGACY_PROPERTY_REG_ID).commit();
-
-            }
-        } catch (Exception ignore) {
-            Log.v(TAG, "Exception Thrown attempting to unregister legacy token", ignore);
-        }
-
     }
 
 }

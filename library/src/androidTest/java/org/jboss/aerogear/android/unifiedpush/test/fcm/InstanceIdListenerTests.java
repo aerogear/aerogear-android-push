@@ -19,13 +19,14 @@ package org.jboss.aerogear.android.unifiedpush.test.fcm;
 import android.content.SharedPreferences;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jboss.aerogear.android.core.Provider;
 import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
 import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushRegistrar;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearUPSMessageService;
 import org.jboss.aerogear.android.unifiedpush.fcm.FCMSharedPreferenceProvider;
-import org.jboss.aerogear.android.unifiedpush.fcm.UnifiedPushInstanceIDListenerService;
 import org.jboss.aerogear.android.unifiedpush.test.util.UnitTestUtils;
 import org.jboss.aerogear.android.unifiedpush.test.util.VoidCallback;
 import org.junit.Assert;
@@ -49,6 +50,7 @@ public class InstanceIdListenerTests {
     private static final String TEST_REGISTRAR_PREFERENCES_KEY = "org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushRegistrar:272275396485";
     private static final String TEST_SENDER_PASSWORD = "Password";
     private static final String TEST_SENDER_VARIANT = "Variant";
+    private static final String TEST_TOKEN = "testToken";
 
     @Before
     public void fakeRegister() throws Exception {
@@ -66,8 +68,8 @@ public class InstanceIdListenerTests {
         UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", new AeroGearFCMPushRegistrarTest.StubInstanceIDProvider());
 
         final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>)null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -97,7 +99,7 @@ public class InstanceIdListenerTests {
     public void refreshIntentSendsCallsRefresh() throws Exception {
         AeroGearFCMPushRegistrarTest.StubHttpProvider httpProvider = new AeroGearFCMPushRegistrarTest.StubHttpProvider();
 
-        UnifiedPushInstanceIDListenerService service = new UnifiedPushInstanceIDListenerService();
+        AeroGearUPSMessageService service = new AeroGearUPSMessageService();
         UnitTestUtils.setPrivateField(service, "httpProviderProvider", httpProvider);
 
         UnitTestUtils.setPrivateField(service, "sharedPreferencesProvider", new Provider<SharedPreferences>() {
@@ -108,9 +110,7 @@ public class InstanceIdListenerTests {
             }
         });
 
-        UnitTestUtils.setPrivateField(service, "instanceIdProvider", new AeroGearFCMPushRegistrarTest.StubInstanceIDProvider());
-
-        service.onTokenRefresh();
+        service.onNewToken(TEST_TOKEN);
 
         Mockito.verify(httpProvider.get()).post(Matchers.anyString());
 

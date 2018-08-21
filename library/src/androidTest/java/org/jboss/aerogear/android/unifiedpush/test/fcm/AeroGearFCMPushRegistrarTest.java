@@ -16,11 +16,19 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jboss.aerogear.android.core.Provider;
@@ -39,6 +47,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,10 +58,13 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import static android.support.test.InstrumentationRegistry.getContext;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
@@ -118,9 +131,9 @@ public class AeroGearFCMPushRegistrarTest {
 
         VoidCallback callback = new VoidCallback(latch);
 
-        final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        final FirebaseMessaging mockPubSub = mock(FirebaseMessaging.class);
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -180,9 +193,9 @@ public class AeroGearFCMPushRegistrarTest {
         StubInstanceIDProvider firebaseInstanceIdProvider = new StubInstanceIDProvider();
         UnitTestUtils.setPrivateField(registrar, "firebaseInstanceIdProvider", firebaseInstanceIdProvider);
 
-        final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        final FirebaseMessaging mockPubSub = mock(FirebaseMessaging.class);
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -278,9 +291,9 @@ public class AeroGearFCMPushRegistrarTest {
         CountDownLatch latch = new CountDownLatch(1);
         StubHttpProvider provider = new StubHttpProvider();
 
-        final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        final FirebaseMessaging mockPubSub = mock(FirebaseMessaging.class);
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -336,9 +349,9 @@ public class AeroGearFCMPushRegistrarTest {
         AeroGearFCMPushRegistrar registrar = (AeroGearFCMPushRegistrar) config.asRegistrar();
         CountDownLatch latch = new CountDownLatch(1);
 
-        final FirebaseMessaging mockPubSub = Mockito.mock(FirebaseMessaging.class);
-        Mockito.doNothing().when(mockPubSub).unsubscribeFromTopic(anyString());
-        Mockito.doNothing().when(mockPubSub).subscribeToTopic(anyString());
+        final FirebaseMessaging mockPubSub = mock(FirebaseMessaging.class);
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).unsubscribeFromTopic(anyString());
+        Mockito.doReturn((Task<Void>) null).when(mockPubSub).subscribeToTopic(anyString());
 
         Provider gcmPubSubProvider = new Provider<FirebaseMessaging>() {
 
@@ -349,9 +362,8 @@ public class AeroGearFCMPushRegistrarTest {
 
 
         };
-        ;
-        UnitTestUtils.setPrivateField(registrar, "firebaseMessagingProvider", gcmPubSubProvider);
 
+        UnitTestUtils.setPrivateField(registrar, "firebaseMessagingProvider", gcmPubSubProvider);
 
         StubHttpProvider provider = new StubHttpProvider();
         UnitTestUtils.setPrivateField(registrar, "httpProviderProvider", provider);
@@ -438,7 +450,7 @@ public class AeroGearFCMPushRegistrarTest {
 
     static class StubHttpProvider implements Provider<HttpProvider> {
 
-        protected final HttpProvider mock = Mockito.mock(HttpProvider.class);
+        protected final HttpProvider mock = mock(HttpProvider.class);
 
         public StubHttpProvider() {
             byte[] bytes = {1};
@@ -459,11 +471,55 @@ public class AeroGearFCMPushRegistrarTest {
 
     static class StubInstanceIDProvider implements Provider<FirebaseInstanceId> {
 
-        protected final FirebaseInstanceId mock = Mockito.mock(FirebaseInstanceId.class);
         private static final String TEMP_ID = "tempId";
+        protected final FirebaseInstanceId mock = mock(FirebaseInstanceId.class);
+
 
         public StubInstanceIDProvider() {
-            when(mock.getToken()).thenReturn(TEMP_ID);
+            Task<InstanceIdResult> mockInstanceIdTask = mock(Task.class);
+            when(mockInstanceIdTask.isComplete()).thenReturn(true);
+            when(mockInstanceIdTask.isSuccessful()).thenReturn(true);
+            when(mockInstanceIdTask.getResult()).thenReturn(new InstanceIdResult() {
+                @NonNull
+                @Override
+                public String getId() {
+                    return TEST_SENDER_ID;
+                }
+
+                @NonNull
+                @Override
+                public String getToken() {
+                    return TEMP_ID;
+                }
+            });
+            when(mockInstanceIdTask.addOnCompleteListener((OnCompleteListener<InstanceIdResult>) any())).thenAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+
+                    Task<InstanceIdResult> completedTask = mock(Task.class);
+                    when(completedTask.isComplete()).thenReturn(true);
+                    when(completedTask.isSuccessful()).thenReturn(true);
+                    when(completedTask.getResult()).thenReturn(new InstanceIdResult() {
+                        @NonNull
+                        @Override
+                        public String getId() {
+                            return TEST_SENDER_ID;
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return TEMP_ID;
+                        }
+                    });
+
+                    OnCompleteListener<InstanceIdResult> listener = (OnCompleteListener<InstanceIdResult>) invocation.getArguments()[0];
+                    listener.onComplete(completedTask);
+                    return null;
+                }
+            });
+
+            when(mock.getInstanceId()).thenReturn(mockInstanceIdTask);
         }
 
         @Override
@@ -473,3 +529,4 @@ public class AeroGearFCMPushRegistrarTest {
     }
 
 }
+
