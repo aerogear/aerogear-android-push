@@ -162,11 +162,8 @@ public class AeroGearFCMPushRegistrar implements PushRegistrar, MetricsSender<Un
                                 The getToken method will return a cached token.  If the
                                 token is null then we need to force a token to be loaded.
                                  */
-                                String token = instanceId.getToken();
+                                String token = task.getResult().getToken();
                                 String oldToken = getOldToken(context);
-                                if (token == null) {
-                                    token = instanceId.getToken(senderId, FirebaseMessaging.INSTANCE_ID_SCOPE);
-                                }
 
                                 deviceToken = token;
 
