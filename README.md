@@ -28,7 +28,7 @@ Add to your application's `build.gradle` file
 
 ```groovy
 dependencies {
-    compile 'org.jboss.aerogear:aerogear-android-push:5.0.0'
+    compile 'org.jboss.aerogear:aerogear-android-push:5.1.0'
 }
 ```
 
