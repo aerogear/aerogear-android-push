@@ -16,7 +16,6 @@
 
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'com.github.dcendents.android-maven'
 
 def isReleaseBuild() {
     return VERSION_NAME.contains("SNAPSHOT") == false
@@ -100,18 +99,18 @@ afterEvaluate { project ->
     android.libraryVariants.all { variant ->
         def javadocTask = task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
             description "Generates Javadoc for $variant.name."
-            source = variant.javaCompile.source
+            source = variant.javaCompileProvider.get().source
             ext.androidJar = project.files(android.getBootClasspath().join(File.pathSeparator))
-            classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+            classpath = files(variant.javaCompileProvider.get().classpath.files) + files(ext.androidJar)
             exclude '**/BuildConfig.java'
             exclude '**/R.java'
         }
 
-        javadocTask.dependsOn variant.javaCompile
+        javadocTask.dependsOn variant.javaCompileProvider.get()
 
         def jarJavadocTask = task("jar${variant.name.capitalize()}Javadoc", type: Jar) {
             description "Generate Javadoc Jar for $variant.name"
-            classifier = 'javadoc'
+            archiveClassifier = 'javadoc'
             from javadocTask.destinationDir
         }
 
@@ -120,11 +119,11 @@ afterEvaluate { project ->
 
         def jarSourceTask = task("jar${variant.name.capitalize()}Sources", type: Jar) {
             description "Generates Java Sources for $variant.name."
-            classifier = 'sources'
-            from variant.javaCompile.source
+            archiveClassifier = 'sources'
+            from variant.javaCompileProvider.get().source
         }
 
-        jarSourceTask.dependsOn variant.javaCompile
+        jarSourceTask.dependsOn variant.javaCompileProvider.get()
         artifacts.add('archives', jarSourceTask)
     }
 }

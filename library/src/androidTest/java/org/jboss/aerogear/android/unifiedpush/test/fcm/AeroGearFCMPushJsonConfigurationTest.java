@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushJsonConfiguration;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getContext;
 
 @RunWith(AndroidJUnit4.class)
 public class AeroGearFCMPushJsonConfigurationTest {
