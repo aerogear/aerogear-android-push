@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush.test;
 
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.jboss.aerogear.android.core.ConfigurationProvider;

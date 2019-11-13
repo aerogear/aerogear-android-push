@@ -40,7 +40,7 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getContext;
+import static androidx.test.InstrumentationRegistry.getContext;
 import static org.mockito.Matchers.anyString;
 
 @RunWith(AndroidJUnit4.class)
