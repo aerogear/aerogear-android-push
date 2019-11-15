@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.unifiedpush.test.fcm;
 
 import android.content.SharedPreferences;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -40,7 +40,7 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.InstrumentationRegistry.getContext;
 import static org.mockito.Matchers.anyString;
 
 @RunWith(AndroidJUnit4.class)
